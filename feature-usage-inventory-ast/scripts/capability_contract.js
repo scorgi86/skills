@@ -1,0 +1,5 @@
+"use strict";
+const IDS = new Set(["definition","ownership","storage","serialization","input","mutation","recipients","readback","render-output","lifecycle","theme-style","tests","reference"]);
+const STATUSES = new Set(["confirmed","unchecked","checked-no-usage","not-applicable","reference-only"]);
+function normalizeCapabilities(items=[]) { if(!Array.isArray(items)) throw new Error("capabilities must be an array"); return items.map((item)=>{if(!IDS.has(item.id)||!STATUSES.has(item.status)) throw new Error("Invalid capability id/status"); if(item.status==="confirmed"&&(!Array.isArray(item.evidenceRefs)||!item.evidenceRefs.length)) throw new Error(`Confirmed capability ${item.id} requires evidenceRefs`); if(item.status==="checked-no-usage"&&(!item.checkedScope||!Array.isArray(item.expectedNames)||!item.expectedNames.length)) throw new Error(`Checked absence ${item.id} requires scope and expectedNames`); return {...item,requiredForFinalReport:item.requiredForFinalReport!==false};}); }
+module.exports={IDS,STATUSES,normalizeCapabilities};

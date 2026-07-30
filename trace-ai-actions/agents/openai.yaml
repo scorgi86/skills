@@ -1,0 +1,4 @@
+interface:
+  display_name: "Trace AI Actions"
+  short_description: "Show and persist sanitized AI action traces"
+  default_prompt: "Use $trace-ai-actions with this task to show a concise live operation trace."

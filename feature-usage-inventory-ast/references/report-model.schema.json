@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "inventory-report-model/1.0.0",
+  "title": "Canonical Inventory Report Model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["modelType", "schemaVersion", "inventoryId", "stage", "status", "target", "scope", "provenance", "executiveSummary", "decisionStatus", "coverage", "capabilities", "stageExecution", "renderProfile", "openChecks", "transition", "ownership", "dictionary", "scenarios", "recipientFamilies", "criticalPaths", "referencePaths", "gaps", "implementationEntryPoints", "confirmedUsages", "checkedNoUsage", "referenceOnly", "noise", "limitations", "evidenceIndex", "integrity"],
+  "properties": {
+    "modelType": { "const": "inventory-report-model" }, "schemaVersion": { "const": "1.0.0" }, "inventoryId": { "type": "string", "minLength": 1 }, "stage": { "const": 7 }, "status": { "const": "closed" }, "target": { "type": "string", "minLength": 1 },
+    "scope": { "type": "object" }, "provenance": { "type": "object" }, "executiveSummary": { "type": "object" }, "decisionStatus": { "enum": ["confirmed", "partial", "unknown", "not-applicable"] }, "coverage": { "type": "object" }, "capabilities": { "type": "array", "minItems": 1, "items": { "type": "object" } }, "stageExecution": { "type": "object" }, "renderProfile": { "type": "object" }, "openChecks": { "type": "array", "items": { "type": "string" } }, "transition": { "type": "object", "required": ["next stage"], "properties": { "next stage": { "const": "8" } } },
+    "ownership": { "$ref": "#/$defs/rows" }, "dictionary": { "$ref": "#/$defs/rows" }, "scenarios": { "$ref": "#/$defs/rows" }, "recipientFamilies": { "$ref": "#/$defs/rows" }, "criticalPaths": { "$ref": "#/$defs/rows" }, "referencePaths": { "$ref": "#/$defs/rows" }, "gaps": { "$ref": "#/$defs/rows" }, "implementationEntryPoints": { "$ref": "#/$defs/rows" }, "confirmedUsages": { "$ref": "#/$defs/rows" }, "checkedNoUsage": { "$ref": "#/$defs/rows" }, "referenceOnly": { "$ref": "#/$defs/rows" }, "noise": { "$ref": "#/$defs/rows" }, "limitations": { "$ref": "#/$defs/rows" }, "evidenceIndex": { "$ref": "#/$defs/rows" },
+    "integrity": { "type": "object", "additionalProperties": false, "required": ["algorithm", "canonicalDigest"], "properties": { "algorithm": { "const": "sha256" }, "canonicalDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" } } }
+  },
+  "$defs": { "rows": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string", "minLength": 1 } } } } }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "feature-usage-inventory-ast-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local runtime for the feature-usage-inventory-ast skill",
+  "type": "commonjs",
+  "scripts": {
+    "check": "node --check scripts/prototype_ast.js",
+    "diagnose": "node scripts/diagnose.js --pretty",
+    "validate": "node scripts/quick_validate.js . && node scripts/validate_skill.js .",
+    "test": "node --test --experimental-test-isolation=none scripts/*.test.js"
+  },
+  "dependencies": {
+    "@swc/core": "1.15.43"
+  }
+}

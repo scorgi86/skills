@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Usage Inventory AST"
+  short_description: "Staged Graph/AST inventory with interactive or goal continuation"
+  default_prompt: "Use $feature-usage-inventory-ast to resolve a strict, adaptive, or continuous mode and an interactive or active-goal driver, then run a staged GitNexus/AST-assisted inventory while preserving every canonical transition and verifying graph/AST candidates in source."

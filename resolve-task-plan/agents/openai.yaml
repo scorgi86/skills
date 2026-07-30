@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resolve Task Plan"
+  short_description: "Analyze requirements and agree a solution plan"
+  default_prompt: "Use $resolve-task-plan to analyze this task and agree an implementation plan step by step."

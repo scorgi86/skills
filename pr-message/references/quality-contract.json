@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "required_sections": [
+    "Контекст задачи",
+    "Архитектура решения",
+    "Как было",
+    "Как стало",
+    "Что изменено",
+    "Почему изменено",
+    "Как работает",
+    "Что проверено"
+  ],
+  "rationale_bullets": {"min": 1, "max": 5},
+  "dimensions": [
+    "semantic_precision",
+    "terminology_provenance",
+    "language_consistency",
+    "reader_clarity",
+    "relevance",
+    "conciseness"
+  ],
+  "reader_questions": [
+    "problem",
+    "trigger",
+    "execution_flow",
+    "outcomes_and_exceptions",
+    "key_rules_and_values",
+    "verification_and_risks"
+  ],
+  "reader_answer_statuses": ["clear", "missing", "ambiguous", "not_applicable"],
+  "forbidden_claims": [
+    "tests were executed when only test code is present",
+    "feature flag configures thresholds unless facts explicitly say so",
+    "callback values from different contracts belong to one contract"
+  ]
+}
