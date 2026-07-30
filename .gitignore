@@ -1,0 +1,38 @@
+# Dependencies
+**/node_modules/
+
+# Generated caches and temporary files
+**/.ast-cache/
+**/.cache/
+*.tmp
+*.temp
+*.log
+
+# Backup files
+*.bak
+*.bak-*
+*.orig
+*~
+
+# Local trace and analysis artifacts
+*.jsonl
+*.jsonl.gz
+inventory-state.json
+selected.diff
+analysis-input.json
+analysis-prompt.txt
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test output
+coverage/
+.nyc_output/
