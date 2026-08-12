@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Runner"
+  short_description: "Refactoring with independent acceptance"
+  default_prompt: "Use $task-runner to implement the refactoring described in the specified document."
