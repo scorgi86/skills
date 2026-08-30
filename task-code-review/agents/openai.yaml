@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Code Review"
+  short_description: "Ревью всей ветки относительно требований задачи"
+  default_prompt: "Используй $task-code-review в режиме coordinator-review: актуализируй refs безопасным fetch, прочитай описание задачи и вложения, построй реестр требований и проверь полный diff ветки во всех целевых репозиториях."
