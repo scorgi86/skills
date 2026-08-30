@@ -1,9 +1,9 @@
 ---
-name: pr-message
+name: task-merge-request-msg
 description: "Generate and persist a reviewer-oriented pull request description from Git changes through one of three explicitly selected routes: fast, semantic, or deep."
 ---
 
-# PR Message Router
+# Task Merge Request Message Router
 
 Generate a ready-to-paste PR description from Git changes. Keep this file as the router; load step instructions only when executing that step.
 

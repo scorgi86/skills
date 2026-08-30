@@ -1,0 +1,4 @@
+interface:
+  display_name: "Install R7 Office on Linux"
+  short_description: "Safely install and verify R7 Office packages"
+  default_prompt: "Use $install-r7-office-linux to inspect, install, and verify an R7 Office package on Linux or WSL."

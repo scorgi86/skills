@@ -1,4 +1,0 @@
-interface:
-  display_name: "Requirements Review"
-  short_description: "Карточка достаточности требований для разработки"
-  default_prompt: "Используй $requirements-review: предложи режим standard по умолчанию и дождись явного подтверждения либо выбора fast или full; для fast дай предварительный результат без Карточки, а для standard/full оцени достаточность требований и подготовь черновую или официальную Карточку."

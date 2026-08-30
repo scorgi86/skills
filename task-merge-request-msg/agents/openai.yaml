@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Merge Request Message"
+  short_description: "Create, validate, and persist a reviewer-oriented PR message"
+  default_prompt: "Use $task-merge-request-msg to analyze the relevant Git scope, produce a validated merge request description, and save its artifacts in the project task context."

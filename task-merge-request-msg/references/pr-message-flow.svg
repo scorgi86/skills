@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="900" viewBox="0 0 920 900" role="img" aria-labelledby="title desc">
-  <title id="title">Схема работы PR Message</title>
+  <title id="title">Схема работы Task Merge Request Message</title>
   <desc id="desc">Выбор режима, Git scope, evidence-пакет, авторский draft, независимый reader-review и сохранение</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">

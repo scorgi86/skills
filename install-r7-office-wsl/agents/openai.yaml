@@ -1,0 +1,4 @@
+interface:
+  display_name: "Install R7 Office in WSL"
+  short_description: "Install and verify R7 Office DEB in WSL"
+  default_prompt: "Use $install-r7-office-wsl to install and verify an R7 Office DEB package in a WSL Linux distribution."
