@@ -17,6 +17,8 @@ Use this file whenever GitNexus, local AST, text search, file-name search, or ma
 ## Promotion Rules
 
 - A candidate becomes `подтвержденное использование` only when the file, symbol/property/method, role, and path are verified.
+- Every source-confirmed evidence row names one repository from the declared scope and a file inside that repository root. Runtime recomputes SHA-256 over the complete current file; supplied, partial, or stale hashes never promote a candidate.
+- Confirmed usages, confirmed capabilities, and confirmed implementation entry points may reference only source-confirmed evidence.
 - Use `не проверено` for useful candidates that were not confirmed.
 - Use `шум`, `generated-only`, `vendor/noise`, or `bundle-only` for excluded or non-source matches until a source-of-truth file is found.
 - Use `проверено, использования нет` only when expected names, reasons, scope, and performed checks are recorded.
@@ -27,9 +29,12 @@ An absence claim must include:
 
 - expected names;
 - why those names were expected;
-- exact scope searched;
-- second/third/N-order objects or linking methods checked;
+- exact declared repository and scope searched;
+- performed checks, second/third/N-order objects, and linking methods checked (record `N/A` explicitly when one category does not apply);
+- a complete, untruncated result;
 - what path remains blocked or closed by the result.
+
+Its evidence references must point only to absence evidence with the same repository and search scope.
 
 If these fields are missing, mark the point as `не проверено`, not as a gap or absence.
 
@@ -37,4 +42,4 @@ If these fields are missing, mark the point as `не проверено`, not as
 
 Separate source evidence from noise. Do not mix vendor, cache, generated output, `node_modules`, sourcemaps, minified bundles, help/locales, or compiled bundles into source evidence unless that zone is explicitly the source of truth.
 
-When using R7, load `search-noise-profiles.json` when file/text/GitNexus/AST/manual filtering may hit generated/vendor/help/resource noise. Use `r7_default` first and `r7_extended` only if default still returns noisy output.
+Apply only noise exclusions declared in repository scope or the current request. Record every applied exclusion in the canonical result; do not infer excluded directories from familiar names.

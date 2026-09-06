@@ -1,9 +1,9 @@
-function GradFill() {
-    this.type = "grad";
-    this.stops = [];
-    this.angle = 0;
+function FeatureValue() {
+    this.type = "sample";
+    this.items = [];
+    this.weight = 0;
 }
 
-AscFormat.CShape = function() {
-    this.fill = null;
+FeatureNamespace.FeatureContainer = function() {
+    this.value = null;
 };

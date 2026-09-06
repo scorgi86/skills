@@ -5,11 +5,11 @@ Use this file for every full inventory, skill-test request, implementation-impac
 ## Mandatory Step-By-Step Execution
 
 - Follow the stages in order.
-- Before a new full inventory, ask one combined question requiring an explicit mode (`strict|adaptive|continuous`) and continuation method (`interactive|goal`), or resolve both from an active goal objective. Record both in state; do not select either implicitly.
+- Default a new full inventory to `continuous` plus `goal`. If no active goal/telemetry driver is available, record the fallback to `interactive` without asking merely for mode selection.
 - Execute consecutive stages only as allowed by `references/execution-levels.md`. Never begin a later stage before the previous stage has persisted, passed its gate, and advanced successfully.
 - Start at stage 0 unless the user supplies a valid artifact for a later stage.
 - End every stage with the gate template in this file, a `Stage Execution Report`, and an `Execution Status` block.
-- If the stage artifact is saved as Markdown, run `node scripts/validate_inventory_stage.js <artifact.md> --stage N`. A failed validator keeps the stage `частично` or `не закрыт`.
+- Persist and validate `canonical/stage-result.json` schema `4.0.0`. Markdown is an optional projection and never a transition input.
 - If context, tool limits, unresolved gates, or validation issues prevent reliable completion, keep the current stage partial and record exact open checks.
 - For `interactive`, resume on `продолжай`, `следующий этап`, or `этап N`. For `goal`, resume automatically after verifying the objective digest. In both cases consume the current artifact and previous stage results instead of restarting discovery.
 - Do not skip a stage silently. Mark a stage `неприменимо` inside its output, show evidence for that decision, close its DoD, and stop normally.
@@ -72,7 +72,7 @@ next step: <next stage, validation, or no-op if complete>
 | 4. Получатели | Find recipient families and concrete receivers | Recipient matrix and blast radius | Explicit and indirect receivers are checked for get/store/apply/return/output |
 | 5. Критические пути | Build end-to-end paths | Import/open/paste, user/API, state, save/export, lifecycle paths | Every path has source, state, readback/output or persistence; breaks are marked |
 | 6. Эталон и ожидаемая реализация | Compare with analog paths and identify expected implementation | Reference paths, gaps, expected locations | Each gap has expected path/name/place/owner/form/reason/scope/status |
-| 7. Каноническая модель отчёта | Assemble, normalize, validate, and repair the complete report model | Closed `inventory-report-model/1.0.0` JSON with canonical digest | Schema, references, semantics, coverage, evidence, and determinism pass; invalid models remain at Stage 7 |
+| 7. Каноническая модель отчёта | Assemble, normalize, validate, and repair the complete report model | Closed `inventory-report-model/2.0.0` JSON with canonical digest | Schema, references, semantics, coverage, evidence, and determinism pass; invalid models remain at Stage 7 |
 | 8. Финальная приемка и rendering | Revalidate the closed model read-only, calculate summary indicators, and render documents | Decision report, implementation map, evidence report, and manifest | Input hash is preserved, deterministic outputs are validated, and Stage 8 performs no research or repair |
 
 ## Gate Template
@@ -101,9 +101,9 @@ next step: <next stage, validation, or no-op if complete>
 <continue according to the recorded mode, stop for interactive continuation with `продолжай`, or yield to the active goal>
 ```
 
-## Transition Artifact Minimum
+## Canonical Transition Minimum
 
-The `Артефакт для следующего этапа` block or linked Markdown artifact must contain:
+`canonical/stage-result.json` must carry these values in `summary.transition.fields`:
 
 ```text
 target: <feature/concept/model>
@@ -118,13 +118,13 @@ open checks: <items carried forward>
 next stage: <N+1 and name, or stage 8 completion>
 ```
 
-Do not replace this artifact with a vague statement such as `результаты выше` or `продолжить поиск`.
+Markdown may render these fields for people, but it must never be read by the next runner.
 
 ## Stage 7 Closure Contract
 
 Stage 7 is the only owner of report-model construction and repair. Build the full model defined by `references/report-model.schema.json`, normalize it, validate it, and keep the canonical stage at 7 until every mandatory gate passes. Bounded probes or subagents may close a declared local evidence gap, but must return structured evidence for Stage 7; they never advance state.
 
-The Stage 7 canonical artifact must have `modelType: inventory-report-model`, `stage: 7`, `status: closed`, `transition.next stage: "8"`, and a valid canonical SHA-256 digest. `stage_state.js advance --stage 7` rejects any other artifact.
+The Stage 7 report model must be wrapped by canonical schema 4.0 with `stage: 7`, `status: closed`, a trusted report-model digest, and transition to Stage 8. `node scripts/cli/src/commands/stage_state.js advance --stage 7` rejects any other artifact.
 
 ## Stage 8 Read-Only Contract
 

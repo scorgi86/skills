@@ -27,7 +27,7 @@
 - API names: public getters, setters, methods, DTO, commands;
 - UI names: labels, menu commands, toolbar ids, settings fields;
 - lifecycle names: read/write/load/save/serialize/deserialize/render/export/copy/paste/history;
-- abbreviated names: короткие варианты, legacy aliases, casing variants.
+- abbreviated names: короткие, исторические и регистровые варианты.
 
 ## 2. Definition Search
 

@@ -1,7 +1,7 @@
-interface FillHolder {
-    fill: GradFill;
+interface FeatureHolder {
+    value: FeatureValue;
 }
 
-export function setFill(holder: FillHolder, fill: GradFill): void {
-    holder.fill = fill;
+export function setValue(holder: FeatureHolder, value: FeatureValue): void {
+    holder.value = value;
 }

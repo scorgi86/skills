@@ -1,14 +1,15 @@
 {
   "name": "feature-usage-inventory-ast-runtime",
-  "version": "1.0.0",
+  "version": "4.1.0",
   "private": true,
   "description": "Local runtime for the feature-usage-inventory-ast skill",
   "type": "commonjs",
   "scripts": {
-    "check": "node --check scripts/prototype_ast.js",
-    "diagnose": "node scripts/diagnose.js --pretty",
-    "validate": "node scripts/quick_validate.js . && node scripts/validate_skill.js .",
-    "test": "node --test --experimental-test-isolation=none scripts/*.test.js"
+    "check": "node --check scripts/shared/ast/src/prototype_ast.js",
+    "diagnose": "node scripts/index.js diagnose --pretty",
+    "canonicalize-stage": "node scripts/index.js canonical_stage_cli",
+    "validate": "node scripts/index.js quick_validate . && node scripts/index.js validate_skill .",
+    "test": "node --test --experimental-test-isolation=none scripts/tests/all.test.js"
   },
   "dependencies": {
     "@swc/core": "1.15.43"

@@ -6,24 +6,36 @@ Use this file only after candidate discovery indicates local AST is useful.
 
 - Run the analyzer with the Node.js available to the skill environment.
 - Resolve `@swc/core` only from the skill-local `node_modules`; install reproducibly with `npm install` in the skill root when dependencies are absent.
-- Ask the user for the format and destination before creating report, stage, cache, or raw-output artifacts. Without approval, return a compact in-thread result and omit `--cache`.
+- Use the automatic inventory artifact path unless the user supplies another destination. Cache and raw output remain opt-in.
 - Treat every AST result as candidate evidence with status `не проверено` until confirmed in source.
 - Do not use parse failures or empty AST results as proof of absence.
 
 Check the runtime before a new environment or after dependency changes:
 
 ```bash
-node scripts/prototype_ast.js doctor
+node scripts/cli/src/commands/prototype_ast.js doctor
 ```
 
 ## Scope Gate
 
-- Do not run AST on an entire `sdkjs`, `web-apps`, `desktop-apps`, or aggregate `projects` root.
+- Do not run AST over every declared root. Narrow candidates with graph and source search first.
 - Discover candidate files with GitNexus and/or targeted source search first.
 - Pass one file with `--file`, a narrow explicit directory with `--scope`, or a UTF-8 candidate list with `--files-from`.
 - A scope above 200 source files is blocked unless `--allow-wide-scope` is explicit and its reason, timeout, and fallback are recorded.
-- Cache is opt-in only: `--cache <user-approved-directory>`.
-- `--line-start/--line-end` bound returned evidence, but SWC still parses the complete candidate file.
+- Cache is opt-in only: `--cache <directory>`.
+- `--line-start/--line-end` bound returned evidence; a cache miss still parses the complete candidate file.
+
+## File analysis cache
+
+`--cache <directory>` reuses file analysis (symbols, relations and candidate evidence), not AST trees or query results. Without this option there is no cache IO or hashing. Each enabled analysis reads the source once, hashes its raw bytes and checks the cache before parsing. A valid hit skips SWC and extraction; a miss parses the UTF-8 text decoded from the same bytes. Queries and source confirmation still run. This is consistency of one read, not an atomic filesystem snapshot.
+
+Identity includes the absolute file path, raw content hash, parser options and SWC version, plus private cache format and analyzer versions in `scripts/shared/ast/src/cache/identity.js`. Bump the analyzer version when symbol/relation/evidence extraction or affecting dependencies change; bump the format version when the stored contract changes. These versions are separate from the public output schema. Old keys are ignored without migration or deletion. No Git or size/mtime shortcut is used.
+
+Entries are checked against the expected identity and nested result structure. Validation does not authenticate arbitrary semantic substitutions; all evidence remains `не проверено`. A malformed/incompatible current entry or cache read failure causes one fresh analysis with `cache: failed` and a warning, without repairing the entry in that call. Source read/parse failures instead retain their diagnostics and `cache: disabled`; they are never cached. Analyzer exceptions propagate rather than being reported as cache failures.
+
+Successful misses publish through a unique temporary file and rename in the same directory. Write/rename failure returns the computed result with a cache warning, without repeating analysis or deleting another writer's entry. Cleanup of the call's own temporary file is best effort. There is no automatic cache cleanup.
+
+Legacy `stats.parsed` counts successful file results, including hits; batch `parseCounts` records planned file processing, not measured SWC calls. Per-result `elapsedMs` retains the original parser duration (including on a hit); aggregate `stats.elapsedMs` measures the current analysis call. Use external measurements to compare actual run times.
 
 ## Commands
 
@@ -75,18 +87,18 @@ Semantic group filters are exact, case-insensitive matches by default and accept
 Examples:
 
 ```bash
-node scripts/prototype_ast.js fields --file <file> --owner Shape --field fill
-node scripts/prototype_ast.js methods --file <file> --owner Shape
-node scripts/prototype_ast.js owners --type GradFill --files-from <candidate-list>
-node scripts/prototype_ast.js recipients --type GradFill --scope <narrow-directory>
-node scripts/prototype_ast.js calls --symbol Shape.setFill --file <file>
-node scripts/prototype_ast.js assignments --terms CGradFill --file <file> --line-start 4270 --line-end 4450
-node scripts/prototype_ast.js chain --type GradFill --files-from <candidate-list> --max-depth 10 --max-paths 25 --max-branches 20
-node scripts/prototype_ast.js summary --terms GradFill,Shape.fill --file <file> --max-results 50
-node scripts/prototype_ast.js find --terms CSpPr,spPr,setSpPr --file <file> --output-mode summary
-node scripts/prototype_ast.js find --terms CSpPr,spPr,setSpPr --file <file> --group-offset 50 --output-mode summary
-node scripts/prototype_ast.js find --terms CSpPr,spPr,setSpPr --file <file> --details-for g-0123456789ab --output-mode detail
-node scripts/prototype_ast.js find --terms CSpPr,spPr,setSpPr --file <file> --group-owner CChartSpace --group-field spPr --output-mode summary
+node scripts/cli/src/commands/prototype_ast.js fields --file <file> --owner FeatureContainer --field value
+node scripts/cli/src/commands/prototype_ast.js methods --file <file> --owner FeatureContainer
+node scripts/cli/src/commands/prototype_ast.js owners --type FeatureValue --files-from <candidate-list>
+node scripts/cli/src/commands/prototype_ast.js recipients --type FeatureValue --scope <narrow-directory>
+node scripts/cli/src/commands/prototype_ast.js calls --symbol FeatureContainer.setValue --file <file>
+node scripts/cli/src/commands/prototype_ast.js assignments --terms FeatureValue --file <file> --line-start 20 --line-end 80
+node scripts/cli/src/commands/prototype_ast.js chain --type FeatureValue --files-from <candidate-list> --max-depth 10 --max-paths 25 --max-branches 20
+node scripts/cli/src/commands/prototype_ast.js summary --terms FeatureValue,Container.value --file <file> --max-results 50
+node scripts/cli/src/commands/prototype_ast.js find --terms FeatureState,value,setValue --file <file> --output-mode summary
+node scripts/cli/src/commands/prototype_ast.js find --terms FeatureState,value,setValue --file <file> --group-offset 50 --output-mode summary
+node scripts/cli/src/commands/prototype_ast.js find --terms FeatureState,value,setValue --file <file> --details-for g-0123456789ab --output-mode detail
+node scripts/cli/src/commands/prototype_ast.js find --terms FeatureState,value,setValue --file <file> --group-owner FeatureContainer --group-field value --output-mode summary
 ```
 
 ## Optimized Stage 2
@@ -96,7 +108,7 @@ For a full-inventory stage 2, read `stage-2-contract.md` first and treat it as t
 For dictionary expansion, create a JSON request file and run:
 
 ```bash
-node scripts/stage2_runner.js --request <stage2-request.json> --output <facts.json> --stdout summary
+node scripts/cli/src/commands/stage_pipeline.js --request <stage2-request.json> --state <inventory-state.json> --output-root <inventory-artifact-directory>
 ```
 
 The request contains `stage: 2`, `transitionArtifact`, `ast.queries`, and `evidence.checks`. Each AST query declares `command`, `file` or `files`, normal query `options`, optional semantic `groupFilters`, and whether selected `details` are required. The runner:
@@ -108,7 +120,7 @@ The request contains `stage: 2`, `transitionArtifact`, `ast.queries`, and `evide
 5. performs bounded source checks over explicit files/scopes;
 6. performs budget preflight and emits a facts-first JSON artifact without suppressing requested details; when necessary, it raises the applied presentation budget without reparsing.
 
-Use `node scripts/ast_batch.js --request <ast-request.json>` when only shared AST execution is needed. Use `node scripts/source_evidence.js --request <evidence-request.json>` for standalone source confirmation. Pass JSON through files on Windows; do not embed raw JSON in PowerShell arguments.
+Use `node scripts/cli/src/commands/ast_batch.js --request <ast-request.json>` when only shared AST execution is needed. Use `node scripts/cli/src/commands/source_evidence.js --request <evidence-request.json>` for standalone source confirmation. Pass JSON through files on Windows; do not embed raw JSON in PowerShell arguments.
 
 Quality gates for stage 2:
 
@@ -119,17 +131,17 @@ Quality gates for stage 2:
 - empty checks stay `candidate-empty` until a separate absence protocol is completed;
 - the facts artifact reports requested, required, and applied output budgets; the applied budget may be raised to preserve required evidence.
 
-Use `node scripts/measure_context.js --request <measurement-request.json>` to measure raw and model-visible byte/token estimates without logging contents. Use `node scripts/render_stage2_report.js --input <facts.json> --output <report.md> --stdout summary` to render the existing facts deterministically without returning the full report through stdout. Ask before writing either output to a persistent artifact. Summary stdout is valid only when the full artifact is retained at the approved output path.
+Use `node scripts/cli/src/commands/measure_context.js --request <measurement-request.json>` to measure raw and model-visible byte/token estimates without logging contents. Use deterministic renderers only after canonical persistence; summary stdout is valid only when the complete canonical artifact is retained at the automatic or explicitly supplied output path.
 
 Use raw `analyze` only for a bounded single file:
 
 ```bash
-node scripts/prototype_ast.js analyze --file <file>
+node scripts/cli/src/commands/prototype_ast.js analyze --file <file>
 ```
 
 `analyze` retains compatibility arrays for `constructors`, `fields`, `prototypeMethods`, `variables`, `aliases`, `instanceAssignments`, `setterAssignments`, `arrayOwnership`, `indexedAssignments`, `owners`, and `chains`, while also returning versioned `symbols` and `relations`.
 
-For R7 legacy names, owner/type queries treat a leading constructor `C` as a normalized alias (`GradFill` can match `CGradFill`). Such rows contain `matchMode: "legacy-c-prefix"`; they are not exact-name evidence. `calls`, `callers`, and `callees` include both normal calls and `construct` relations.
+Apply symbol aliases only when they are declared in repository scope. Alias matches are not exact-name evidence. `calls`, `callers`, and `callees` include both normal calls and `construct` relations.
 
 ## Output And Failures
 

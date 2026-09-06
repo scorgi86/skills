@@ -1,10 +1,10 @@
-function Shape() {}
+function FeatureContainer() {}
 
-var shape = new Shape();
-var fill = new GradFill();
-var sourceFill = new SolidFill();
+var container = new FeatureContainer();
+var value = new FeatureValue();
+var sourceValue = new AlternateValue();
 
-shape.fill = AscFormat.CreateGradFill();
-shape.cloneFill = fill.clone();
-shape.duplicateFill = sourceFill.createDuplicate();
-shape.readFill = reader.ReadGradFill();
+container.value = FeatureNamespace.createValue();
+container.cloneValue = value.clone();
+container.duplicateValue = sourceValue.createDuplicate();
+container.readValue = reader.readValue();

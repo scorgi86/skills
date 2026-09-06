@@ -1,17 +1,17 @@
-class ShapeStore {
-    add(shape) {
-        this.items.push(shape);
+class FeatureStore {
+    add(container) {
+        this.items.push(container);
     }
 }
 
-function Shape() {}
-var shapeProto = Shape.prototype;
-shapeProto.setFill = function(fill) {
-    this.fill = fill;
+function FeatureContainer() {}
+var containerProto = FeatureContainer.prototype;
+containerProto.setValue = function(value) {
+    this.value = value;
 };
 
-var shape = new Shape();
-var fill = new GradFill();
-renderer.draw(shape.fill);
-shape.fill = createFill();
-store.items.set("shape", shape);
+var container = new FeatureContainer();
+var value = new FeatureValue();
+consumer.accept(container.value);
+container.value = createValue();
+store.items.set("container", container);

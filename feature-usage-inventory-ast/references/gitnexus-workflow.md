@@ -5,7 +5,7 @@ Use this file for GitNexus-assisted inventory, graph candidates, callers/callees
 ## Order
 
 1. Run `list_repos` or otherwise identify the exact repository names and index freshness.
-2. Pick explicit repo scope. For R7, prefer `sdkjs`, `web-apps`, and `desktop-apps` over aggregate `projects`.
+2. Use only repositories and optional GitNexus aliases declared in repository scope.
 3. Use focused `query` for concept discovery only if full-text search is healthy.
 4. Use `context` for known symbols, classes, functions, APIs, and likely owners.
 5. Use `cypher` for exact structural candidates by name/path/property-like terms.

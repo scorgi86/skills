@@ -1,11 +1,11 @@
-function GradFill() {}
-function Shape() {}
+function FeatureValue() {}
+function FeatureContainer() {}
 
-Shape.prototype.setFill = function(fill) {
-    this.fill = fill;
+FeatureContainer.prototype.setValue = function(value) {
+    this.value = value;
 };
 
-var gradFill = new GradFill();
-var shape = new Shape();
+var featureValue = new FeatureValue();
+var container = new FeatureContainer();
 
-shape.setFill(gradFill);
+container.setValue(featureValue);

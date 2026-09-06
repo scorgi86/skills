@@ -1,0 +1,340 @@
+{
+  "map": {
+    "capability_contract.js": "shared/dto/src/capability_contract.js",
+    "repository_scope.js": "shared/dto/src/repository_scope.js",
+    "planning_contract.js": "shared/dto/src/planning_contract.js",
+    "extract_stage_transition.js": "shared/dto/src/extract_stage_transition.js",
+    "source_evidence.js": "shared/evidence/src/source_evidence.js",
+    "source_slice.js": "shared/evidence/src/source_slice.js",
+    "stage2_canonicalize.js": "shared/evidence/src/stage2_canonicalize.js",
+    "ownership_graph.js": "shared/ownership/src/ownership_graph.js",
+    "boundary_candidates.js": "shared/ownership/src/boundary_candidates.js",
+    "canonical_stage_result.js": "shared/artifacts/src/canonical_stage_result.js",
+    "stage_artifact_v4.js": "shared/artifacts/src/stage_artifact_v4.js",
+    "query_stage_artifacts.js": "shared/artifacts/src/query_stage_artifacts.js",
+    "report_model.js": "shared/report/src/report_model.js",
+    "validate_inventory_report.js": "shared/report/src/validate_inventory_report.js",
+    "validate_inventory_stage.js": "shared/report/src/validate_inventory_stage.js",
+    "fact_projection.js": "shared/output/src/fact_projection.js",
+    "stage_facts.js": "shared/output/src/stage_facts.js",
+    "summary_compaction.js": "shared/output/src/summary_compaction.js",
+    "human_report_codec.js": "shared/output/src/human_report_codec.js",
+    "measure_context.js": "shared/output/src/measure_context.js",
+    "quality_equivalence.js": "shared/output/src/quality_equivalence.js",
+    "compare_stage_runs.js": "shared/output/src/compare_stage_runs.js",
+    "diagnose.js": "shared/diagnostics/src/diagnose.js",
+    "quick_validate.js": "shared/diagnostics/src/quick_validate.js",
+    "validate_skill.js": "shared/diagnostics/src/validate_skill.js",
+    "inventory_search.js": "shared/search/src/inventory_search.js",
+    "feature_search_matrix.js": "shared/search/src/feature_search_matrix.js",
+    "compare_mechanisms.js": "shared/search/src/compare_mechanisms.js",
+    "prototype_ast.js": "shared/ast/src/prototype_ast.js",
+    "ast_batch.js": "shared/ast/src/ast_batch.js",
+    "stage_state.js": "state/src/stage_state.js",
+    "goal_contract.js": "state/src/goal_contract.js",
+    "stage_pipeline.js": "flows/full-flow/src/stage_pipeline.js",
+    "canonical_stage_cli.js": "cli/src/canonical_stage_cli.js",
+    "stage0_runner.js": "steps/step-0/src/runner.js",
+    "stage1_runner.js": "steps/step-1/src/runner.js",
+    "stage2_runner.js": "steps/step-2/src/runner.js",
+    "stage3_runner.js": "steps/step-3/src/runner.js",
+    "stage4_runner.js": "steps/step-4/src/runner.js",
+    "stage5_runner.js": "steps/step-5/src/runner.js",
+    "stage6_runner.js": "steps/step-6/src/runner.js",
+    "stage7_runner.js": "steps/step-7/src/runner.js",
+    "stage8_runner.js": "steps/step-8/src/runner.js",
+    "stage1_coverage_gate.js": "steps/step-1/src/stage1_coverage_gate.js",
+    "render_stage1_report.js": "steps/step-1/src/render_stage1_report.js",
+    "coverage_gate.js": "steps/step-2/src/coverage_gate.js",
+    "render_stage2_report.js": "steps/step-2/src/render_stage2_report.js",
+    "stage5_equivalence_gate.js": "steps/step-5/src/stage5_equivalence_gate.js",
+    "stage7_equivalence_gate.js": "steps/step-7/src/stage7_equivalence_gate.js",
+    "stage7_coverage_gate.js": "steps/step-7/src/stage7_coverage_gate.js",
+    "ast/batch.js": "shared/ast/src/batch.js",
+    "ast/evidence.js": "shared/ast/src/evidence.js",
+    "ast/helpers.js": "shared/ast/src/helpers.js",
+    "ast/index.js": "shared/ast/src/symbol_index.js",
+    "ast/output.js": "shared/ast/src/output.js",
+    "ast/parser.js": "shared/ast/src/parser.js",
+    "ast/queries.js": "shared/ast/src/queries.js",
+    "ast/relations.js": "shared/ast/src/relations.js",
+    "ast/walker.js": "shared/ast/src/walker.js",
+    "test_helpers.js": "shared/dto/tests/test_helpers.js",
+    "boundary_candidates.test.js": "shared/ownership/tests/boundary_candidates.test.js",
+    "canonical_stage_cli.test.js": "cli/tests/canonical_stage_cli.test.js",
+    "canonical_stage_result.test.js": "shared/artifacts/tests/canonical_stage_result.test.js",
+    "capability_contract.test.js": "shared/dto/tests/capability_contract.test.js",
+    "diagnose.test.js": "shared/diagnostics/tests/diagnose.test.js",
+    "extract_stage_transition_v4.test.js": "shared/dto/tests/extract_stage_transition_v4.test.js",
+    "goal_contract.test.js": "state/tests/goal_contract.test.js",
+    "ownership_graph.test.js": "shared/ownership/tests/ownership_graph.test.js",
+    "planning_contract.test.js": "shared/dto/tests/planning_contract.test.js",
+    "prototype_ast.test.js": "shared/ast/tests/prototype_ast.test.js",
+    "quick_validate.test.js": "shared/diagnostics/tests/quick_validate.test.js",
+    "report_model.test.js": "shared/report/tests/report_model.test.js",
+    "repository_neutrality.test.js": "shared/dto/tests/repository_neutrality.test.js",
+    "repository_scope.test.js": "shared/dto/tests/repository_scope.test.js",
+    "stage0_runner.test.js": "steps/step-0/tests/stage0_runner.test.js",
+    "stage1_runner.test.js": "steps/step-1/tests/stage1_runner.test.js",
+    "stage2_canonicalize.test.js": "shared/evidence/tests/stage2_canonicalize.test.js",
+    "stage2_optimization.test.js": "steps/step-2/tests/stage2_optimization.test.js",
+    "stage5_equivalence_gate.test.js": "steps/step-5/tests/stage5_equivalence_gate.test.js",
+    "stage5_runner.test.js": "steps/step-5/tests/stage5_runner.test.js",
+    "stage6_runner.test.js": "steps/step-6/tests/stage6_runner.test.js",
+    "stage7_runner.test.js": "steps/step-7/tests/stage7_runner.test.js",
+    "stage8_runner.test.js": "steps/step-8/tests/stage8_runner.test.js",
+    "stage_artifact_v4.test.js": "shared/artifacts/tests/stage_artifact_v4.test.js",
+    "stage_pipeline.test.js": "flows/full-flow/tests/stage_pipeline.test.js",
+    "stage_state.test.js": "state/tests/stage_state.test.js"
+  },
+  "guarded": [
+    "ast_batch.js",
+    "canonical_stage_cli.js",
+    "compare_stage_runs.js",
+    "coverage_gate.js",
+    "diagnose.js",
+    "extract_stage_transition.js",
+    "goal_contract.js",
+    "human_report_codec.js",
+    "measure_context.js",
+    "prototype_ast.js",
+    "quality_equivalence.js",
+    "query_stage_artifacts.js",
+    "quick_validate.js",
+    "render_stage1_report.js",
+    "render_stage2_report.js",
+    "source_evidence.js",
+    "source_slice.js",
+    "stage0_runner.js",
+    "stage1_runner.js",
+    "stage2_runner.js",
+    "stage3_runner.js",
+    "stage4_runner.js",
+    "stage5_equivalence_gate.js",
+    "stage5_runner.js",
+    "stage6_runner.js",
+    "stage7_equivalence_gate.js",
+    "stage7_runner.js",
+    "stage8_runner.js",
+    "stage_pipeline.js",
+    "stage_state.js",
+    "validate_inventory_report.js",
+    "validate_inventory_stage.js"
+  ],
+  "commands": [
+    {
+      "name": "ast_batch",
+      "path": "cli/commands/ast_batch.js",
+      "guarded": true
+    },
+    {
+      "name": "canonical_stage_cli",
+      "path": "cli/commands/canonical_stage_cli.js",
+      "guarded": true
+    },
+    {
+      "name": "compare_mechanisms",
+      "path": "cli/commands/compare_mechanisms.js",
+      "guarded": false
+    },
+    {
+      "name": "compare_stage_runs",
+      "path": "cli/commands/compare_stage_runs.js",
+      "guarded": true
+    },
+    {
+      "name": "coverage_gate",
+      "path": "cli/commands/coverage_gate.js",
+      "guarded": true
+    },
+    {
+      "name": "diagnose",
+      "path": "cli/commands/diagnose.js",
+      "guarded": true
+    },
+    {
+      "name": "extract_stage_transition",
+      "path": "cli/commands/extract_stage_transition.js",
+      "guarded": true
+    },
+    {
+      "name": "feature_search_matrix",
+      "path": "cli/commands/feature_search_matrix.js",
+      "guarded": false
+    },
+    {
+      "name": "goal_contract",
+      "path": "cli/commands/goal_contract.js",
+      "guarded": true
+    },
+    {
+      "name": "human_report_codec",
+      "path": "cli/commands/human_report_codec.js",
+      "guarded": true
+    },
+    {
+      "name": "inventory_search",
+      "path": "cli/commands/inventory_search.js",
+      "guarded": false
+    },
+    {
+      "name": "measure_context",
+      "path": "cli/commands/measure_context.js",
+      "guarded": true
+    },
+    {
+      "name": "prototype_ast",
+      "path": "cli/commands/prototype_ast.js",
+      "guarded": true
+    },
+    {
+      "name": "quality_equivalence",
+      "path": "cli/commands/quality_equivalence.js",
+      "guarded": true
+    },
+    {
+      "name": "query_stage_artifacts",
+      "path": "cli/commands/query_stage_artifacts.js",
+      "guarded": true
+    },
+    {
+      "name": "quick_validate",
+      "path": "cli/commands/quick_validate.js",
+      "guarded": true
+    },
+    {
+      "name": "render_stage1_report",
+      "path": "cli/commands/render_stage1_report.js",
+      "guarded": true
+    },
+    {
+      "name": "render_stage2_report",
+      "path": "cli/commands/render_stage2_report.js",
+      "guarded": true
+    },
+    {
+      "name": "source_evidence",
+      "path": "cli/commands/source_evidence.js",
+      "guarded": true
+    },
+    {
+      "name": "source_slice",
+      "path": "cli/commands/source_slice.js",
+      "guarded": true
+    },
+    {
+      "name": "stage0_runner",
+      "path": "cli/commands/stage0_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage1_runner",
+      "path": "cli/commands/stage1_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage2_runner",
+      "path": "cli/commands/stage2_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage3_runner",
+      "path": "cli/commands/stage3_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage4_runner",
+      "path": "cli/commands/stage4_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage5_equivalence_gate",
+      "path": "cli/commands/stage5_equivalence_gate.js",
+      "guarded": true
+    },
+    {
+      "name": "stage5_runner",
+      "path": "cli/commands/stage5_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage6_runner",
+      "path": "cli/commands/stage6_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage7_coverage_gate",
+      "path": "cli/commands/stage7_coverage_gate.js",
+      "guarded": false
+    },
+    {
+      "name": "stage7_equivalence_gate",
+      "path": "cli/commands/stage7_equivalence_gate.js",
+      "guarded": true
+    },
+    {
+      "name": "stage7_runner",
+      "path": "cli/commands/stage7_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage8_runner",
+      "path": "cli/commands/stage8_runner.js",
+      "guarded": true
+    },
+    {
+      "name": "stage_pipeline",
+      "path": "cli/commands/stage_pipeline.js",
+      "guarded": true
+    },
+    {
+      "name": "stage_state",
+      "path": "cli/commands/stage_state.js",
+      "guarded": true
+    },
+    {
+      "name": "validate_inventory_report",
+      "path": "cli/commands/validate_inventory_report.js",
+      "guarded": true
+    },
+    {
+      "name": "validate_inventory_stage",
+      "path": "cli/commands/validate_inventory_stage.js",
+      "guarded": true
+    },
+    {
+      "name": "validate_skill",
+      "path": "cli/commands/validate_skill.js",
+      "guarded": false
+    }
+  ],
+  "tests": [
+    "boundary_candidates.test.js",
+    "canonical_stage_cli.test.js",
+    "canonical_stage_result.test.js",
+    "capability_contract.test.js",
+    "diagnose.test.js",
+    "extract_stage_transition_v4.test.js",
+    "goal_contract.test.js",
+    "ownership_graph.test.js",
+    "planning_contract.test.js",
+    "prototype_ast.test.js",
+    "quick_validate.test.js",
+    "report_model.test.js",
+    "repository_neutrality.test.js",
+    "repository_scope.test.js",
+    "stage0_runner.test.js",
+    "stage1_runner.test.js",
+    "stage2_canonicalize.test.js",
+    "stage2_optimization.test.js",
+    "stage5_equivalence_gate.test.js",
+    "stage5_runner.test.js",
+    "stage6_runner.test.js",
+    "stage7_runner.test.js",
+    "stage8_runner.test.js",
+    "stage_artifact_v4.test.js",
+    "stage_pipeline.test.js",
+    "stage_state.test.js"
+  ],
+  "description": "Historical relocation map. Old map keys are removed paths, not supported entry points. Implementations and commands use the listed new paths."
+}

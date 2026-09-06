@@ -1,20 +1,20 @@
-function Shape() {
-    this.fill = null;
+function FeatureContainer() {
+    this.value = null;
 }
 
-Shape.prototype.setFill = function(fill) {
-    this.fill = fill;
+FeatureContainer.prototype.setValue = function(value) {
+    this.value = value;
 };
 
-Shape.prototype.getFill = function() {
-    return this.fill;
+FeatureContainer.prototype.getValue = function() {
+    return this.value;
 };
 
-Page.prototype = {
-    setMainShape: function(shape) {
-        this.mainShape = shape;
+FeaturePanel.prototype = {
+    setMainContainer: function(container) {
+        this.mainContainer = container;
     },
-    getMainShape: function() {
-        return this.mainShape;
+    getMainContainer: function() {
+        return this.mainContainer;
     }
 };

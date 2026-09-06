@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "optimization-benchmark/1.0.0",
+  "scenario": "<external-scenario-id>",
+  "source": "external-eval-artifact",
+  "findings": 0,
+  "evidence": 0,
+  "totalArtifactBytes": 0,
+  "stage2ArtifactBytes": 0,
+  "finalEvidence": 0,
+  "mandatoryOpenChecks": 0,
+  "usage": { "status": "unavailable" }
+}

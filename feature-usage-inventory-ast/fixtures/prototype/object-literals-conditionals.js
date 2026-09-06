@@ -1,21 +1,21 @@
-function Shape() {}
-function Theme() {}
-function GradFill() {}
-function SolidFill() {}
+function FeatureContainer() {}
+function FeatureRegistry() {}
+function FeatureValue() {}
+function AlternateValue() {}
 
-var literalShape = {
-    fill: new GradFill(),
-    spPr: new CSpPr()
+var literalContainer = {
+    value: new FeatureValue(),
+    state: new FeatureState()
 };
 
-var shape = new Shape();
-var theme = new Theme();
-var gradFill = new GradFill();
+var container = new FeatureContainer();
+var registry = new FeatureRegistry();
+var featureValue = new FeatureValue();
 
-shape.fill = theme.fill = gradFill;
+container.value = registry.value = featureValue;
 
-if (useGradient) {
-    shape.fill = new GradFill();
+if (usePrimaryValue) {
+    container.value = new FeatureValue();
 } else {
-    shape.fill = new SolidFill();
+    container.value = new AlternateValue();
 }

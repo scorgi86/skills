@@ -1,13 +1,13 @@
-function GradFill() {}
-function Shape() {}
-function Theme() {}
-function Cell() {}
+function FeatureValue() {}
+function FeatureContainer() {}
+function FeatureRegistry() {}
+function FeatureConsumer() {}
 
-var gradFill = new GradFill();
-var shape = new Shape();
-var theme = new Theme();
-var cell = new Cell();
+var featureValue = new FeatureValue();
+var container = new FeatureContainer();
+var registry = new FeatureRegistry();
+var consumer = new FeatureConsumer();
 
-shape.fill = gradFill;
-theme.defaultFill = gradFill;
-cell.backgroundFill = gradFill;
+container.value = featureValue;
+registry.defaultValue = featureValue;
+consumer.inputValue = featureValue;

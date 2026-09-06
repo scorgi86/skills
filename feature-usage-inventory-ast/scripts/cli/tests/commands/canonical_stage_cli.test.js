@@ -1,0 +1,4 @@
+"use strict";
+const assert = require("node:assert/strict"), fs = require("node:fs"), os = require("node:os"), path = require("node:path"), test = require("node:test");
+const { run } = require("../../src/commands/canonical_stage_cli.js");
+test("canonical CLI path persists a stage without raw and reports budget overflow", () => { const root = fs.mkdtempSync(path.join(os.tmpdir(), "canonical-cli-")), facts = path.join(root, "facts.json"), budgets = path.join(root, "budgets.json"); fs.writeFileSync(facts, JSON.stringify({ stage: 1, status: "closed", canonicalFacts: [{ id: "one" }, { id: "two" }] })); fs.writeFileSync(budgets, JSON.stringify({ maxCanonicalFindings: 1 })); const written = run({ facts, output: path.join(root, "stage-1"), budgets, retainRaw: false }); assert.equal(written.canonical.metrics.budgets.exceeded, true); assert.equal(fs.existsSync(path.join(root, "stage-1", "raw")), false); });

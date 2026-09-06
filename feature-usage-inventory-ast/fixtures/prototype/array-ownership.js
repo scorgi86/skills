@@ -1,16 +1,16 @@
-function Shape() {}
-function Page() {}
-function Document() {}
-function GradFill() {}
-function Theme() {}
+function FeatureContainer() {}
+function ContainerGroup() {}
+function AggregateRoot() {}
+function FeatureValue() {}
+function FeatureRegistry() {}
 
-var shape = new Shape();
-var page = new Page();
-var doc = new Document();
-var gradFill = new GradFill();
-var theme = new Theme();
+var container = new FeatureContainer();
+var group = new ContainerGroup();
+var aggregate = new AggregateRoot();
+var featureValue = new FeatureValue();
+var registry = new FeatureRegistry();
 
-page.shapes.push(shape);
-doc.pages.push(page);
-theme.fills[id] = gradFill;
-theme.fills["default"] = gradFill;
+group.containers.push(container);
+aggregate.groups.push(group);
+registry.values[id] = featureValue;
+registry.values["default"] = featureValue;

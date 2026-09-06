@@ -9,30 +9,30 @@ When goal tools are available, inspect the active goal before Stage 0 and on eve
 - target;
 - repositories, branches, or worktrees;
 - execution mode;
-- approved artifact destination and format;
+- optional artifact destination override;
 - exclusions and permissions;
 - completion condition.
 
-An explicit value in the active goal counts as the user's answer. If a required value is absent, pause and ask; never infer it. Do not create a goal unless the user explicitly requests one.
+Derive the artifact destination automatically when no override is present. Ask only for missing repository roots, permissions, or another material value that cannot be inferred safely. Do not create a goal unless the user explicitly requests one; when no active goal exists, record the interactive fallback.
 
-Normalize the material values with `node scripts/goal_contract.js --request <goal-contract.json>` and record its SHA-256 as `goal.objectiveDigest`. Cosmetic wording and progress commentary must not change the digest. Before every continuation, pass the current digest to `stage_state.js continue-run`. A mismatch requires user confirmation; do not silently migrate scope.
+Normalize the material values with `node scripts/cli/src/commands/goal_contract.js --request <goal-contract.json>` and record its SHA-256 as `goal.objectiveDigest`. Cosmetic wording and progress commentary must not change the digest. Before every continuation, pass the current digest to `node scripts/cli/src/commands/stage_state.js continue-run`. A mismatch requires user confirmation; do not silently migrate scope.
 
 ## Initialize
 
 Initialize a goal-driven inventory with:
 
 ```text
-node scripts/stage_state.js init --state <inventory-state.json> --mode <strict|adaptive|continuous> --driver goal --objective-digest <sha256>
+node scripts/cli/src/commands/stage_state.js init --state <inventory-state.json> --mode <strict|adaptive|continuous> --driver goal --objective-digest <sha256>
 ```
 
-Interactive inventories use `--driver interactive` and must never be migrated to goal automatically. Existing schema 1.0 and 2.0 states migrate to `interactive`.
+Interactive inventories use `--driver interactive` and must never be converted to goal automatically. State schemas other than 4.0.0 are rejected.
 
 ## Automatic Continuation
 
 At the start of each goal continuation:
 
 ```text
-node scripts/stage_state.js continue-run --state <inventory-state.json> --objective-digest <sha256>
+node scripts/cli/src/commands/stage_state.js continue-run --state <inventory-state.json> --objective-digest <sha256>
 ```
 
 Then resume from `currentStage`, `canonicalArtifact`, `resume`, and `openChecks`. Do not reconstruct work from conversational memory and do not repeat a closed stage.
@@ -48,7 +48,7 @@ Each stage remains an independent `assert -> execute -> persist -> validate/gate
 Before ending a continuation with a partial stage, persist the complete stage-local facts and record:
 
 ```text
-node scripts/stage_state.js checkpoint --state <inventory-state.json> --artifact <partial.json> --progress-digest <sha256> --next-action <exact-action> --reason <reason>
+node scripts/cli/src/commands/stage_state.js checkpoint --state <inventory-state.json> --artifact <partial.json> --progress-digest <sha256> --next-action <exact-action> --reason <reason>
 ```
 
 This does not advance the stage. Do not claim work-unit resume unless the active runner has an explicit checkpoint contract.
@@ -58,7 +58,7 @@ This does not advance the stage. Do not claim work-unit resume unless the active
 Record a concrete stop through:
 
 ```text
-node scripts/stage_state.js stop-run --state <inventory-state.json> --reason <stable-reason> --progress-digest <sha256>
+node scripts/cli/src/commands/stage_state.js stop-run --state <inventory-state.json> --reason <stable-reason> --progress-digest <sha256>
 ```
 
 Complexity, expected duration, or the need for another continuation are not blockers. Permissions, missing user decisions, unavailable required inputs, failed gates without new evidence, or unsafe scope are blockers. Three consecutive goal continuations with the same stop reason and progress digest set `runStatus: blocked`.
@@ -72,7 +72,7 @@ After the user supplies new input or the external condition changes, resume a bl
 Stage 8 must advance with its closed `manifest.json`; its input digest must match the trusted Stage 7 digest. Then run:
 
 ```text
-node scripts/stage_state.js complete-run --state <inventory-state.json>
+node scripts/cli/src/commands/stage_state.js complete-run --state <inventory-state.json>
 ```
 
 When goal status tools are available, mark the Codex goal complete only after `complete-run` succeeds. Never mark it complete at a stage boundary, because the context window is low, or because a normal answer ended.

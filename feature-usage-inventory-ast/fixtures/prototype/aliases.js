@@ -1,7 +1,7 @@
-function Shape() {}
+function FeatureContainer() {}
 
-var fill = new AscFormat.CGradFill();
-var f = fill;
-var shape = new Shape();
+var value = new FeatureNamespace.FeatureValue();
+var alias = value;
+var container = new FeatureContainer();
 
-shape.fill = f;
+container.value = alias;

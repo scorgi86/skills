@@ -1,5 +1,5 @@
 function Logger() {
-    this.message = "GradFill";
+    this.message = "FeatureValue";
 }
 
-var note = "Shape.fill = GradFill";
+var note = "FeatureContainer.value = FeatureValue";

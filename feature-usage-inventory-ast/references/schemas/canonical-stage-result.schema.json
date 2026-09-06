@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "canonical-stage-result/4.0.0",
+  "title": "Canonical stage result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "stage", "status", "summary", "facts", "evidenceRefs", "openChecks", "metrics", "usage", "inputDigest", "outputDigest"],
+  "properties": {
+    "schemaVersion": { "const": "4.0.0" },
+    "stage": { "type": "integer", "minimum": 0, "maximum": 8 },
+    "status": { "enum": ["closed", "partial", "blocked"] },
+    "summary": { "type": "object" },
+    "facts": { "type": "array", "items": { "type": "object" } },
+    "evidenceRefs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "openChecks": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "metrics": { "type": "object" },
+    "usage": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["status"], "properties": { "status": { "const": "unavailable" } } },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "inputTokens", "cachedInputTokens", "outputTokens", "reasoningTokens", "totalTokens", "provider", "requestId"],
+          "properties": {
+            "status": { "const": "supplied" },
+            "inputTokens": { "type": "integer", "minimum": 0 },
+            "cachedInputTokens": { "type": "integer", "minimum": 0 },
+            "outputTokens": { "type": "integer", "minimum": 0 },
+            "reasoningTokens": { "type": "integer", "minimum": 0 },
+            "totalTokens": { "type": "integer", "minimum": 0 },
+            "provider": { "type": "string", "minLength": 1 },
+            "requestId": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "inputDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "outputDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

@@ -1,0 +1,670 @@
+{
+  "description": "Current runtime decomposition. Paths are relative to scripts. Keys identify previous source paths; targets and command paths describe the current runtime. script-layout.json preserves the earlier whole-file migration history.",
+  "cacheModules": [
+    { "path": "shared/ast/src/cache/identity.js", "exports": ["createIdentity"] },
+    { "path": "shared/ast/src/cache/storage.js", "exports": ["readEntry", "writeEntry"] }
+  ],
+  "commands": [
+    {
+      "name": "ast_batch",
+      "path": "cli/src/commands/ast_batch.js"
+    },
+    {
+      "name": "canonical_stage_cli",
+      "path": "cli/src/commands/canonical_stage_cli.js"
+    },
+    {
+      "name": "compare_mechanisms",
+      "path": "cli/src/commands/compare_mechanisms.js"
+    },
+    {
+      "name": "compare_stage_runs",
+      "path": "cli/src/commands/compare_stage_runs.js"
+    },
+    {
+      "name": "coverage_gate",
+      "path": "cli/src/commands/coverage_gate.js"
+    },
+    {
+      "name": "diagnose",
+      "path": "cli/src/commands/diagnose.js"
+    },
+    {
+      "name": "extract_stage_transition",
+      "path": "cli/src/commands/extract_stage_transition.js"
+    },
+    {
+      "name": "feature_search_matrix",
+      "path": "cli/src/commands/feature_search_matrix.js"
+    },
+    {
+      "name": "goal_contract",
+      "path": "cli/src/commands/goal_contract.js"
+    },
+    {
+      "name": "human_report_codec",
+      "path": "cli/src/commands/human_report_codec.js"
+    },
+    {
+      "name": "inventory_search",
+      "path": "cli/src/commands/inventory_search.js"
+    },
+    {
+      "name": "measure_context",
+      "path": "cli/src/commands/measure_context.js"
+    },
+    {
+      "name": "prototype_ast",
+      "path": "cli/src/commands/prototype_ast.js"
+    },
+    {
+      "name": "quality_equivalence",
+      "path": "cli/src/commands/quality_equivalence.js"
+    },
+    {
+      "name": "query_stage_artifacts",
+      "path": "cli/src/commands/query_stage_artifacts.js"
+    },
+    {
+      "name": "quick_validate",
+      "path": "cli/src/commands/quick_validate.js"
+    },
+    {
+      "name": "render_stage1_report",
+      "path": "cli/src/commands/render_stage1_report.js"
+    },
+    {
+      "name": "render_stage2_report",
+      "path": "cli/src/commands/render_stage2_report.js"
+    },
+    {
+      "name": "source_evidence",
+      "path": "cli/src/commands/source_evidence.js"
+    },
+    {
+      "name": "source_slice",
+      "path": "cli/src/commands/source_slice.js"
+    },
+    {
+      "name": "stage0_runner",
+      "path": "cli/src/commands/stage0_runner.js"
+    },
+    {
+      "name": "stage1_runner",
+      "path": "cli/src/commands/stage1_runner.js"
+    },
+    {
+      "name": "stage2_runner",
+      "path": "cli/src/commands/stage2_runner.js"
+    },
+    {
+      "name": "stage3_runner",
+      "path": "cli/src/commands/stage3_runner.js"
+    },
+    {
+      "name": "stage4_runner",
+      "path": "cli/src/commands/stage4_runner.js"
+    },
+    {
+      "name": "stage5_equivalence_gate",
+      "path": "cli/src/commands/stage5_equivalence_gate.js"
+    },
+    {
+      "name": "stage5_runner",
+      "path": "cli/src/commands/stage5_runner.js"
+    },
+    {
+      "name": "stage6_runner",
+      "path": "cli/src/commands/stage6_runner.js"
+    },
+    {
+      "name": "stage7_coverage_gate",
+      "path": "cli/src/commands/stage7_coverage_gate.js"
+    },
+    {
+      "name": "stage7_equivalence_gate",
+      "path": "cli/src/commands/stage7_equivalence_gate.js"
+    },
+    {
+      "name": "stage7_runner",
+      "path": "cli/src/commands/stage7_runner.js"
+    },
+    {
+      "name": "stage8_runner",
+      "path": "cli/src/commands/stage8_runner.js"
+    },
+    {
+      "name": "stage_pipeline",
+      "path": "cli/src/commands/stage_pipeline.js"
+    },
+    {
+      "name": "stage_state",
+      "path": "cli/src/commands/stage_state.js"
+    },
+    {
+      "name": "validate_inventory_report",
+      "path": "cli/src/commands/validate_inventory_report.js"
+    },
+    {
+      "name": "validate_inventory_stage",
+      "path": "cli/src/commands/validate_inventory_stage.js"
+    },
+    {
+      "name": "validate_skill",
+      "path": "cli/src/commands/validate_skill.js"
+    }
+  ],
+  "moves": {
+    "cli/commands/ast_batch.js": "cli/src/commands/ast_batch.js",
+    "cli/src/canonical_stage_cli.js": "cli/src/commands/canonical_stage_cli.js",
+    "cli/commands/canonical_stage_cli.js": "cli/src/commands/canonical_stage_cli.js",
+    "cli/commands/compare_mechanisms.js": "cli/src/commands/compare_mechanisms.js",
+    "cli/commands/compare_stage_runs.js": "cli/src/commands/compare_stage_runs.js",
+    "cli/commands/coverage_gate.js": "cli/src/commands/coverage_gate.js",
+    "cli/commands/diagnose.js": "cli/src/commands/diagnose.js",
+    "cli/commands/extract_stage_transition.js": "cli/src/commands/extract_stage_transition.js",
+    "cli/commands/feature_search_matrix.js": "cli/src/commands/feature_search_matrix.js",
+    "cli/commands/goal_contract.js": "cli/src/commands/goal_contract.js",
+    "cli/commands/human_report_codec.js": "cli/src/commands/human_report_codec.js",
+    "cli/commands/inventory_search.js": "cli/src/commands/inventory_search.js",
+    "cli/commands/measure_context.js": "cli/src/commands/measure_context.js",
+    "cli/commands/prototype_ast.js": "cli/src/commands/prototype_ast.js",
+    "cli/commands/quality_equivalence.js": "cli/src/commands/quality_equivalence.js",
+    "cli/commands/query_stage_artifacts.js": "cli/src/commands/query_stage_artifacts.js",
+    "cli/commands/quick_validate.js": "cli/src/commands/quick_validate.js",
+    "cli/commands/render_stage1_report.js": "cli/src/commands/render_stage1_report.js",
+    "cli/commands/render_stage2_report.js": "cli/src/commands/render_stage2_report.js",
+    "cli/commands/source_evidence.js": "cli/src/commands/source_evidence.js",
+    "cli/commands/source_slice.js": "cli/src/commands/source_slice.js",
+    "cli/commands/stage0_runner.js": "cli/src/commands/stage0_runner.js",
+    "cli/commands/stage1_runner.js": "cli/src/commands/stage1_runner.js",
+    "cli/commands/stage2_runner.js": "cli/src/commands/stage2_runner.js",
+    "cli/commands/stage3_runner.js": "cli/src/commands/stage3_runner.js",
+    "cli/commands/stage4_runner.js": "cli/src/commands/stage4_runner.js",
+    "cli/commands/stage5_equivalence_gate.js": "cli/src/commands/stage5_equivalence_gate.js",
+    "cli/commands/stage5_runner.js": "cli/src/commands/stage5_runner.js",
+    "cli/commands/stage6_runner.js": "cli/src/commands/stage6_runner.js",
+    "steps/step-7/src/stage7_coverage_gate.js": "cli/src/commands/stage7_coverage_gate.js",
+    "cli/commands/stage7_coverage_gate.js": "cli/src/commands/stage7_coverage_gate.js",
+    "cli/commands/stage7_equivalence_gate.js": "cli/src/commands/stage7_equivalence_gate.js",
+    "cli/commands/stage7_runner.js": "cli/src/commands/stage7_runner.js",
+    "cli/commands/stage8_runner.js": "cli/src/commands/stage8_runner.js",
+    "cli/commands/stage_pipeline.js": "cli/src/commands/stage_pipeline.js",
+    "cli/commands/stage_state.js": "cli/src/commands/stage_state.js",
+    "cli/commands/validate_inventory_report.js": "cli/src/commands/validate_inventory_report.js",
+    "cli/commands/validate_inventory_stage.js": "cli/src/commands/validate_inventory_stage.js",
+    "cli/commands/validate_skill.js": "cli/src/commands/validate_skill.js",
+    "shared/ast/src/parser.js": "shared/ast/src/parsing/parser.js",
+    "shared/ast/src/walker.js": "shared/ast/src/parsing/walker.js",
+    "shared/ast/src/symbol_index.js": "shared/ast/src/analysis/symbol_index.js",
+    "shared/ast/src/relations.js": "shared/ast/src/analysis/relations.js",
+    "shared/ast/src/evidence.js": "shared/ast/src/analysis/evidence.js",
+    "shared/ast/src/batch.js": "shared/ast/src/batch/batch.js",
+    "shared/ast/src/ast_batch.js": "shared/ast/src/batch/ast_batch.js",
+    "shared/output/src/summary_compaction.js": "shared/output/src/summary/compaction.js",
+    "shared/report/tests/report_model.test.js": "shared/report/tests/model/report_model.test.js",
+    "shared/evidence/tests/stage2_canonicalize.test.js": "shared/evidence/tests/canonicalization/stage2_canonicalize.test.js",
+    "shared/artifacts/tests/canonical_stage_result.test.js": "shared/artifacts/tests/canonical/canonical_stage_result.test.js",
+    "cli/tests/canonical_stage_cli.test.js": "cli/tests/commands/canonical_stage_cli.test.js"
+  },
+  "splits": {
+    "shared/ast/src/queries.js": {
+      "targets": [
+        "shared/ast/src/query/queries.js",
+        "shared/ast/src/query/chains.js",
+        "shared/ast/src/analysis/analysis.js",
+        "shared/ast/src/analysis/source_files.js"
+      ],
+      "exports": {
+        "SCHEMA_VERSION": "shared/ast/src/analysis/analysis.js",
+        "analyzeFile": "shared/ast/src/analysis/analysis.js",
+        "analyzeFiles": "shared/ast/src/analysis/analysis.js",
+        "buildChains": "shared/ast/src/query/chains.js",
+        "filesFromList": "shared/ast/src/analysis/source_files.js",
+        "legacyView": "shared/ast/src/query/queries.js",
+        "listSourceFiles": "shared/ast/src/analysis/source_files.js",
+        "runQuery": "shared/ast/src/query/queries.js",
+        "sameName": "shared/ast/src/query/chains.js"
+      },
+      "bindings": {
+        "SCHEMA_VERSION": "shared/ast/src/analysis/analysis.js",
+        "SOURCE_EXTENSIONS": "shared/ast/src/analysis/source_files.js",
+        "sameName": "shared/ast/src/query/chains.js",
+        "analyzeParsed": "shared/ast/src/analysis/analysis.js",
+        "cacheKey": "shared/ast/src/analysis/analysis.js",
+        "analyzeFile": "shared/ast/src/analysis/analysis.js",
+        "listSourceFiles": "shared/ast/src/analysis/source_files.js",
+        "filesFromList": "shared/ast/src/analysis/source_files.js",
+        "analyzeFiles": "shared/ast/src/analysis/analysis.js",
+        "allSymbols": "shared/ast/src/query/queries.js",
+        "allRelations": "shared/ast/src/query/queries.js",
+        "bounded": "shared/ast/src/query/queries.js",
+        "buildChains": "shared/ast/src/query/chains.js",
+        "runQuery": "shared/ast/src/query/queries.js",
+        "legacyView": "shared/ast/src/query/queries.js"
+      }
+    },
+    "shared/ast/src/output.js": {
+      "targets": [
+        "shared/ast/src/output/policy.js",
+        "shared/ast/src/output/groups.js",
+        "shared/ast/src/output/identity.js",
+        "shared/ast/src/output/projection.js"
+      ],
+      "exports": {
+        "DEFAULT_OUTPUT_BUDGET": "shared/ast/src/output/policy.js",
+        "applyOutputPolicy": "shared/ast/src/output/policy.js",
+        "byteLength": "shared/ast/src/output/policy.js",
+        "compactItem": "shared/ast/src/output/projection.js",
+        "filterSemanticGroups": "shared/ast/src/output/groups.js",
+        "groupItems": "shared/ast/src/output/groups.js",
+        "groupKey": "shared/ast/src/output/identity.js",
+        "semanticSignature": "shared/ast/src/output/identity.js"
+      },
+      "bindings": {
+        "DEFAULT_OUTPUT_BUDGET": "shared/ast/src/output/policy.js",
+        "byteLength": "shared/ast/src/output/policy.js",
+        "semanticParts": "shared/ast/src/output/identity.js",
+        "semanticSignature": "shared/ast/src/output/identity.js",
+        "groupKey": "shared/ast/src/output/identity.js",
+        "truncateText": "shared/ast/src/output/projection.js",
+        "compactEvidence": "shared/ast/src/output/projection.js",
+        "compactItem": "shared/ast/src/output/projection.js",
+        "countEvidence": "shared/ast/src/output/projection.js",
+        "groupItems": "shared/ast/src/output/groups.js",
+        "splitFilterValues": "shared/ast/src/output/groups.js",
+        "wildcardPattern": "shared/ast/src/output/groups.js",
+        "matchesFilter": "shared/ast/src/output/groups.js",
+        "filterSemanticGroups": "shared/ast/src/output/groups.js",
+        "visibleCollection": "shared/ast/src/output/projection.js",
+        "sourceItems": "shared/ast/src/output/projection.js",
+        "replaceAnalyzeArrays": "shared/ast/src/output/projection.js",
+        "setVisibleItems": "shared/ast/src/output/projection.js",
+        "recommendedQueries": "shared/ast/src/output/policy.js",
+        "measure": "shared/ast/src/output/policy.js",
+        "applyOutputPolicy": "shared/ast/src/output/policy.js"
+      }
+    },
+    "shared/evidence/src/source_evidence.js": {
+      "targets": [
+        "shared/evidence/src/collection/source_evidence.js",
+        "shared/evidence/src/collection/source_files.js",
+        "shared/evidence/src/collection/source_checks.js",
+        "shared/evidence/src/collection/groups.js",
+        "shared/evidence/src/collection/selection.js"
+      ],
+      "exports": {
+        "compilePattern": "shared/evidence/src/collection/source_checks.js",
+        "createTraversalOptions": "shared/evidence/src/collection/source_files.js",
+        "evidenceGroupIdentity": "shared/evidence/src/collection/groups.js",
+        "isExcludedFile": "shared/evidence/src/collection/source_files.js",
+        "listFiles": "shared/evidence/src/collection/source_files.js",
+        "parseArgs": "shared/evidence/src/collection/source_evidence.js",
+        "runEvidenceChecks": "shared/evidence/src/collection/source_evidence.js",
+        "selectEvidenceGroups": "shared/evidence/src/collection/selection.js",
+        "selectRoundRobin": "shared/evidence/src/collection/selection.js",
+        "shouldTraverseEntry": "shared/evidence/src/collection/source_files.js"
+      },
+      "bindings": {
+        "DEFAULT_EXTENSIONS": "shared/evidence/src/collection/source_files.js",
+        "shouldTraverseEntry": "shared/evidence/src/collection/source_files.js",
+        "isExcludedFile": "shared/evidence/src/collection/source_files.js",
+        "compareText": "shared/evidence/src/collection/source_files.js",
+        "createTraversalOptions": "shared/evidence/src/collection/source_files.js",
+        "listFiles": "shared/evidence/src/collection/source_files.js",
+        "traversalKey": "shared/evidence/src/collection/source_files.js",
+        "compilePattern": "shared/evidence/src/collection/source_checks.js",
+        "evidenceGroupIdentity": "shared/evidence/src/collection/groups.js",
+        "selectRoundRobin": "shared/evidence/src/collection/selection.js",
+        "selectEvidenceGroups": "shared/evidence/src/collection/selection.js",
+        "runEvidenceChecks": "shared/evidence/src/collection/source_evidence.js",
+        "parseArgs": "shared/evidence/src/collection/source_evidence.js",
+        "runSourceCheck": "shared/evidence/src/collection/source_checks.js"
+      }
+    },
+    "shared/evidence/src/stage2_canonicalize.js": {
+      "targets": [
+        "shared/evidence/src/canonicalization/canonicalize.js",
+        "shared/evidence/src/canonicalization/candidate_identity.js",
+        "shared/evidence/src/canonicalization/source_confirmation.js",
+        "shared/evidence/src/canonicalization/candidate_adapters.js"
+      ],
+      "exports": {
+        "RANK": "shared/evidence/src/canonicalization/canonicalize.js",
+        "astUsageKind": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromAst": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromBoundaries": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromGitNexus": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromOwnership": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromSourceEvidence": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "canonicalizeStage2Candidates": "shared/evidence/src/canonicalization/canonicalize.js",
+        "confirmationOf": "shared/evidence/src/canonicalization/source_confirmation.js",
+        "declaredRepository": "shared/evidence/src/canonicalization/source_confirmation.js",
+        "excluded": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "exclusionRules": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "keyOf": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "sourceFile": "shared/evidence/src/canonicalization/source_confirmation.js"
+      },
+      "bindings": {
+        "RANK": "shared/evidence/src/canonicalization/canonicalize.js",
+        "normalizedPath": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "exclusionRules": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "excluded": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "rangeOf": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "keyOf": "shared/evidence/src/canonicalization/candidate_identity.js",
+        "declaredRepository": "shared/evidence/src/canonicalization/source_confirmation.js",
+        "sourceFile": "shared/evidence/src/canonicalization/source_confirmation.js",
+        "confirmationOf": "shared/evidence/src/canonicalization/source_confirmation.js",
+        "canonicalizeStage2Candidates": "shared/evidence/src/canonicalization/canonicalize.js",
+        "candidatesFromSourceEvidence": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "astUsageKind": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromAst": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromGitNexus": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromBoundaries": "shared/evidence/src/canonicalization/candidate_adapters.js",
+        "candidatesFromOwnership": "shared/evidence/src/canonicalization/candidate_adapters.js"
+      }
+    },
+    "shared/output/src/stage_facts.js": {
+      "targets": [
+        "shared/output/src/stage_facts.js",
+        "shared/output/src/summary/budget.js",
+        "shared/output/src/summary/source_projection.js",
+        "shared/output/src/summary/stage_summary.js"
+      ],
+      "exports": {
+        "DEFAULT_BUDGETS": "shared/output/src/summary/budget.js",
+        "assembleStageSummary": "shared/output/src/summary/stage_summary.js",
+        "buildStageSummary": "shared/output/src/summary/stage_summary.js",
+        "createStageFacts": "shared/output/src/stage_facts.js",
+        "finalizeSummaryBudget": "shared/output/src/summary/budget.js",
+        "fitAdaptiveSummary": "shared/output/src/summary/stage_summary.js",
+        "normalizeBudgets": "shared/output/src/summary/budget.js",
+        "projectSourceCheck": "shared/output/src/summary/source_projection.js",
+        "sourceProjection": "shared/output/src/summary/source_projection.js"
+      },
+      "bindings": {
+        "DEFAULT_BUDGETS": "shared/output/src/summary/budget.js",
+        "positiveBytes": "shared/output/src/summary/budget.js",
+        "normalizeBudgets": "shared/output/src/summary/budget.js",
+        "createStageFacts": "shared/output/src/stage_facts.js",
+        "projectSourceCheck": "shared/output/src/summary/source_projection.js",
+        "sourceProjection": "shared/output/src/summary/source_projection.js",
+        "finalizeSummaryBudget": "shared/output/src/summary/budget.js",
+        "assembleStageSummary": "shared/output/src/summary/stage_summary.js",
+        "projectionWithCaps": "shared/output/src/summary/stage_summary.js",
+        "maxSourceGroups": "shared/output/src/summary/stage_summary.js",
+        "fitAdaptiveSummary": "shared/output/src/summary/stage_summary.js",
+        "buildStageSummary": "shared/output/src/summary/stage_summary.js"
+      }
+    },
+    "shared/artifacts/src/canonical_stage_result.js": {
+      "targets": [
+        "shared/artifacts/src/canonical/result.js",
+        "shared/artifacts/src/canonical/facts.js",
+        "shared/artifacts/src/canonical/validation.js"
+      ],
+      "exports": {
+        "SCHEMA_VERSION": "shared/artifacts/src/canonical/validation.js",
+        "budgetMetrics": "shared/artifacts/src/canonical/facts.js",
+        "createCanonicalStageResult": "shared/artifacts/src/canonical/result.js",
+        "digest": "shared/artifacts/src/canonical/validation.js",
+        "normalizeUsage": "shared/artifacts/src/canonical/facts.js",
+        "prepareFacts": "shared/artifacts/src/canonical/facts.js",
+        "validateCanonicalStageResult": "shared/artifacts/src/canonical/validation.js"
+      },
+      "bindings": {
+        "SCHEMA_VERSION": "shared/artifacts/src/canonical/validation.js",
+        "CANONICAL_FIELDS": "shared/artifacts/src/canonical/validation.js",
+        "stable": "shared/artifacts/src/canonical/validation.js",
+        "digest": "shared/artifacts/src/canonical/validation.js",
+        "unique": "shared/artifacts/src/canonical/facts.js",
+        "normalizeUsage": "shared/artifacts/src/canonical/facts.js",
+        "normalizeStatus": "shared/artifacts/src/canonical/facts.js",
+        "canonicalFacts": "shared/artifacts/src/canonical/facts.js",
+        "budgetMetrics": "shared/artifacts/src/canonical/facts.js",
+        "prepareFacts": "shared/artifacts/src/canonical/facts.js",
+        "createCanonicalStageResult": "shared/artifacts/src/canonical/result.js",
+        "validateCanonicalStageResult": "shared/artifacts/src/canonical/validation.js"
+      }
+    },
+    "shared/report/src/report_model.js": {
+      "targets": [
+        "shared/report/src/model/normalization.js",
+        "shared/report/src/model/serialization.js",
+        "shared/report/src/model/validation.js",
+        "shared/report/src/model/source_validation.js",
+        "shared/report/src/model/projection.js",
+        "shared/report/src/model/rows.js"
+      ],
+      "exports": {
+        "COLLECTIONS": "shared/report/src/model/rows.js",
+        "MODEL_TYPE": "shared/report/src/model/rows.js",
+        "SCHEMA_VERSION": "shared/report/src/model/rows.js",
+        "absenceClaims": "shared/report/src/model/projection.js",
+        "absenceProjection": "shared/report/src/model/projection.js",
+        "canonicalJson": "shared/report/src/model/serialization.js",
+        "digest": "shared/report/src/model/serialization.js",
+        "normalizeReportModel": "shared/report/src/model/normalization.js",
+        "stable": "shared/report/src/model/serialization.js",
+        "validateReportModel": "shared/report/src/model/validation.js",
+        "withoutIntegrity": "shared/report/src/model/serialization.js"
+      },
+      "bindings": {
+        "MODEL_TYPE": "shared/report/src/model/rows.js",
+        "SCHEMA_VERSION": "shared/report/src/model/rows.js",
+        "STATUSES": "shared/report/src/model/rows.js",
+        "COLLECTIONS": "shared/report/src/model/rows.js",
+        "REQUIRED_FIELDS": "shared/report/src/model/rows.js",
+        "TOP_LEVEL_FIELDS": "shared/report/src/model/rows.js",
+        "stable": "shared/report/src/model/serialization.js",
+        "canonicalJson": "shared/report/src/model/serialization.js",
+        "digest": "shared/report/src/model/serialization.js",
+        "asArray": "shared/report/src/model/rows.js",
+        "cleanText": "shared/report/src/model/rows.js",
+        "normalizeRefs": "shared/report/src/model/rows.js",
+        "normalizeRows": "shared/report/src/model/rows.js",
+        "repositoryMap": "shared/report/src/model/source_validation.js",
+        "evidenceState": "shared/report/src/model/source_validation.js",
+        "withoutIntegrity": "shared/report/src/model/serialization.js",
+        "absenceClaims": "shared/report/src/model/projection.js",
+        "absenceProjection": "shared/report/src/model/projection.js",
+        "normalizeReportModel": "shared/report/src/model/normalization.js",
+        "validateReportModel": "shared/report/src/model/validation.js"
+      }
+    },
+    "shared/report/src/validate_inventory_report.js": {
+      "targets": [
+        "shared/report/src/markdown/validate_report.js",
+        "shared/report/src/markdown/parser.js",
+        "shared/report/src/markdown/requirements.js",
+        "shared/report/src/markdown/rules/evidence.js",
+        "shared/report/src/markdown/rules/report.js",
+        "shared/report/src/markdown/rules/implementation.js",
+        "shared/report/src/bundle/documents.js",
+        "shared/report/src/bundle/validation.js"
+      ],
+      "exports": {
+        "REQUIRED_BUNDLE_DOCUMENTS": "shared/report/src/bundle/documents.js",
+        "listMarkdownDocuments": "shared/report/src/bundle/documents.js",
+        "validate": "shared/report/src/markdown/validate_report.js",
+        "validateInventoryBundle": "shared/report/src/bundle/validation.js"
+      },
+      "bindings": {
+        "REQUIRED_BUNDLE_DOCUMENTS": "shared/report/src/bundle/documents.js",
+        "listMarkdownDocuments": "shared/report/src/bundle/documents.js",
+        "validateInventoryBundle": "shared/report/src/bundle/validation.js",
+        "REQUIRED_SECTIONS": "shared/report/src/markdown/requirements.js",
+        "REQUIRED_COLUMNS": "shared/report/src/markdown/requirements.js",
+        "IMPLEMENTATION_ENTRY_POINTS_SECTION": "shared/report/src/markdown/requirements.js",
+        "IMPLEMENTATION_ENTRY_POINTS_COLUMNS": "shared/report/src/markdown/requirements.js",
+        "IMPLEMENTATION_ENTRY_POINTS_LAYER_GATES": "shared/report/src/markdown/requirements.js",
+        "EXECUTION_STATUS_SECTION": "shared/report/src/markdown/requirements.js",
+        "EXECUTION_STATUS_COLUMNS": "shared/report/src/markdown/requirements.js",
+        "REQUIRE_STAGE_ARTIFACT_FOR_OPEN_STATUS": "shared/report/src/markdown/requirements.js",
+        "REQUIRED_STAGE_MARKERS": "shared/report/src/markdown/requirements.js",
+        "EXPLANATION_LABELS": "shared/report/src/markdown/requirements.js",
+        "WEAK_PHRASES": "shared/report/src/markdown/requirements.js",
+        "ACCEPTANCE_COVERAGE_GATES": "shared/report/src/markdown/requirements.js",
+        "START_POINTS_COVERAGE_GATES": "shared/report/src/markdown/requirements.js",
+        "ALLOWED_IMPLEMENTATION_FORMS": "shared/report/src/markdown/requirements.js",
+        "ALLOWED_FILE_FORMS": "shared/report/src/markdown/requirements.js",
+        "DERIVATION_HINTS": "shared/report/src/markdown/requirements.js",
+        "TOO_GENERIC_CANDIDATE_VALUES": "shared/report/src/markdown/requirements.js",
+        "CRITICAL_PATHS_COVERAGE_GATES": "shared/report/src/markdown/requirements.js",
+        "normalize": "shared/report/src/markdown/parser.js",
+        "splitRow": "shared/report/src/markdown/parser.js",
+        "isSeparator": "shared/report/src/markdown/parser.js",
+        "isKnownBareSection": "shared/report/src/markdown/parser.js",
+        "parseSections": "shared/report/src/markdown/parser.js",
+        "findSection": "shared/report/src/markdown/parser.js",
+        "tsvToTableLine": "shared/report/src/markdown/parser.js",
+        "separatorForHeader": "shared/report/src/markdown/parser.js",
+        "findTables": "shared/report/src/markdown/parser.js",
+        "hasExplanation": "shared/report/src/markdown/rules/report.js",
+        "containsCodeEvidence": "shared/report/src/markdown/rules/evidence.js",
+        "containsExpectedNames": "shared/report/src/markdown/rules/evidence.js",
+        "containsSearchArea": "shared/report/src/markdown/rules/evidence.js",
+        "isWeakCell": "shared/report/src/markdown/rules/evidence.js",
+        "rowObject": "shared/report/src/markdown/parser.js",
+        "findColumn": "shared/report/src/markdown/parser.js",
+        "tableDataRows": "shared/report/src/markdown/parser.js",
+        "rowText": "shared/report/src/markdown/parser.js",
+        "validateCoverage": "shared/report/src/markdown/rules/report.js",
+        "validateCheckedNoUsageRows": "shared/report/src/markdown/rules/report.js",
+        "containsCandidateSymbol": "shared/report/src/markdown/rules/implementation.js",
+        "containsImplementationPlace": "shared/report/src/markdown/rules/implementation.js",
+        "containsOwnerObject": "shared/report/src/markdown/rules/implementation.js",
+        "formMatches": "shared/report/src/markdown/rules/implementation.js",
+        "hasAnyAllowedForm": "shared/report/src/markdown/rules/implementation.js",
+        "hasAnyAllowedFileForm": "shared/report/src/markdown/rules/implementation.js",
+        "hasDerivationHint": "shared/report/src/markdown/rules/implementation.js",
+        "candidateLayerMatches": "shared/report/src/markdown/rules/implementation.js",
+        "pushCandidateIssue": "shared/report/src/markdown/rules/implementation.js",
+        "validateCandidateImplementationRows": "shared/report/src/markdown/rules/implementation.js",
+        "tableHasOpenGate": "shared/report/src/markdown/rules/report.js",
+        "shortSummaryDeclaresIncomplete": "shared/report/src/markdown/rules/report.js",
+        "validateRow": "shared/report/src/markdown/rules/report.js",
+        "validateTable": "shared/report/src/markdown/rules/report.js",
+        "validateFileNameSearchCoverage": "shared/report/src/markdown/rules/report.js",
+        "hasConcreteImplementationEntry": "shared/report/src/markdown/rules/implementation.js",
+        "isFormalImplementationValue": "shared/report/src/markdown/rules/implementation.js",
+        "hasEarlierEvidenceForImplementationEntry": "shared/report/src/markdown/rules/implementation.js",
+        "validateImplementationEntryPointsRows": "shared/report/src/markdown/rules/implementation.js",
+        "validateSectionCoverage": "shared/report/src/markdown/rules/report.js",
+        "validateExecutionStatus": "shared/report/src/markdown/rules/report.js",
+        "validate": "shared/report/src/markdown/validate_report.js"
+      }
+    },
+    "state/src/stage_state.js": {
+      "targets": [
+        "state/src/stage_state.js",
+        "state/src/state_model.js",
+        "state/src/persistence.js",
+        "state/src/artifacts/canonical_validation.js",
+        "state/src/artifacts/stage8_validation.js"
+      ],
+      "exports": {
+        "SCHEMA_VERSION": "state/src/state_model.js",
+        "assertCanonical": "state/src/state_model.js",
+        "assertProbe": "state/src/state_model.js",
+        "initialState": "state/src/state_model.js",
+        "main": "state/src/stage_state.js",
+        "parseArgs": "state/src/stage_state.js",
+        "validateStage8Manifest": "state/src/artifacts/stage8_validation.js",
+        "validateState": "state/src/state_model.js"
+      },
+      "bindings": {
+        "SCHEMA_VERSION": "state/src/state_model.js",
+        "EXECUTION_MODES": "state/src/state_model.js",
+        "EXECUTION_DRIVERS": "state/src/state_model.js",
+        "CANONICAL_STAGES": "state/src/state_model.js",
+        "fail": "state/src/state_model.js",
+        "readJson": "state/src/persistence.js",
+        "writeJson": "state/src/persistence.js",
+        "required": "state/src/stage_state.js",
+        "stage": "state/src/state_model.js",
+        "executionMode": "state/src/state_model.js",
+        "executionDriver": "state/src/state_model.js",
+        "parseArgs": "state/src/stage_state.js",
+        "initialState": "state/src/state_model.js",
+        "validateState": "state/src/state_model.js",
+        "loadState": "state/src/persistence.js",
+        "assertCanonical": "state/src/state_model.js",
+        "assertProbe": "state/src/state_model.js",
+        "artifact": "state/src/stage_state.js",
+        "sha256File": "state/src/persistence.js",
+        "validateStage8Manifest": "state/src/artifacts/stage8_validation.js",
+        "validateCanonicalArtifactForAdvance": "state/src/artifacts/canonical_validation.js",
+        "summary": "state/src/stage_state.js",
+        "main": "state/src/stage_state.js"
+      }
+    },
+    "steps/step-1/src/runner.js": {
+      "targets": [
+        "steps/step-1/src/runner.js",
+        "steps/step-1/src/context/gitnexus.js",
+        "steps/step-1/src/context/ownership.js",
+        "steps/step-1/src/summary.js"
+      ],
+      "exports": {
+        "DEFAULT_STAGE1_BUDGETS": "steps/step-1/src/summary.js",
+        "buildStage1Summary": "steps/step-1/src/summary.js",
+        "confirmationWithFreshness": "steps/step-1/src/context/ownership.js",
+        "gitNexusInvocation": "steps/step-1/src/context/gitnexus.js",
+        "normalizeOwnership": "steps/step-1/src/context/ownership.js",
+        "projectGraphContext": "steps/step-1/src/context/gitnexus.js",
+        "resolveRequest": "steps/step-1/src/runner.js",
+        "runGitNexusContext": "steps/step-1/src/context/gitnexus.js",
+        "runStage1": "steps/step-1/src/runner.js"
+      },
+      "bindings": {
+        "DEFAULT_STAGE1_BUDGETS": "steps/step-1/src/summary.js",
+        "compactSymbol": "steps/step-1/src/context/gitnexus.js",
+        "compactRelations": "steps/step-1/src/context/gitnexus.js",
+        "parseJson": "steps/step-1/src/context/gitnexus.js",
+        "projectGraphContext": "steps/step-1/src/context/gitnexus.js",
+        "gitNexusInvocation": "steps/step-1/src/context/gitnexus.js",
+        "runGitNexusContext": "steps/step-1/src/context/gitnexus.js",
+        "sourceAnchor": "steps/step-1/src/context/ownership.js",
+        "confirmationAnchor": "steps/step-1/src/context/ownership.js",
+        "confirmationWithFreshness": "steps/step-1/src/context/ownership.js",
+        "isConfirmedOwnership": "steps/step-1/src/context/ownership.js",
+        "normalizeOwnership": "steps/step-1/src/context/ownership.js",
+        "summaryDigest": "steps/step-1/src/summary.js",
+        "rawSummary": "steps/step-1/src/summary.js",
+        "buildStage1Summary": "steps/step-1/src/summary.js",
+        "resolveRequest": "steps/step-1/src/runner.js",
+        "runStage1": "steps/step-1/src/runner.js"
+      }
+    },
+    "steps/step-8/src/runner.js": {
+      "targets": [
+        "steps/step-8/src/runner.js",
+        "steps/step-8/src/rendering/markdown.js",
+        "steps/step-8/src/rendering/decision.js",
+        "steps/step-8/src/rendering/implementation.js",
+        "steps/step-8/src/rendering/evidence.js"
+      ],
+      "exports": {
+        "renderDecision": "steps/step-8/src/rendering/decision.js",
+        "renderEvidence": "steps/step-8/src/rendering/evidence.js",
+        "renderImplementation": "steps/step-8/src/rendering/implementation.js",
+        "run": "steps/step-8/src/runner.js",
+        "unwrapModel": "steps/step-8/src/runner.js"
+      },
+      "bindings": {
+        "esc": "steps/step-8/src/rendering/markdown.js",
+        "table": "steps/step-8/src/rendering/markdown.js",
+        "explanation": "steps/step-8/src/rendering/markdown.js",
+        "refs": "steps/step-8/src/rendering/markdown.js",
+        "section": "steps/step-8/src/rendering/markdown.js",
+        "renderDecision": "steps/step-8/src/rendering/decision.js",
+        "renderImplementation": "steps/step-8/src/rendering/implementation.js",
+        "renderEvidence": "steps/step-8/src/rendering/evidence.js",
+        "hashText": "steps/step-8/src/runner.js",
+        "unwrapModel": "steps/step-8/src/runner.js",
+        "run": "steps/step-8/src/runner.js"
+      }
+    }
+  }
+}

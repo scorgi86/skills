@@ -17,7 +17,7 @@ Stages may declare:
 }
 ```
 
-Legacy `maxOutputBytes` maps only to `factsBytes`. Full facts use the preserve-required-evidence policy and may auto-raise. Summary uses a hard observation limit: if required coverage, digests, or anchors do not fit, return explicit `summary.output.overflow: true` and keep the stage partial. Never silently remove required fields to meet a budget.
+Only the explicit `budgets` object configures stage budgets. Full facts use the preserve-required-evidence policy and may auto-raise. Summary uses a hard observation limit: if required coverage, digests, or anchors do not fit, return explicit `summary.output.overflow: true` and keep the stage partial. Never silently remove required fields to meet a budget.
 
 ## Facts Contract
 
@@ -30,7 +30,7 @@ The common stage facts object is versioned and contains:
 - separate measurements for transition, AST, and source evidence;
 - a safe full-facts output budget record.
 
-Stage-specific runners may preserve legacy top-level fields during migration. Presentation projections never replace full facts.
+Stage-specific runners may keep internal producer fields, but only canonical schema 4.0 crosses a stage boundary. Presentation projections never replace canonical facts.
 
 ## AST Query Plan
 
@@ -68,25 +68,25 @@ Enable `projection.adaptive.enabled` to fit presentation caps after facts are co
 
 Enable `projection.compactAnchors` to replace repeated absolute paths and range objects in summary anchors with `{fileId,line,endLine?}` plus one `anchorFiles` root/path table. Full facts keep original absolute paths, offsets, columns, and ranges.
 
-Use `scripts/source_slice.js` on the selected summary anchors when exact source context is needed. It must resolve compact anchors, merge duplicate/overlapping ranges, enforce global line/slice limits, and report truncation. Do not dump all matched source lines.
+Use `scripts/cli/src/commands/source_slice.js` on the selected summary anchors when exact source context is needed. It must resolve compact anchors, merge duplicate/overlapping ranges, enforce global line/slice limits, and report truncation. Do not dump all matched source lines.
 
 ## Internal Dictionary And Human Reports
 
 Enable `projection.humanDictionary` only for model-transport summary compaction. Repeated `owner`, `relation`, `field`, `target`, and source-group labels may be stored once and referenced internally. The dictionary is presentation-only: full facts remain unchanged.
 
-Decode dictionary references in `scripts/render_stage2_report.js`. Final Markdown must show concrete names and resolved source locations and must not expose generated evidence ids, encoded group references, or dictionary indexes. An unknown dictionary reference is a blocking render error.
+Decode dictionary references in `scripts/cli/src/commands/render_stage2_report.js`. Final Markdown must show concrete names and resolved source locations and must not expose generated evidence ids, encoded group references, or dictionary indexes. An unknown dictionary reference is a blocking render error.
 
 ## Executable Quality Gates
 
-Run `scripts/coverage_gate.js` before closing an AST-backed stage. Run `scripts/quality_equivalence.js` whenever a projection, codec, cap, or compaction rule changes. The equivalence result must preserve full digests, coverage counters, required groups, and resolvable anchors.
+Run `scripts/cli/src/commands/coverage_gate.js` before closing an AST-backed stage. Run `scripts/cli/src/commands/quality_equivalence.js` whenever a projection, codec, cap, or compaction rule changes. The equivalence result must preserve full digests, coverage counters, required groups, and resolvable anchors.
 
-Use `scripts/compare_stage_runs.js` for A/B metrics instead of loading both raw outputs into model context. A smaller output with failed equivalence is a quality regression, not an optimization.
+Use `scripts/cli/src/commands/compare_stage_runs.js` for A/B metrics instead of loading both raw outputs into model context. A smaller output with failed equivalence is a quality regression, not an optimization.
 
 ## Reuse By Other Stages
 
 Stages 4, 5, and later stages may reuse `stage_facts.js`, `fact_projection.js`, the compiled AST batch plan, and grouped source evidence. Each stage must separately define its required semantic dimensions/selectors and golden fixture. Do not copy stage-2-specific orchestration into the common modules.
 
-When persisted evidence will support later user tasks, apply `stage-artifact-bundle.md`. Keep the complete facts/evidence on disk, generate the human report in scripts, and return only a compact manifest summary to the model. Retrieve later evidence through bounded bundle queries and check stored source hashes before relying on it.
+When persisted evidence will support later user tasks, apply `stage-artifact-bundle.md`. Keep the complete facts/evidence on disk, generate the human report in scripts, and return only a compact manifest summary to the model. Retrieve later evidence through bounded canonical selectors and check stored source hashes before relying on it.
 
 ## Quality Gate
 

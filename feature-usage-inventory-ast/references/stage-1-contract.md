@@ -14,7 +14,7 @@ Use this contract only for full-inventory stage 1. Execute no later stage.
 2. Use one canonical GitNexus `context` seed by default. Add a fallback seed only when the canonical lookup is unresolved and record why.
 3. Parse each candidate source file once with `stage1_runner.js` AST batch.
 4. Confirm source candidates with explicit `source_evidence.js` checks.
-5. Keep complete facts and raw evidence in the output bundle. Consume only the runner summary in the model.
+5. Keep complete canonical facts and evidence in the stage artifact. Consume only the bounded runner summary in model context.
 6. Do not promote candidates automatically. A `confirmed` ownership group requires an explicit confirmation record and a source anchor.
 7. When a producer-consumer boundary is relevant, declare it in generic `boundaries` request data. Each candidate requires producer repo, kind, symbol, relation, evidence refs, concrete producer anchor, search terms, and consumer repos. Keep it `candidate`; it is input for Stage 2/3, not proof of a user scenario.
 
@@ -54,7 +54,7 @@ Declare a generic `coverageContract` in every request:
 
 ## Output
 
-- Persist a bundle only to an approved artifact directory.
+- Persist through `stage_pipeline.js` to the automatic artifact directory or an explicit user override.
 - Emit runner stdout in `summary` mode only.
 - Render Markdown deterministically from facts; do not draft a full report in model context.
 - The transition must carry all closed evidence, candidates, limitations, and `next stage: 2 — Расширение словаря`.
