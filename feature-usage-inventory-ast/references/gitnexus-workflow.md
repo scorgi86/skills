@@ -4,6 +4,8 @@ Use this file for GitNexus-assisted inventory, graph candidates, callers/callees
 
 ## Order
 
+Diagnostics and Stage 1 support a repository-local `.gitnexus/run.cjs` and a global runtime. Diagnostics can select a local runner explicitly with `--gitnexus-runner <path>`. Pass query text as one argv value; do not split multiword phrases or construct shell command strings. On Windows supported npm launchers resolve to their Node entry point. EPERM is reported as unavailable with a suggested permitted rerun, never as a permission bypass or absence proof. Compare index freshness with the current repository HEAD before using graph candidates.
+
 1. Run `list_repos` or otherwise identify the exact repository names and index freshness.
 2. Use only repositories and optional GitNexus aliases declared in repository scope.
 3. Use focused `query` for concept discovery only if full-text search is healthy.

@@ -1,29 +1,27 @@
 "use strict";
 const { absenceProjection } = require("../../../../shared/report/src/model/projection.js");
-const { canonicalJson } = require("../../../../shared/report/src/model/serialization.js");
-const { validateReportModel } = require("../../../../shared/report/src/model/validation.js");
-const { refs, esc, section } = require("./markdown.js");
+const { refs, esc, section, meaning, notes, sourceLabel, semantic } = require("./markdown.js");
 function renderEvidence(model) {
     const evidence = model.evidenceIndex.map((x)=>[
-            x.id,
-            x.file || (typeof x.scope === "string" ? x.scope : JSON.stringify(x.scope || {})),
+            x.id + ' <a id="' + esc(x.id).replace(/"/g, "&quot;") + '"></a>',
+            sourceLabel(x),
             x.line || "",
             x.symbol || x.anchor || "",
-            x.result || x.summary || ""
+            meaning(x) + "; " + (x.status || "unknown")
         ]);
     const usages = model.confirmedUsages.map((x)=>[
             x.id,
-            x.role || x.title || "",
-            x.result || "",
+            meaning(x),
+            [x.status || "unknown", notes(x)].filter(Boolean).join("; "),
             x.consequence || "",
-            refs(x)
+            refs(x, model)
         ]);
     const absence = absenceProjection(model);
     const references = model.referenceOnly.map((x)=>[
             x.id,
             x.relation || "",
             x.consequence || "",
-            refs(x)
+            refs(x, model)
         ]);
     const noise = model.noise.map((x)=>[
             x.id,
@@ -31,7 +29,7 @@ function renderEvidence(model) {
             typeof x.scope === "string" ? x.scope : JSON.stringify(x.scope || {}),
             x.reason || ""
         ]);
-    return `# Доказательная база: ${esc(model.target)}\n\n${section("Подтверждённые выводы", "выводы и их evidence-ссылки", "обеспечивает трассируемость итоговых утверждений", [
+    return `# Доказательная база: ${esc(model.target)}\n\n${section(model.confirmedUsages.every(x => ["confirmed", "source-confirmed"].includes(x.status)) ? "Подтверждённые выводы" : "Выводы и кандидаты", "выводы, уровень доказательства и ссылки на исходники", "обеспечивает трассируемость итоговых утверждений", [
         "ID",
         "Роль",
         "Результат",

@@ -185,12 +185,11 @@ test("confirmation freshness reuses one source read for multiple anchors", () =>
   }
 });
 
-test("GitNexus invocation supports local run.cjs and cmd executables", () => {
+test("GitNexus invocation supports local run.cjs and rejects unresolved shell shims", () => {
   const local = gitNexusInvocation({ runnerPath: path.join(os.tmpdir(), "graph-runner.cjs"), repo: "repository-a", file: "a.js", seed: "FeatureValue", limit: 5 });
   assert.equal(local.command, process.execPath);
   assert.deepEqual(local.args.slice(1, 5), ["context", "--repo", "repository-a", "--file"]);
-  const command = gitNexusInvocation({ command: "gitnexus.cmd", seed: "FeatureValue" });
-  assert.equal(command.shell, true);
+  assert.throws(() => gitNexusInvocation({ command: path.join(os.tmpdir(), "unresolved-gitnexus.cmd"), seed: "FeatureValue" }), /configure runnerPath/);
 });
 
 test("stage 1 CLI emits only bounded summary when facts artifact is retained", () => {

@@ -1,10 +1,16 @@
 "use strict";
 function candidatesFromSourceEvidence(sourceEvidence = {}, repository = "") {
-    return (sourceEvidence.checks || []).flatMap((check)=>(check.matches || check.evidence || []).map((match)=>({
+    return (sourceEvidence.checks || []).flatMap((check)=>(check.fullMatches || check.matches || check.evidence || []).map((match)=>({
+                id: match.id,
+                claimRef: match.claimRef || match.confirmation?.claimRef,
+                claimRefs: match.claimRefs || match.confirmation?.claimRefs,
                 repository: match.repository || check.repository || repository,
                 file: match.file || match.path,
                 symbol: match.symbol || check.symbol || "",
                 line: match.line,
+                endLine: match.endLine,
+                sourceFragment: match.sourceFragment,
+                confirmation: match.confirmation,
                 column: match.column,
                 usageKind: match.usageKind || "source-text",
                 matchedTerm: check.term || check.query,
@@ -27,7 +33,7 @@ function astUsageKind(group) {
 }
 function candidatesFromAst(ast = {}, repository = "") {
     return (ast.results || []).flatMap((result)=>(result.semanticGroups || result.groups || []).map((group)=>({
-                repository,
+                repository: group.repository || result.repository || repository,
                 file: group.example?.file || group.firstAnchor?.file,
                 symbol: group.owner || group.field || group.target || "",
                 range: group.example?.range || group.firstAnchor?.range,
@@ -49,7 +55,7 @@ function candidatesFromGitNexus(graph = {}, repository = "") {
         ...Object.values(context.outgoing || {}).flat()
     ].filter(Boolean);
     return values.map((item)=>({
-            repository,
+            repository: item.repository || repository,
             file: item.filePath || item.file,
             symbol: item.name || item.qualifiedName || "",
             line: item.startLine,
@@ -63,7 +69,10 @@ function candidatesFromGitNexus(graph = {}, repository = "") {
 function candidatesFromBoundaries(boundaries = [], repository = "") {
     return boundaries.map((item)=>({
             repository: item.producerRepo || repository,
-            file: item.anchor?.file,
+            file: item.anchor?.file || item.confirmation?.file,
+            endLine: item.anchor?.endLine || item.confirmation?.endLine,
+            sourceFragment: item.sourceFragment || item.confirmation?.sourceFragment,
+            confirmation: item.confirmation ? { ...item.confirmation, evidenceRefs: item.confirmation.evidenceRefs?.length ? item.confirmation.evidenceRefs : [item.id] } : undefined,
             line: item.anchor?.line,
             symbol: item.symbol || "",
             usageKind: "ast-reference",
@@ -76,14 +85,16 @@ function candidatesFromBoundaries(boundaries = [], repository = "") {
         }));
 }
 function candidatesFromOwnership(ownership = {}, repository = "") {
-    return (ownership?.groups || ownership?.nodes || []).filter((item)=>item.anchor || item.example).map((item)=>({
-            repository,
-            file: (item.anchor || item.example).file,
-            line: (item.anchor || item.example).line,
+    return (Array.isArray(ownership) ? ownership : ownership?.groups || ownership?.nodes || []).filter((item)=>item.anchor || item.example || item.confirmation?.file).map((item)=>({
+            repository: item.repository || repository,
+            file: (item.anchor || item.example || item.confirmation).file,
+            line: (item.anchor || item.example || item.confirmation).line,
+            endLine: (item.anchor || item.example || item.confirmation).endLine,
+            sourceFragment: item.sourceFragment ?? (item.anchor || item.example || item.confirmation).sourceFragment,
             symbol: item.object || item.id || "",
             usageKind: /define/i.test(item.relation || "") ? "ast-definition" : "ast-reference",
             evidenceRefs: item.evidenceRefs || [],
-            confirmation: item.confirmation,
+            confirmation: item.confirmation ? { ...item.confirmation, evidenceRefs: item.confirmation.evidenceRefs?.length ? item.confirmation.evidenceRefs : [item.id] } : undefined,
             provenance: {
                 source: "ownership",
                 queryId: item.id || null

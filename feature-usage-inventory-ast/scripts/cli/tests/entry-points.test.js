@@ -91,7 +91,7 @@ test("pipeline keeps validation, runner, artifact validation and state advanceme
     return original(args);
   };
   try {
-    const result = pipeline.runStagePipeline({ request: { stage: 0, target: "X", repositoryScope: { repositories: [{ id: "source", root: directory, role: "source" }] } }, stateFile, outputRoot, runner() { events.push("runner"); return { stage: 0, status: "candidate", canonicalFacts: [] }; } });
+    const result = pipeline.runStagePipeline({ request: { stage: 0, target: "X", coverageProfile: {}, repositoryScope: { repositories: [{ id: "source", root: directory, role: "source" }] } }, stateFile, outputRoot, runner() { events.push("runner"); return { stage: 0, status: "candidate", canonicalFacts: [] }; } });
     assert.equal(result.status, "closed");
     assert.deepEqual(events, ["assert", "runner", "advance"]);
   } finally { state.main = original; }

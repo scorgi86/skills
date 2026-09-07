@@ -1,0 +1,116 @@
+{
+  "target": "Lifecycle sample",
+  "scope": {
+    "repositories": [
+      {
+        "id": "source",
+        "root": ".",
+        "role": "source"
+      }
+    ]
+  },
+  "coverage": {
+    "status": "complete",
+    "productReadiness": "blocked",
+    "profile": {
+      "requiredCollections": [
+        "dictionary"
+      ],
+      "notApplicable": {
+        "dictionary": "Names remain unchanged"
+      },
+      "requiredCriticalPaths": [],
+      "notApplicableCriticalPaths": {}
+    }
+  },
+  "capabilities": [
+    {
+      "id": "reference",
+      "status": "not-applicable",
+      "reason": "No analogue in scope"
+    }
+  ],
+  "evidenceIndex": [
+    {
+      "id": "ev-save",
+      "status": "candidate",
+      "repository": "source",
+      "file": "src/save.js",
+      "line": 12,
+      "endLine": 14,
+      "symbol": "save",
+      "statement": "Save entry candidate"
+    }
+  ],
+  "confirmedUsages": [
+    {
+      "id": "use-save",
+      "status": "candidate",
+      "statement": "Save entry is a candidate",
+      "detail": "Caller proof remains optional in this limited task",
+      "evidenceRefs": [
+        "ev-save"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "gap-save",
+      "status": "unknown",
+      "category": "product-gap",
+      "statement": "Missing completion contract",
+      "detail": "Design decision still pending",
+      "expectedPath": "save completion",
+      "evidenceRefs": [
+        "ev-save"
+      ]
+    }
+  ],
+  "criticalPaths": [
+    {
+      "id": "path-save",
+      "status": "candidate",
+      "steps": [
+        "Serialize",
+        "Write bytes"
+      ],
+      "evidenceRefs": [
+        "ev-save"
+      ]
+    }
+  ],
+  "ownership": [
+    {
+      "id": "owner",
+      "status": "candidate",
+      "name": "Document",
+      "roles": [
+        "owner",
+        "recipient"
+      ],
+      "sourceStages": [
+        1,
+        3
+      ],
+      "conflicts": [
+        {
+          "field": "role",
+          "values": [
+            "owner",
+            "recipient"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "ev-save"
+      ]
+    }
+  ],
+  "limitations": [
+    {
+      "id": "limit",
+      "status": "unknown",
+      "detail": "Limited caller study"
+    }
+  ]
+}

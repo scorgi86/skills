@@ -94,3 +94,15 @@ test("generic boundary scripts do not contain product-specific layout assumption
     assert.equal(/hardcoded-product|hardcoded-repository|fixed-workspace-root/i.test(text), false, name);
   }
 });
+test("boundary preserves explicit confirmation and full exact anchor without claiming consumer proof", () => {
+  const confirmation = { status: "source-confirmed", file: "src/native.cpp", line: 4, endLine: 5, sourceHash: "a".repeat(64), sourceFragment: "  bridge();\n  done();", method: "manual-read" };
+  const entry = { id: "native-bridge", producerRepo: "native", kind: "callback", symbol: "bridge", relation: "delivers", consumerRepos: ["ui"], confirmation, anchor: { file: "old.cpp", line: 1 } };
+  const result = normalizeBoundaryCandidates({ boundaries: [entry] })[0];
+  assert.deepEqual(result.confirmation, confirmation);
+  assert.deepEqual(result.anchor, { file: confirmation.file, line: 4, endLine: 5, sourceHash: confirmation.sourceHash, sourceFragment: confirmation.sourceFragment });
+  assert.deepEqual(result.evidenceRefs, [entry.id]);
+  assert.equal(result.status, "candidate");
+  assert.deepEqual(JSON.parse(JSON.stringify(result)).confirmation, confirmation);
+  const explicitAnchor = normalizeBoundaryCandidates({ boundaries: [{ ...entry, confirmation: undefined, anchor: { ...result.anchor }, evidenceRefs: ["source-check"] }] })[0];
+  assert.deepEqual(explicitAnchor.anchor, result.anchor);
+});

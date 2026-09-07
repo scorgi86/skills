@@ -18,6 +18,12 @@ function evaluateStage2Coverage(input, options = {}) {
     return { schemaVersion: "1.0.0", status: "blocked", ok: false, errors: [error.message], warnings };
   }
   if (Number(value.stage) !== 2) errors.push("Coverage gate requires stage 2 data");
+  const ownership = value.ownershipGraph
+    ? require("../../../shared/ownership/src/ownership_graph.js").validateOwnershipGraph(value.ownershipGraph)
+    : value.quality?.ownershipGraph;
+  if (ownership && (ownership.ok === false || ownership.errors?.length)) {
+    errors.push(...(ownership.errors?.length ? ownership.errors : ["validation failed"]).map(error => `ownershipGraph: ${error}`));
+  }
 
   const stats = value.ast && value.ast.stats || {};
   const parseCounts = Object.values(stats.parseCounts || {});

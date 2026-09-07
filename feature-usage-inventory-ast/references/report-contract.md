@@ -1,5 +1,19 @@
 # Report Contract
 
+## Declared coverage and result meaning
+
+New pipeline Stage 0 requests require an explicit `coverageProfile`. Derive obligations from the task and applicable critical/paired paths before searching; do not use an empty profile to bypass a full inventory. Example:
+
+```json
+{"requiredCollections":["dictionary","criticalPaths"],"requiredCriticalPaths":["save","undo"],"notApplicable":{},"notApplicableCriticalPaths":{"undo":"The declared operation has no history contract"}}
+```
+
+`requiredCriticalPaths` match `criticalPaths[].coverageKey` or exact row ID. N/A reasons must identify declared obligations. A bounded investigation can declare fewer requirements; every table is not universally mandatory. Stage 0 stores the normalized profile in `summary.coverageProfile`; Stage 7 retains it as `coverage.profile`. Changing requirements requires a new run. Legacy artifacts without a profile remain readable but cannot gain a new profile midway.
+
+Evidence strength, research coverage and product decisions are separate. Complete research can confirm a product gap. `coverage.status: partial` and truncated selection cannot close Stage 7; an explicit `decisionStatus: confirmed` does not bypass coverage. Known intermediate proof statuses map conservatively; product categories remain `category` with `originalStatus`, and unsupported statuses report an error. Rendered candidate rows have neutral labels; source links, semantic fields, provenance and conflicts survive projection.
+
+Public direct `stage7_runner --request request.json --output model.json` reads an ordinary Stage 7 request; it does not publish a stage transaction. Use `stage_pipeline` for publication. `stage7_coverage_gate --facts` accepts either a report model or a canonical Stage 7 wrapper and selects its `report-model` fact by kind.
+
 Use this file for report creation, final acceptance, staged artifact validation, and complete inventory answers.
 
 Use `references/inventory-report-template.md` for full inventory reports. Do not invent a shorter final report unless the user explicitly asks for a brief answer.

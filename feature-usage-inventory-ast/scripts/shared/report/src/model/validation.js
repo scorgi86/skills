@@ -55,6 +55,11 @@ function validateReportModel(model) {
         "unknown",
         "not-applicable"
     ].includes(model.decisionStatus)) add("decision-status", "decisionStatus", "Unsupported decision status");
+    const malformedRows = ["capabilities", ...COLLECTIONS].flatMap(name => asArray(model[name]).map((row, index) => !isObject(row) ? { name, index } : null).filter(Boolean));
+    if (malformedRows.length) {
+        for (const { name, index } of malformedRows) add("type", `${name}[${index}]`, "Collection row must be an object");
+        return { ok: false, errors, counts: Object.fromEntries(COLLECTIONS.map(name => [name, asArray(model[name]).length])), canonicalDigest: digest(withoutIntegrity(model)) };
+    }
     if (!Array.isArray(model.capabilities) || !model.capabilities.length) add("coverage", "capabilities", "At least one capability is required");
     if (asArray(model.openChecks).length) add("open-checks", "openChecks", "Stage 7 cannot close while checks remain open; record non-blocking constraints as limitations");
     for (const [index, capability] of asArray(model.capabilities).entries())if (capability.requiredForFinalReport !== false && ![
@@ -176,6 +181,12 @@ function validateReportModel(model) {
             row.id,
             row
         ]));
+    const sourceStates = new Map();
+    for (const [index, row] of asArray(model.evidenceIndex).entries())if (row.status === "source-confirmed") {
+        if (!sourceStates.has(row.id)) sourceStates.set(row.id, evidenceState(row, repositories));
+        const state = sourceStates.get(row.id);
+        if (!state.ok) add(state.code, `evidenceIndex[${index}]`, `${state.message}: ${row.id}`);
+    }
     const sourceClaims = [
         [
             "capabilities",
@@ -201,7 +212,7 @@ function validateReportModel(model) {
                 add("source-evidence", p, `Confirmed claim may reference only source-confirmed evidence: ${ref}`);
                 continue;
             }
-            const state = evidenceState(evidence, repositories);
+            const state = sourceStates.get(ref);
             if (!state.ok) add(state.code, p, `${state.message}: ${ref}`);
         }
     }
@@ -262,6 +273,7 @@ function validateReportModel(model) {
             if (!corresponds) add("absence-evidence", `${p}.evidenceRefs`, `Reference must identify matching absence evidence: ${ref}`);
         }
     }
+    errors.push(...require("./coverage.js").coverageErrors(model));
     const expectedDigest = digest(withoutIntegrity(model));
     if (!model.integrity || Object.keys(model.integrity).sort().join(",") !== "algorithm,canonicalDigest") add("integrity-schema", "integrity", "Integrity must contain only algorithm and canonicalDigest");
     if (model.integrity?.algorithm !== "sha256" || model.integrity?.canonicalDigest !== expectedDigest) add("integrity", "integrity", "Canonical digest does not match model content");

@@ -9,8 +9,28 @@
     "schemaVersion": { "const": "4.0.0" },
     "stage": { "type": "integer", "minimum": 0, "maximum": 8 },
     "status": { "enum": ["closed", "partial", "blocked"] },
-    "summary": { "type": "object" },
-    "facts": { "type": "array", "items": { "type": "object" } },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "repositoryScope": { "type": ["object", "null"] },
+        "executionScope": { "$ref": "#/$defs/executionScope" },
+        "lineage": { "type": "array", "items": { "$ref": "#/$defs/lineageEntry" } },
+        "checkHistory": { "type": "array", "items": { "$ref": "#/$defs/historyEntry" } },
+        "checkOrigins": { "type": "array", "items": { "$ref": "#/$defs/checkOrigin" } },
+        "closure": {
+          "type": "object", "required": ["ok", "errors"],
+          "properties": { "ok": { "type": "boolean" }, "errors": { "type": "array", "items": { "type": "string" } } }
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "if": { "required": ["kind"], "properties": { "kind": { "const": "check-resolution" } } },
+        "then": { "$ref": "#/$defs/checkResolution" }
+      }
+    },
     "evidenceRefs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "openChecks": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "metrics": { "type": "object" },
@@ -35,5 +55,54 @@
     },
     "inputDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "outputDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "executionScope": {
+      "type": "object", "additionalProperties": false, "required": ["version", "scanSeeds", "repositories"],
+      "properties": {
+        "version": { "const": 1 }, "scanSeeds": { "type": "boolean" },
+        "repositories": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["id", "root", "exclusions"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 }, "root": { "type": "string", "minLength": 1 },
+              "exclusions": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+            }
+          }
+        }
+      }
+    },
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "checkOrigin": {
+      "type": "object", "required": ["check", "originDigest"],
+      "properties": { "check": { "type": "string", "minLength": 1 }, "originDigest": { "$ref": "#/$defs/digest" } }
+    },
+    "historyEntry": {
+      "type": "object", "required": ["artifact", "outputDigest"],
+      "properties": { "artifact": { "type": "string", "minLength": 1 }, "outputDigest": { "$ref": "#/$defs/digest" } }
+    },
+    "lineageEntry": {
+      "allOf": [{ "$ref": "#/$defs/historyEntry" }],
+      "required": ["stage", "scopeDigest"],
+      "properties": { "stage": { "type": "integer", "minimum": 0, "maximum": 7 }, "scopeDigest": { "$ref": "#/$defs/digest" } }
+    },
+    "checkResolution": {
+      "allOf": [{ "$ref": "#/$defs/checkOrigin" }],
+      "required": ["kind", "disposition", "reason"],
+      "properties": {
+        "kind": { "const": "check-resolution" },
+        "disposition": { "enum": ["checked", "not-applicable"] },
+        "reason": { "type": "string", "minLength": 1 },
+        "evidenceRefs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "scopeDigest": { "$ref": "#/$defs/digest" },
+        "scopeJustification": { "type": "string", "minLength": 1 },
+        "repository": { "type": "string", "minLength": 1 },
+        "exclusion": { "type": "string", "minLength": 1 }
+      },
+      "if": { "properties": { "disposition": { "const": "checked" } } },
+      "then": { "required": ["evidenceRefs"] },
+      "else": { "required": ["scopeDigest", "scopeJustification", "repository", "exclusion"] }
+    }
   }
 }

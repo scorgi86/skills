@@ -40,12 +40,13 @@ function normalizeStatus(status) {
     return "closed";
 }
 function canonicalFacts(facts) {
-    if (Array.isArray(facts.canonicalFacts)) return facts.canonicalFacts;
+    const receipts = facts.checkResolutions || facts.provenance?.checkResolutions || [];
+    if (Array.isArray(facts.canonicalFacts)) return [...facts.canonicalFacts, ...receipts];
     if (facts.modelType === "inventory-report-model") return [
         {
             kind: "report-model",
             model: facts
-        }
+        }, ...receipts
     ];
     const rows = [];
     for (const capability of facts.capabilities || [])rows.push({
@@ -62,7 +63,7 @@ function canonicalFacts(facts) {
         });
     }
     for (const collection of PLANNING_COLLECTIONS){
-        let values = facts[collection];
+        let values = collection === "limitations" ? require("../limitations.js").normalizeLimitations(facts[collection]) : facts[collection];
         if (collection === "ownership" && !Array.isArray(values)) values = values?.groups;
         if (collection === "scenarios" && !Array.isArray(values)) values = facts.consumerCoverage;
         if (collection === "recipientFamilies" && !Array.isArray(values)) values = facts.families;
@@ -88,7 +89,7 @@ function canonicalFacts(facts) {
         kind: "name-coverage",
         ...facts.nameCoverage
     });
-    return rows;
+    return [...rows, ...receipts];
 }
 function budgetMetrics(result, budgets = {}) {
     const warnings = [];
@@ -120,28 +121,29 @@ function budgetMetrics(result, budgets = {}) {
 }
 function prepareFacts(facts) {
     if (!facts || facts.modelType === "inventory-report-model") return facts;
-    if (Number(facts.stage) !== 2 && Array.isArray(facts.canonicalEvidence)) return facts;
     const stage2 = require("../../../evidence/index.js").stage2_canonicalize;
-    const repository = facts.repository || facts.repositoryScope?.repositories?.[0]?.id || "";
-    const candidates = [
-        ...facts.canonicalEvidence || [],
-        ...stage2.candidatesFromSourceEvidence(facts.sourceEvidence, repository)
-    ];
-    if (Number(facts.stage) === 2) candidates.push(...stage2.candidatesFromAst(facts.ast, repository), ...stage2.candidatesFromGitNexus(facts.gitnexus, repository), ...stage2.candidatesFromBoundaries(facts.boundaries, repository), ...stage2.candidatesFromOwnership(facts.ownership || facts.ownershipGraph, repository));
+    const repository = facts.repository || "";
+    const candidates = [...facts.canonicalEvidence || [], ...stage2.candidatesFromSourceEvidence(facts.sourceEvidence, repository)];
+    if ([1,2].includes(Number(facts.stage))) candidates.push(...stage2.candidatesFromAst(facts.ast, repository), ...stage2.candidatesFromGitNexus(facts.gitnexus, repository), ...stage2.candidatesFromBoundaries(facts.boundaries, repository), ...stage2.candidatesFromOwnership(facts.ownership, repository), ...stage2.candidatesFromOwnership(facts.ownershipGraph, repository));
     if (!candidates.length) return facts;
-    const normalized = stage2.canonicalizeStage2Candidates(candidates, {
-        exclusions: facts.exclusions,
-        repositoryScope: facts.repositoryScope
-    });
-    return {
-        ...facts,
-        canonicalEvidence: normalized.evidence,
-        metrics: {
-            ...facts.metrics || {},
-            ...normalized.metrics
-        }
-    };
+    const normalized = stage2.canonicalizeStage2Candidates(candidates, { exclusions: facts.exclusions, repositoryScope: facts.repositoryScope });
+    // Scope evidence (for example checked absence) has no source-file identity.
+    for (const row of facts.canonicalEvidence || []) if (!row.file && !row.path) {
+        const preserved = { ...row, aliases: unique([row.id, ...row.aliases || []]) };
+        normalized.evidence.push(preserved);
+        for (const alias of preserved.aliases) normalized.evidenceIdMap[alias] = unique([ ...normalized.evidenceIdMap[alias] || [], row.id ]);
+    }
+    const { remapEvidenceReferences } = require("../../../evidence/src/canonicalization/canonicalize.js");
+    const linked = { ...facts };
+    const attach = row => ({ ...row, evidenceRefs: unique([ ...row.evidenceRefs || [], ...normalized.evidenceIdMap[row.id] || [] ]) });
+    if (Array.isArray(facts.boundaries)) linked.boundaries = facts.boundaries.map(attach);
+    if (Array.isArray(facts.ownership)) linked.ownership = facts.ownership.map(attach);
+    else if (facts.ownership?.groups) linked.ownership = { ...facts.ownership, groups: facts.ownership.groups.map(attach) };
+    if (facts.ownershipGraph?.nodes) linked.ownershipGraph = { ...facts.ownershipGraph, nodes: facts.ownershipGraph.nodes.map(attach) };
+    const remapped = remapEvidenceReferences(linked, normalized.evidenceIdMap);
+    return { ...remapped, canonicalEvidence: normalized.evidence, evidenceIdMap: normalized.evidenceIdMap, evidenceDiagnostics: [...new Map([ ...facts.evidenceDiagnostics || [], ...normalized.diagnostics ].map(row => [JSON.stringify(row), row])).values()], metrics: { ...facts.metrics || {}, ...normalized.metrics } };
 }
+
 module.exports = {
     budgetMetrics,
     normalizeUsage,

@@ -1,7 +1,7 @@
 "use strict";
 const path = require("node:path");
 const fs = require("node:fs");
-const crypto = require("node:crypto");
+const { validateSourceAnchor } = require("./source_anchor.js");
 function declaredRepository(item, options = {}) {
     return (options.repositoryScope?.repositories || []).find((repository)=>repository && repository.id === item.repository && repository.root);
 }
@@ -22,20 +22,24 @@ function sourceFile(item, options = {}) {
     }
 }
 function confirmationOf(item, options = {}) {
-    const confirmation = item.confirmation || {}, evidenceRefs = [
+    const confirmation = item.confirmation || (item.status === "source-confirmed" ? { ...item, evidenceRefs: item.evidenceRefs?.length ? item.evidenceRefs : [item.id].filter(Boolean) } : {}), evidenceRefs = [
         ...new Set(confirmation.evidenceRefs || item.evidenceRefs || [])
     ].sort(), claimedHash = confirmation.sourceHash || item.sourceHash || null, resolved = sourceFile(item, options);
-    let currentHash = null;
+    const anchor = { sourceHash: claimedHash, line: item.line ?? confirmation.line, endLine: item.endLine ?? confirmation.endLine, sourceFragment: item.sourceFragment ?? confirmation.sourceFragment };
+    let valid = false;
+    let validation = {code: "repository-attribution", message: "Confirmation file must be inside its declared repository"};
     if (resolved) {
         try {
-            if (fs.statSync(resolved.file).isFile()) currentHash = crypto.createHash("sha256").update(fs.readFileSync(resolved.file)).digest("hex");
+            if (fs.statSync(resolved.file).isFile()) { validation = validateSourceAnchor(anchor, fs.readFileSync(resolved.file)); valid = validation.ok; }
         } catch  {}
     }
-    const confirmed = confirmation.status === "source-confirmed" && evidenceRefs.length && /^[a-f0-9]{64}$/i.test(String(claimedHash || "")) && currentHash === String(claimedHash).toLowerCase();
+    if (confirmation.status === "source-confirmed" && !valid) options.diagnostics?.push({ ...validation, file: item.file || item.path, repository: item.repository });
+    const confirmed = confirmation.status === "source-confirmed" && evidenceRefs.length && valid;
     return {
         status: confirmed ? "source-confirmed" : "candidate",
         evidenceRefs,
-        sourceHash: confirmed ? currentHash : null
+        sourceHash: confirmed ? claimedHash.toLowerCase() : null,
+        ...(confirmed ? { line: anchor.line, endLine: anchor.endLine, sourceFragment: anchor.sourceFragment } : {})
     };
 }
 module.exports = {

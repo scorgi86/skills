@@ -10,7 +10,7 @@ test("stage 6 keeps full patch facts and returns bounded summary", () => {
 test("stage 6 feature-reference does not require Git diff", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage6-ref-")); const transition = writeCanonicalTransition(root, 5);
   const result = runStage6({ stage: 6, mode: "feature-reference", transitionArtifact: transition, featureReference: { target: "new", referenceEntity: "known", capabilities: [{ id: "definition", status: "unchecked", evidenceRefs: [] }] }, sourceSurfaces: [{ path: "src/model.js", layer: "model", role: "storage" }] });
-  assert.equal(result.mode, "feature-reference"); assert.equal(result.reference.referenceEntity, "known"); assert.equal(result.sourceSurfaces[0].confirmed, true);
+  assert.equal(result.mode, "feature-reference"); assert.equal(result.reference.referenceEntity, "known"); assert.equal(result.sourceSurfaces[0].confirmed, false);
 });
 test("stage 6 worktree-diff uses the declared base", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage6-worktree-")); const transition = writeCanonicalTransition(root, 5); let args;

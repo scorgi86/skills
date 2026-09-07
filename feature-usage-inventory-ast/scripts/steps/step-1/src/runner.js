@@ -9,7 +9,7 @@ const { runEvidenceChecks } = require("../../../shared/evidence/src/collection/s
 const { normalizeCapabilities } = require("../../../shared/dto/src/capability_contract.js");
 const { buildOwnershipGraph } = require("../../../shared/ownership/src/ownership_graph.js");
 const { normalizeBoundaryCandidates } = require("../../../shared/ownership/src/boundary_candidates.js");
-const { applySafeBudget, measureValue } = require("../../../shared/output/src/measure_context.js");
+const { applySafeBudget } = require("../../../shared/output/src/measure_context.js");
 const { evaluateStage1Coverage } = require("./stage1_coverage_gate.js");
 const { DEFAULT_STAGE1_BUDGETS, buildStage1Summary } = require("./summary.js");
 const { runGitNexusContext } = require("./context/gitnexus.js");
@@ -38,6 +38,8 @@ function runStage1(request, dependencies = {}) {
     if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
     const budgets = normalizeBudgets(request, DEFAULT_STAGE1_BUDGETS);
     const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+    const priorScope = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8")).summary?.repositoryScope;
+    const repositoryScope = request.repositoryScope || priorScope;
     const ast = (dependencies.runAstBatch || runAstBatch)(request.ast || {});
     const sourceEvidence = (dependencies.runEvidenceChecks || runEvidenceChecks)({
         ...request.evidence || {
@@ -65,6 +67,9 @@ function runStage1(request, dependencies = {}) {
         budgets,
         capabilities: normalizeCapabilities(request.capabilities || [])
     });
+    facts.repositoryScope = repositoryScope;
+    facts.repository = request.repository;
+    facts.exclusions = request.exclusions;
     facts.runtime.contract = "stage-1-facts";
     facts.runtime.graph = request.gitnexus ? {
         configured: true
@@ -86,7 +91,7 @@ function runStage1(request, dependencies = {}) {
     facts.quality.summary = buildStage1Summary(facts).output;
     facts.quality.coverageGate = evaluateStage1Coverage(facts);
     if (!facts.quality.coverageGate.ok) facts.status = "partial";
-    return facts;
+    return require("../../../shared/artifacts/src/canonical/facts.js").prepareFacts(facts);
 }
 module.exports = {
     resolveRequest,

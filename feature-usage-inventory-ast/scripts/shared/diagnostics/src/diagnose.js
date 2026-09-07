@@ -1,5 +1,7 @@
 "use strict";
 
+const { invokeGitNexus } = require("./gitnexus_runtime.js");
+
 const { spawnSync } = require("node:child_process");
 
 const path = require("node:path");
@@ -55,6 +57,10 @@ function parseArgs(argv) {
     if (arg === "--pretty") args.pretty = true;
     else if (arg === "--strict") args.strict = true;
     else if (arg === "--indexes") args.indexes = (argv[++index] || "").split(",").map((v) => v.trim()).filter(Boolean);
+    else if (arg === "--gitnexus-runner") {
+      if (!argv[index + 1] || argv[index + 1].startsWith("--")) throw new Error("Missing value for --gitnexus-runner");
+      args.gitnexus = { runnerPath: path.resolve(argv[++index]) };
+    }
     else if (arg === "--help" || arg === "-h") args.help = true;
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -127,11 +133,16 @@ function runDiagnostics(options = {}) {
     addCheck(checks, tool, "recommended", result.ok, result.ok ? result.stdout.split(/\r?\n/)[0] : `${tool} is unavailable`, result.ok ? undefined : { error: result.error || result.stderr });
   }
 
-  const gitnexusVersion = command("gitnexus", ["--version"]);
-  addCheck(checks, "gitnexus", "recommended", gitnexusVersion.ok, gitnexusVersion.ok ? `GitNexus ${gitnexusVersion.stdout}` : "GitNexus CLI is unavailable", gitnexusVersion.ok ? undefined : { error: gitnexusVersion.error || gitnexusVersion.stderr });
+  const gitnexusConfig = options.gitnexus || {};
+  const globalVersion = invokeGitNexus({ command: gitnexusConfig.command || "gitnexus" }, ["--version"]);
+  const localVersion = gitnexusConfig.runnerPath ? invokeGitNexus(gitnexusConfig, ["--version"]) : null;
+  const selectedConfig = localVersion && localVersion.ok ? gitnexusConfig : { command: gitnexusConfig.command || "gitnexus" };
+  const gitnexusVersion = localVersion && localVersion.ok ? localVersion : globalVersion;
+  const gitnexusCommand = (args, extra = {}) => invokeGitNexus({ ...selectedConfig, ...extra }, args);
+  addCheck(checks, "gitnexus", "recommended", gitnexusVersion.ok, gitnexusVersion.ok ? `GitNexus ${gitnexusVersion.stdout}` : "GitNexus CLI is unavailable", { selected: gitnexusVersion.invocation, global: globalVersion, local: localVersion, error: gitnexusVersion.error || gitnexusVersion.stderr });
 
   if (gitnexusVersion.ok) {
-    const doctor = command("gitnexus", ["doctor"]);
+    const doctor = gitnexusCommand(["doctor"]);
     const graphAvailable = doctor.ok && /Graph store:\s+available/i.test(doctor.stdout);
     const ftsAvailable = doctor.ok && /Full-text search:\s+available/i.test(doctor.stdout);
     const vectorAvailable = doctor.ok && /VECTOR index:\s+available/i.test(doctor.stdout);
@@ -139,7 +150,7 @@ function runDiagnostics(options = {}) {
     addCheck(checks, "gitnexus-fts", "recommended", ftsAvailable, ftsAvailable ? "GitNexus FTS is available" : "GitNexus FTS is unavailable or degraded");
     addCheck(checks, "gitnexus-vector", "optional", vectorAvailable, vectorAvailable ? "GitNexus VECTOR index is available" : "GitNexus VECTOR index is unavailable; exact graph/FTS/AST workflows remain usable");
 
-    const list = command("gitnexus", ["list"]);
+    const list = gitnexusCommand(["list"]);
     const registered = parseRepoList(list.stdout);
     const requestedRepos = options.indexes || [];
     const missingRepos = requestedRepos.filter((repo) => !registered.has(repo.toLowerCase()));
@@ -148,7 +159,7 @@ function runDiagnostics(options = {}) {
     for (const repoName of requestedRepos) {
       const entry = registered.get(repoName.toLowerCase());
       if (!entry) continue;
-      const status = command("gitnexus", ["status"], { cwd: entry.path });
+      const status = gitnexusCommand(["status"], { cwd: entry.path });
       if (!status.ok) statusErrors.push({ repo: repoName, error: status.error || status.stderr });
       else if (!/Status:\s+.*up-to-date/i.test(status.stdout)) staleRepos.push(repoName);
     }
@@ -185,7 +196,7 @@ function parseRepoList(output) {
   const repos = new Map();
   const lines = output.split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
-    const nameMatch = lines[index].match(/^\s{2}([^:\r\n]+?)\s*$/);
+    const nameMatch = lines[index].match(/^ {0,2}([^:\r\n]+?)\s*$/);
     if (!nameMatch) continue;
     const pathMatch = lines.slice(index + 1, index + 5).join("\n").match(/^\s+Path:\s+(.+)$/m);
     if (pathMatch) repos.set(nameMatch[1].trim().toLowerCase(), { name: nameMatch[1].trim(), path: pathMatch[1].trim() });

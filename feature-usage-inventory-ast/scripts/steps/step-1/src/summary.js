@@ -1,6 +1,6 @@
 "use strict";
 const crypto = require("node:crypto");
-const { applySafeBudget, measureValue } = require("../../../shared/output/src/measure_context.js");
+const { measureValue } = require("../../../shared/output/src/measure_context.js");
 const DEFAULT_STAGE1_BUDGETS = Object.freeze({
     factsBytes: 64 * 1024,
     summaryBytes: 8 * 1024,

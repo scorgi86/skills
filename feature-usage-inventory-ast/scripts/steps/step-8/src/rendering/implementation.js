@@ -1,61 +1,61 @@
 "use strict";
-const { refs, esc, section } = require("./markdown.js");
+const { refs, esc, section, meaning, notes, sourceLabel, semantic, coverageSummary } = require("./markdown.js");
 function renderImplementation(model) {
     const ownership = model.ownership.map((x)=>[
             x.id,
-            x.name || x.object || "",
+            meaning(x) + (x.object ? "; " + semantic(x.object) : ""),
             x.order ?? "",
-            x.role || "",
+            [x.role, notes(x)].filter(Boolean).join("; "),
             x.relation || "",
             x.status,
-            refs(x)
+            refs(x, model)
         ]);
     const dictionary = model.dictionary.map((x)=>[
             x.id,
-            x.term || x.name || "",
+            meaning(x),
             x.order ?? "",
             (x.relations || []).join("; "),
             x.status
         ]);
     const scenarios = model.scenarios.map((x)=>[
             x.id,
-            x.name || "",
+            meaning(x),
             typeof x.scope === "string" ? x.scope : JSON.stringify(x.scope || {}),
             x.status,
-            refs(x)
+            refs(x, model)
         ]);
     const recipients = model.recipientFamilies.map((x)=>[
             x.id,
-            x.name || x.title || "Получатель",
+            meaning(x),
             x.relation || "",
             x.totalMatches ?? "",
             x.status,
-            refs(x)
+            refs(x, model)
         ]);
     const paths = model.criticalPaths.map((x)=>[
             x.id,
-            x.name || x.title || "Путь",
+            meaning(x),
             x.status || "unknown",
-            refs(x)
+            refs(x, model)
         ]);
     const references = model.referencePaths.map((x)=>[
             x.id,
             x.layer || "",
             x.path || "",
-            x.name || "",
+            [...new Set([x.role, ...(x.roles || [])].filter(Boolean))].join("; ") || x.name || "",
             x.status,
-            refs(x)
+            refs(x, model)
         ]);
     const entries = model.implementationEntryPoints.map((x)=>[
             x.id,
             x.layer || "",
             x.path || "",
-            x.title || "",
+            meaning(x),
             (x.gapRefs || []).join(", "),
             x.status,
-            refs(x)
+            refs(x, model)
         ]);
-    return `# Карта реализации: ${esc(model.target)}\n\n${section("Владение", "цепочку владения сущностью", "показывает, где хранится и передаётся состояние", [
+    return `# Карта реализации: ${esc(model.target)}\n\n${coverageSummary(model)}${section("Владение", "цепочку владения сущностью", "показывает, где хранится и передаётся состояние", [
         "ID",
         "Объект",
         "Порядок",

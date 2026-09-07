@@ -11,10 +11,10 @@ function normalizeReportModel(input) {
         status: cleanText(input.status) || "closed",
         target: cleanText(input.target),
         scope: stable(input.scope || {}),
-        provenance: stable(input.provenance || {}),
+        provenance: stable({ ...input.provenance || {}, ...(input.checkResolutions !== undefined ? { checkResolutions: input.checkResolutions } : {}), ...(input.checkRequirements !== undefined ? { checkRequirements: input.checkRequirements } : {}) }),
         executiveSummary: stable(input.executiveSummary || {}),
         decisionStatus: cleanText(input.decisionStatus) || (asArray(input.openChecks).length ? "partial" : "confirmed"),
-        coverage: stable(input.coverage || {}),
+        coverage: stable({ ...(input.coverage || {}), ...(input.coverageProfile !== undefined ? { profile: require("./coverage.js").normalizeCoverageProfile(input.coverageProfile) } : {}) }),
         capabilities: normalizeCapabilities(input.capabilities || []).sort((a, b)=>a.id.localeCompare(b.id)),
         stageExecution: stable(input.stageExecution || {}),
         renderProfile: stable(input.renderProfile || {
@@ -40,6 +40,9 @@ function normalizeReportModel(input) {
             ...row,
             status: row.status || row.confirmation?.status,
             sourceHash: row.sourceHash || row.confirmation?.sourceHash,
+            line: row.line ?? row.confirmation?.line,
+            endLine: row.endLine ?? row.confirmation?.endLine,
+            sourceFragment: row.sourceFragment ?? row.confirmation?.sourceFragment,
             ...(row.status || row.confirmation?.status) === "checked-no-usage" && !asArray(row.evidenceRefs).length ? {
                 evidenceRefs: [
                     row.id

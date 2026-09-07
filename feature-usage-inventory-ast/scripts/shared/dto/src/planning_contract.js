@@ -22,17 +22,19 @@ const PLANNING_COLLECTIONS = [...new Set(Object.values(COLLECTION_BY_KIND))];
 const PRIMARY_KIND_BY_COLLECTION = Object.freeze(Object.entries(COLLECTION_BY_KIND).reduce((result, [kind, collection]) => ({ ...result, [collection]: result[collection] || kind }), {}));
 const REFERENCE_FIELDS = ["evidenceRefs", "scenarioRefs", "recipientRefs", "pathRefs", "gapRefs", "capabilityRefs", "testSurfaceRefs"];
 
+const DECISION_CATEGORIES = new Set(["product-gap", "implementation-gap", "open-product-decision", "known", "requires-change", "requires-implementation", "design-decision", "reference-pattern", "existing", "missing", "blocked", "implementation-required"]);
 function normalizeStatus(status) {
-  if (["confirmed", "checked-no-usage", "not-applicable", "reference-only", "noise", "partial", "unknown"].includes(status)) return status;
-  if (["source-confirmed", "closed", "matched"].includes(status)) return "confirmed";
-  if (["candidate", "candidate-empty", "unverified", "unchecked"].includes(status)) return status === "candidate" ? "partial" : "unknown";
-  return status || "unknown";
+  if (["confirmed", "checked-no-usage", "not-applicable", "reference-only", "noise", "partial", "unknown", "candidate"].includes(status)) return status;
+  if (status === "source-confirmed") return "confirmed";
+  if (["matched", "candidate-empty"].includes(status)) return "candidate";
+  if (["closed", "unverified", "unchecked", "unresolved", "tool-unavailable", "pending", "not-checked"].includes(status) || DECISION_CATEGORIES.has(status) || status == null || status === "") return "unknown";
+  throw new Error(`Unsupported planning status: ${status}; provide a proof status and keep product decisions in category`);
 }
-function unique(values) { return [...new Set((values || []).filter(Boolean).map(String))].sort(); }
+function unique(values) { return [...new Set((values || []).filter(value => value !== undefined && value !== null && value !== "").map(String))].sort(); }
 function normalizePlanningFact(fact, stage, index) {
   const collection = COLLECTION_BY_KIND[fact?.kind];
   if (!collection) return null;
-  const row = { ...fact, id: String(fact.id || `${fact.kind}-stage-${stage}-${index + 1}`), status: normalizeStatus(fact.status), sourceStage: Number(stage) };
+  const row = { ...fact, id: String(fact.id || `${fact.kind}-stage-${stage}-${index + 1}`), status: normalizeStatus(fact.status), sourceStage: Number(stage), ...(fact.status ? { originalStatus: fact.status } : {}), ...(DECISION_CATEGORIES.has(fact.status) ? { category: fact.category || fact.status } : {}) };
   delete row.kind;
   for (const field of REFERENCE_FIELDS) if (field in row) row[field] = unique(row[field]);
   return { collection, row };
@@ -44,6 +46,14 @@ function mergeRows(rows) {
     if (!previous) byId.set(row.id, row);
     else {
       const merged = { ...previous, ...row };
+      const conflicts = [...(previous.conflicts || []), ...(row.conflicts || [])];
+      for (const field of Object.keys(previous)) {
+        if ([...REFERENCE_FIELDS, "sourceStage", "sourceStages", "conflicts", "roles", "provenance"].includes(field) || !(field in row)) continue;
+        if (JSON.stringify(previous[field]) !== JSON.stringify(row[field])) conflicts.push({ field, values: [previous[field], row[field]], sourceStages: [previous.sourceStage, row.sourceStage].filter(x => x != null) });
+      }
+      if (conflicts.length) merged.conflicts = [...new Map(conflicts.map(x => [JSON.stringify(x), x])).values()];
+      if (previous.role || row.role || previous.roles || row.roles) merged.roles = unique([...(previous.roles || []), previous.role, ...(row.roles || []), row.role]);
+      if (previous.provenance || row.provenance) merged.provenance = [...new Map([...(Array.isArray(previous.provenance) ? previous.provenance : previous.provenance ? [previous.provenance] : []), ...(Array.isArray(row.provenance) ? row.provenance : row.provenance ? [row.provenance] : [])].map(x => [JSON.stringify(x), x])).values()];
       for (const field of REFERENCE_FIELDS) if (field in previous || field in row) merged[field] = unique([...(previous[field] || []), ...(row[field] || [])]);
       if (previous.sourceStage != null || row.sourceStage != null || previous.sourceStages || row.sourceStages) {
         merged.sourceStages = unique([...(previous.sourceStages || [previous.sourceStage]), ...(row.sourceStages || [row.sourceStage])]).map(Number).sort((a, b) => a - b);
@@ -64,4 +74,4 @@ function buildPlanningProjection(stageResults = []) {
   return projection;
 }
 
-module.exports = { COLLECTION_BY_KIND, PLANNING_COLLECTIONS, PRIMARY_KIND_BY_COLLECTION, REFERENCE_FIELDS, buildPlanningProjection, mergeRows, normalizePlanningFact, normalizeStatus };
+module.exports = { DECISION_CATEGORIES, COLLECTION_BY_KIND, PLANNING_COLLECTIONS, PRIMARY_KIND_BY_COLLECTION, REFERENCE_FIELDS, buildPlanningProjection, mergeRows, normalizePlanningFact, normalizeStatus };

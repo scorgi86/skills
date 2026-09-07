@@ -11,6 +11,33 @@ const { createCanonicalStageResult } = require("../../shared/artifacts/src/canon
 const { digest: canonicalDigest } = require("../../shared/artifacts/src/canonical/validation.js");
 const crypto = require("node:crypto");
 const { run: runStage8 } = require("../../steps/step-8/src/runner.js");
+test("checked receipt needs real artifact evidence at state and lineage acceptance", () => {
+ const directory=fs.mkdtempSync(path.join(os.tmpdir(),"receipt-advance-"));
+ try {
+  const scope=repositoryScope(directory), state=path.join(directory,"state.json");
+  const partial=createCanonicalStageResult({facts:{stage:0,status:"partial",repositoryScope:scope,openChecks:["owner"]}});
+  const priorFile=path.join(directory,"partial.json"); fs.writeFileSync(priorFile,JSON.stringify(partial));
+  const receipt={kind:"check-resolution",check:"owner",originDigest:partial.outputDigest,disposition:"checked",reason:"reviewed",evidenceRefs:["ev"]};
+  const facts={stage:0,status:"closed",repositoryScope:scope,checkResolutions:[receipt],summary:{checkHistory:[{artifact:priorFile,outputDigest:partial.outputDigest}]}};
+  const artifact=path.join(directory,"standalone.json"); fs.writeFileSync(artifact,JSON.stringify(createCanonicalStageResult({facts})));
+  const {validatePriorLineage}=require("../../shared/artifacts/src/canonical/lineage.js");
+  main(["init","--state",state]);
+  const advance=file=>main(["advance","--state",state,"--stage","0","--artifact",file]);
+  assert.throws(()=>advance(artifact),/evidence|artifact/i);
+  assert.equal(main(["status","--state",state]).currentStage,0);
+  assert.throws(()=>validatePriorLineage({stage:1,repositoryScope:scope,priorArtifacts:[artifact]}),/evidence|artifact/i);
+  const {writeStageArtifact,fileDigest}=require("../../shared/artifacts/src/stage_artifact_v4.js");
+  const written=writeStageArtifact({outputDir:path.join(directory,"valid"),facts:{...facts,canonicalEvidence:[{id:"ev",status:"candidate"}]}});
+  const evidenceBytes=fs.readFileSync(written.evidenceFile), manifestBytes=fs.readFileSync(written.manifestFile);
+  fs.writeFileSync(written.evidenceFile,JSON.stringify({schemaVersion:"canonical-evidence/4.0.0",stage:0,files:[],evidence:[]}));
+  const manifest=JSON.parse(manifestBytes); manifest.files.canonicalEvidence.sha256=fileDigest(written.evidenceFile); fs.writeFileSync(written.manifestFile,JSON.stringify(manifest));
+  assert.throws(()=>advance(written.resultFile),/evidenceRef/i);
+  assert.throws(()=>validatePriorLineage({stage:1,repositoryScope:scope,priorArtifacts:[written.resultFile]}),/evidenceRef/i);
+  fs.writeFileSync(written.evidenceFile,evidenceBytes); fs.writeFileSync(written.manifestFile,manifestBytes);
+  assert.equal(validatePriorLineage({stage:1,repositoryScope:scope,priorArtifacts:[written.resultFile]}).lineage.length,1);
+  assert.equal(advance(written.resultFile).currentStage,1);
+ } finally {fs.rmSync(directory,{recursive:true,force:true});}
+});
 
 function fixture() {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "inventory-state-"));
@@ -19,13 +46,19 @@ function fixture() {
   writeCanonical(artifact, 0);
   return { state, artifact };
 }
-function writeCanonical(file, stage, facts = {}) { fs.writeFileSync(file, JSON.stringify(createCanonicalStageResult({ facts: { stage, status: "closed", ...facts }, input: { stage } }))); return file; }
-function advanceThrough(state, artifact, lastExclusive) { for (let stage = 0; stage < lastExclusive; stage += 1) { writeCanonical(artifact, stage); main(["advance", "--state", state, "--stage", String(stage), "--artifact", artifact]); } }
+function repositoryScope(directory) { return { repositories: [{ id: "source", root: directory, role: "source" }] }; }
+function lineage(directory, stage) { return stage ? require("../../shared/artifacts/src/canonical/lineage.js").buildLineageFromPrevious(path.join(directory, `prior-stage-${stage - 1}.json`), stage, repositoryScope(directory)) : []; }
+function writeCanonical(file, stage, facts = {}) {
+  const directory = path.dirname(file);
+  fs.writeFileSync(file, JSON.stringify(createCanonicalStageResult({ facts: facts.modelType ? facts : { stage, status: "closed", repositoryScope: repositoryScope(directory), summary: { lineage: lineage(directory, stage) }, ...facts }, input: { stage } })));
+  return file;
+}
+function advanceThrough(state, artifact, lastExclusive) { for (let stage = 0; stage < lastExclusive; stage += 1) { const prior = writeCanonical(path.join(path.dirname(artifact), `prior-stage-${stage}.json`), stage); main(["advance", "--state", state, "--stage", String(stage), "--artifact", prior]); } }
 function validModel(directory) {
   const source = path.join(directory, "a.js");
   fs.writeFileSync(source, "const x = 1;\n");
   const sourceHash = crypto.createHash("sha256").update(fs.readFileSync(source)).digest("hex");
-  return normalizeReportModel({ target: "X", scope: { repositories: [{ id: "source", root: directory, role: "source" }] }, capabilities: [{ id: "ownership", status: "confirmed", evidenceRefs: ["ev-1"] }], evidenceIndex: [{ id: "ev-1", status: "source-confirmed", repository: "source", file: source, sourceHash }], confirmedUsages: [{ id: "use-1", evidenceRefs: ["ev-1"] }], transition: { "next stage": "8" } });
+  return normalizeReportModel({ target: "X", provenance: { lineage: lineage(directory, 7) }, scope: { repositories: [{ id: "source", root: directory, role: "source" }] }, capabilities: [{ id: "ownership", status: "confirmed", evidenceRefs: ["ev-1"] }], evidenceIndex: [{ id: "ev-1", status: "source-confirmed", repository: "source", file: source, line: 1, endLine: 1, sourceFragment: "const x = 1;", sourceHash }], confirmedUsages: [{ id: "use-1", evidenceRefs: ["ev-1"] }], transition: { "next stage": "8" } });
 }
 
 test("canonical stages advance only in order", () => {
@@ -241,3 +274,14 @@ test("complete-run repeats Stage 8 validation after advance", () => {
   assert.throws(() => main(["complete-run", "--state", state]), /hash is stale or invalid/);
 });
 test("complete-run rejects a rehashed Stage 8 manifest after canonical advance", () => { const { state, artifact } = fixture(); main(["init", "--state", state]); advanceThrough(state, artifact, 7); const model = validModel(path.dirname(artifact)); writeCanonical(artifact, 7, model); main(["advance", "--state", state, "--stage", "7", "--artifact", artifact]); const directory = path.join(path.dirname(artifact), "stage-8-rehashed-after-advance"), manifestFile = path.join(directory, "manifest.json"); runStage8(model, directory, model.integrity.canonicalDigest); main(["advance", "--state", state, "--stage", "8", "--artifact", manifestFile]); const report = path.join(directory, "decision-report.md"); fs.appendFileSync(report, "\nmutated and rehashed\n"); const manifest = JSON.parse(fs.readFileSync(manifestFile, "utf8")); manifest.outputs.find((row) => row.path === "decision-report.md").sha256 = crypto.createHash("sha256").update(fs.readFileSync(report)).digest("hex"); fs.writeFileSync(manifestFile, JSON.stringify(manifest)); assert.throws(() => main(["complete-run", "--state", state]), /manifest changed after canonical advance/); });
+
+test("direct state advance rejects a digest-valid closed artifact with open checks", () => {
+  const {state, artifact} = fixture();
+  main(["init", "--state", state]);
+  const canonical = JSON.parse(fs.readFileSync(artifact, "utf8"));
+  canonical.openChecks = ["confirm ownership"];
+  canonical.outputDigest = canonicalDigest({...canonical, outputDigest: undefined});
+  fs.writeFileSync(artifact, JSON.stringify(canonical));
+  assert.throws(() => main(["advance", "--state", state, "--stage", "0", "--artifact", artifact]), /valid closed canonical/);
+  assert.equal(main(["status", "--state", state]).currentStage, 0);
+});

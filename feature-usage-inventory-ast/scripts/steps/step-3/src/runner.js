@@ -8,6 +8,8 @@ const { extractTransition } = require("../../../shared/dto/src/extract_stage_tra
 
 const { runEvidenceChecks } = require("../../../shared/evidence/src/collection/source_evidence.js");
 
+const { normalizeSearchProfile } = require("../../../shared/search/src/search_profile.js");
+
 function escapeRegex(value) { return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 
 function runStage3(request, dependencies = {}) {
@@ -27,12 +29,17 @@ function runStage3(request, dependencies = {}) {
         continue;
       }
       const id = `${boundary.id}@${consumerRepo}`;
-      checks.push({ id, scope: consumer.scope, patterns: (boundary.searchTerms || []).map((value) => ({ id: value, value: escapeRegex(value), regex: true })), maxFiles: Number(consumer.maxFiles || request.maxFiles || 200), maxMatches: Number(consumer.maxMatches || request.maxMatches || 20), groupBy: "file-pattern", excludeDirs: consumer.excludeDirs || request.excludeDirs, excludeFilePatterns: consumer.excludeFilePatterns || request.excludeFilePatterns, followSymlinks: consumer.followSymlinks === true || request.followSymlinks === true });
-      consumerCoverage.push({ boundaryId: boundary.id, consumerRepo, status: "candidate", scope: consumer.scope, checkId: id });
+      const searchProfile = normalizeSearchProfile(consumer);
+      checks.push({ id, scope: consumer.scope, extensions: searchProfile.extensions, patterns: (boundary.searchTerms || []).map((value) => ({ id: value, value: escapeRegex(value), regex: true })), maxFiles: Number(consumer.maxFiles || request.maxFiles || 200), maxMatches: Number(consumer.maxMatches || request.maxMatches || 20), groupBy: "file-pattern", excludeDirs: consumer.excludeDirs || request.excludeDirs, excludeFilePatterns: consumer.excludeFilePatterns || request.excludeFilePatterns, followSymlinks: consumer.followSymlinks === true || request.followSymlinks === true });
+      consumerCoverage.push({ boundaryId: boundary.id, consumerRepo, status: "candidate", scope: consumer.scope, searchProfile, checkId: id });
     }
   }
   const sourceEvidence = (dependencies.runEvidenceChecks || runEvidenceChecks)({ checks, maxFiles: Number(request.maxFiles || 200), maxMatches: Number(request.maxMatches || 20), excludeDirs: request.excludeDirs, excludeFilePatterns: request.excludeFilePatterns, followSymlinks: request.followSymlinks === true, retainAllMatches: true });
-  const limitations = consumerCoverage.filter((item) => item.status === "unverified").map((item) => `${item.boundaryId}@${item.consumerRepo}: ${item.reason}`);
+  for (const coverage of consumerCoverage) {
+    const check = sourceEvidence.checks.find(item => item.id === coverage.checkId);
+    if (check) Object.assign(coverage, { status: check.status, filesScanned: check.filesScanned, totalMatches: check.totalMatches, truncated: check.truncated, searchedScope: check.spec, resultComplete: check.resultComplete, errors: check.errors || [], skipped: check.skipped || [], absenceClaim: false });
+  }
+  const limitations = consumerCoverage.filter((item) => ["unverified", "partial"].includes(item.status)).map((item) => `${item.boundaryId}@${item.consumerRepo}: ${item.reason || "Consumer search is incomplete"}`);
   return { schemaVersion: "1.1.0", stage: 3, status: limitations.length ? "partial" : "candidate", transition, boundaries, consumerCoverage, sourceEvidence, capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []), limitations };
 }
 

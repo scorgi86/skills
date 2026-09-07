@@ -2,7 +2,8 @@
 
 const path = require("node:path");
 
-const childProcess = require("node:child_process");
+const { runFileBacked } = require("../../../shared/diagnostics/src/subprocess_output.js");
+const { normalizeSearchProfile } = require("../../../shared/search/src/search_profile.js");
 
 const { stableHash } = require("../../../shared/output/src/fact_projection.js");
 
@@ -20,9 +21,10 @@ function normalizeCoverage(config) {
     id: String(config.id),
     scope: path.resolve(config.scope),
     terms: config.terms.map(String),
-    extensions: (config.extensions || [".js"]).map((extension) => extension.startsWith(".") ? `*${extension}` : `*.${extension}`),
+    extensions: normalizeSearchProfile(config.searchProfile || config.languages || config.extensions ? config : { extensions: [".js"] }).extensions.map(extension => `*${extension}`),
     excludeDirs: [...new Set((config.excludeDirs || []).map(String))].sort(),
     excludeFilePatterns: (config.excludeFilePatterns || []).map(String),
+    followSymlinks: config.followSymlinks === true,
   };
 }
 
@@ -30,7 +32,7 @@ function coverageGlobs(config) {
   const fileGlobs = config.excludeFilePatterns.map((pattern) => {
     if (pattern === "\\.min\\.js$") return "!**/*.min.js";
     if (pattern === "\\.map$") return "!**/*.map";
-    return null;
+    throw new Error(`Unsupported Stage5 exclusion pattern ${pattern}; use excludeDirs or supported file suffix patterns`);
   }).filter(Boolean);
   return [
     ...config.extensions,
@@ -40,7 +42,7 @@ function coverageGlobs(config) {
 }
 
 function runRg(args, dependencies = {}) {
-  const result = (dependencies.spawnSync || childProcess.spawnSync)("rg", args, { encoding: "utf8", windowsHide: true });
+  const result = runFileBacked("rg", args, {}, dependencies);
   if (result.error) throw new Error(`rg failed: ${result.error.message}`);
   if (result.status !== 0 && result.status !== 1) throw new Error(`rg failed: ${String(result.stderr || "").trim() || `exit ${result.status}`}`);
   return String(result.stdout || "").split(/\r?\n/).filter(Boolean);
@@ -53,15 +55,21 @@ function makeAbsolute(scope, item) {
 function findExactNameCoverage(config, dependencies = {}) {
   const normalized = normalizeCoverage(config);
   const globs = coverageGlobs(normalized);
-  const fileArgs = ["--files", "--no-ignore", "--hidden", ...globs.flatMap((glob) => ["--glob", glob]), normalized.scope];
-  const matchArgs = ["--files-with-matches", "--no-ignore", "--hidden", "--ignore-case", "--no-messages", ...globs.flatMap((glob) => ["--glob", glob]), "--regexp", normalized.terms.join("|"), normalized.scope];
-  const files = runRg(fileArgs, dependencies).map((item) => makeAbsolute(normalized.scope, item)).sort();
-  const matchingFiles = [...new Set(runRg(matchArgs, dependencies).map((item) => makeAbsolute(normalized.scope, item)))].sort();
+  const fileArgs = ["--files", "--no-ignore", "--hidden", ...(normalized.followSymlinks ? ["--follow"] : []), ...globs.flatMap((glob) => ["--glob", glob]), normalized.scope];
+  const matchArgs = ["--files-with-matches", "--no-ignore", "--hidden", "--ignore-case", ...(normalized.followSymlinks ? ["--follow"] : []), ...globs.flatMap((glob) => ["--glob", glob]), "--regexp", normalized.terms.join("|"), normalized.scope];
+  const excluded = normalized.excludeFilePatterns.map(pattern => new RegExp(pattern));
+  const isIncluded = file => !excluded.some(pattern => pattern.test(file));
+  const files = runRg(fileArgs, dependencies).map((item) => makeAbsolute(normalized.scope, item)).filter(isIncluded).sort();
+  const matchingFiles = [...new Set(runRg(matchArgs, dependencies).map((item) => makeAbsolute(normalized.scope, item)).filter(isIncluded))].sort();
   return {
     id: normalized.id,
     engine: "rg",
     scope: normalized.scope,
     terms: normalized.terms,
+    searchProfile: { ...normalizeSearchProfile(config), extensions: normalized.extensions.map(extension => extension.slice(1)) },
+    exclusions: { directories: normalized.excludeDirs, patterns: normalized.excludeFilePatterns },
+    complete: true,
+    absenceClaim: false,
     filesScanned: files.length,
     matchingFileCount: matchingFiles.length,
     matchingFiles,
@@ -84,6 +92,8 @@ function runStage5(request, dependencies = {}) {
   const coverageCheck = coverage.matchingFiles.length ? [{
     id: coverage.id,
     files: coverage.matchingFiles,
+    extensions: normalizeSearchProfile(request.nameCoverage).extensions,
+    allowWideScope: true,
     patterns: [{ id: "expected-name", value: coverage.terms.join("|"), regex: true }],
     maxMatches: Number(request.coverageMaxMatches || 20),
     retainAllMatches: true,
@@ -101,7 +111,7 @@ function runStage5(request, dependencies = {}) {
     schemaVersion: "1.0.0",
     stage: 5,
     capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []),
-    status: "candidate",
+    status: sourceEvidence.checks.some(check => check.resultComplete === false) ? "partial" : "candidate",
     transition,
     priorArtifacts: request.priorArtifacts || [],
     nameCoverage: { ...coverage, totalMatches: coverageEvidence ? coverageEvidence.totalMatches : 0, fullObservationCount: coverageEvidence ? coverageEvidence.fullMatches.length : 0 },

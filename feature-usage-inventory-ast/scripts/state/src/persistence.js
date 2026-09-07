@@ -7,7 +7,7 @@ function readJson(file) {
     return JSON.parse(fs.readFileSync(path.resolve(file), "utf8"));
 }
 function writeJson(file, value) {
-    fs.writeFileSync(path.resolve(file), `${JSON.stringify(value, null, 2)}\n`);
+    require("./file_transaction.js").atomicWriteJson(path.resolve(file), value);
 }
 function loadState(file) {
     return validateState(readJson(file));

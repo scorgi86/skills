@@ -1,5 +1,6 @@
 "use strict";
 const path = require("path");
+const crypto = require("node:crypto");
 const fs = require("fs");
 const { stableHash } = require("../../../output/src/fact_projection.js");
 const { compareText, DEFAULT_EXTENSIONS, createTraversalOptions, traversalKey } = require("./source_files.js");
@@ -30,9 +31,9 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
         const files = [
             ...new Set(entries.flatMap((entry)=>enumerateFiles(entry, extensions, new Set(), traversal)))
         ].map((file)=>path.resolve(file)).sort(compareText);
-        traversalCache.set(cacheKey, files);
+        traversalCache.set(cacheKey, { files, diagnostics: [...traversal.diagnostics] });
     }
-    const files = traversalCache.get(cacheKey);
+    const {files, diagnostics} = traversalCache.get(cacheKey);
     const maxFiles = Math.max(1, Number(check.maxFiles || request.maxFiles) || 200);
     if (files.length > maxFiles && !check.allowWideScope) throw new Error(`Evidence scope blocked for ${check.id || index + 1}: ${files.length} files exceeds ${maxFiles}`);
     const maxMatches = Math.max(1, Number(check.maxMatches || request.maxMatches) || 20);
@@ -51,9 +52,12 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
     let totalMatches = 0;
     for (const file of files){
         const cached = check.mode === "file-name" ? null : contentCache.get(file) || (()=>{
-            const content = fs.readFileSync(file, "utf8");
+            const bytes = fs.readFileSync(file);
+            const content = bytes.toString("utf8");
             const value = {
                 content,
+                bytes,
+                sourceHash: crypto.createHash("sha256").update(bytes).digest("hex"),
                 lines: content.split(/\r?\n/)
             };
             contentCache.set(file, value);
@@ -70,6 +74,13 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
             });
             if (!matchedPatterns.length) continue;
             totalMatches += 1;
+            const explicit = [...check.confirmations || [], ...check.confirmation ? [check.confirmation] : []].find(value =>
+                value.line === lineIndex + 1 && (!value.file || path.resolve(value.file) === file));
+            if (explicit?.status === "source-confirmed") {
+                const validation = require("../canonicalization/source_anchor.js").validateSourceAnchor(explicit, cached.bytes);
+                if (!validation.ok) throw new Error(`Check ${check.id || index + 1}: ${validation.code}: ${validation.message}`);
+            }
+            const anchor = check.mode === "file-name" ? {} : { endLine: lineIndex + 1, sourceFragment: line, sourceHash: cached.sourceHash, repository: check.repository, ...(explicit ? { endLine: explicit.endLine, sourceFragment: explicit.sourceFragment, confirmation: { ...explicit, evidenceRefs: explicit.evidenceRefs?.length ? explicit.evidenceRefs : [check.id || `check-${index + 1}`] } } : {}) };
             const snippet = line.replace(/\s+/g, " ").trim();
             for (const pattern of matchedPatterns){
                 const descriptor = evidenceGroupIdentity(check, file, pattern.id);
@@ -85,12 +96,14 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
                 group.totalMatches += 1;
                 group.candidates.push({
                     file,
+                    ...anchor,
                     line: check.mode === "file-name" ? null : lineIndex + 1,
                     snippet: snippet.length > maxSnippetChars ? `${snippet.slice(0, maxSnippetChars - 1)}…` : snippet,
                     groupKey: key
                 });
                 if (retainAllMatches) fullMatches.push({
                     file,
+                    ...anchor,
                     line: check.mode === "file-name" ? null : lineIndex + 1,
                     snippet: snippet.length > maxSnippetChars ? `${snippet.slice(0, maxSnippetChars - 1)}…` : snippet,
                     groupKey: key,
@@ -127,6 +140,7 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
         id: check.id || `check-${index + 1}`,
         spec: {
             entries,
+            extensions: [...extensions].sort(),
             patterns: patternSpecs.map((item)=>typeof item === "string" ? {
                     value: item
                 } : {
@@ -141,7 +155,10 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
             excludeFilePatterns: traversal.excludeFilePatterns.map((item)=>item.source),
             followSymlinks: traversal.followSymlinks
         },
-        status: totalMatches ? "candidate" : "candidate-empty",
+        status: diagnostics.some(d=>d.code !== "excluded") ? "partial" : totalMatches ? "candidate" : "candidate-empty",
+        resultComplete: !diagnostics.some(d=>d.code !== "excluded"),
+        errors: diagnostics.filter(d=>d.code !== "excluded"),
+        skipped: diagnostics.filter(d=>d.code === "excluded"),
         filesScanned: files.length,
         totalMatches,
         returned: matches.length,

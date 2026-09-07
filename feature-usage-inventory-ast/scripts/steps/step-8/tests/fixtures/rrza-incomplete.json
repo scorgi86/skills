@@ -1,0 +1,71 @@
+{
+  "target": "RRZA-1217 minimal regression",
+  "scope": {
+    "repositories": [
+      {
+        "id": "source",
+        "root": ".",
+        "role": "source"
+      }
+    ]
+  },
+  "decisionStatus": "confirmed",
+  "coverage": {
+    "status": "partial",
+    "profile": {
+      "requiredCollections": [
+        "dictionary",
+        "criticalPaths"
+      ],
+      "notApplicable": {},
+      "requiredCriticalPaths": [
+        "open",
+        "save",
+        "cancel",
+        "error"
+      ],
+      "notApplicableCriticalPaths": {}
+    }
+  },
+  "capabilities": [
+    {
+      "id": "lifecycle",
+      "status": "not-applicable",
+      "reason": "Source proof is outside this minimal coverage-only fixture"
+    }
+  ],
+  "dictionary": [],
+  "criticalPaths": [],
+  "gaps": [
+    {
+      "id": "gap-design",
+      "status": "partial",
+      "expectedPath": "Product mockup is missing, so exact placement, styling and interaction cannot be finalized."
+    },
+    {
+      "id": "gap-native-core-wiring",
+      "status": "partial",
+      "expectedPath": "The concrete X2T open/save path must expose real core progress; existing OnProgress/OnProgressEx symbols are only an analog until wiring is proven."
+    },
+    {
+      "id": "gap-save-variants",
+      "status": "partial",
+      "expectedPath": "Direct Save and Save As may need distinct native progress adapters and phase weights."
+    },
+    {
+      "id": "gap-terminal-semantics",
+      "status": "partial",
+      "expectedPath": "Success, error and cancellation require distinct terminal semantics; EndAction/EndSave alone is not proof of success."
+    },
+    {
+      "id": "gap-tests",
+      "status": "partial",
+      "expectedPath": "No confirmed automated coverage for progress monotonicity, three editors, quick operations, errors, cancellation or stale callbacks."
+    },
+    {
+      "id": "gap-unified-progress-contract",
+      "status": "partial",
+      "expectedPath": "A monotonic 0..100 operation-progress contract with operation id is absent across native and JavaScript boundaries."
+    }
+  ]
+}

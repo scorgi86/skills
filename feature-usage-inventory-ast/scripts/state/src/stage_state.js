@@ -23,6 +23,7 @@ function parseArgs(argv) {
     }
     if (!command || ![
         "init",
+        "revise",
         "status",
         "assert",
         "advance",
@@ -32,7 +33,7 @@ function parseArgs(argv) {
         "stop-run",
         "complete-run"
     ].includes(command)) {
-        fail("Usage: node scripts/cli/src/commands/stage_state.js <init|status|assert|advance|attach-probe|continue-run|checkpoint|stop-run|complete-run> --state <inventory-state.json> [...]");
+        fail("Usage: node scripts/cli/src/commands/stage_state.js <init|revise|status|assert|advance|attach-probe|continue-run|checkpoint|stop-run|complete-run> --state <inventory-state.json> [...]");
     }
     return {
         command,
@@ -61,10 +62,11 @@ function summary(state, changed, kind) {
                 parentStage: probe.parentStage,
                 artifact: probe.artifact
             })),
+        revision: state.revision || null,
         openChecks: state.openChecks
     };
 }
-function main(argv = process.argv.slice(2)) {
+function runCommand(argv) {
     const parsed = parseArgs(argv);
     const stateFile = path.resolve(required(parsed.options, "state"));
     if (parsed.command === "init") {
@@ -78,6 +80,10 @@ function main(argv = process.argv.slice(2)) {
         return summary(value, true, "init");
     }
     const state = loadState(stateFile);
+    if (parsed.command === "revise") {
+        const revised = require("./revision.js").createRevision(state, stateFile, parsed.options);
+        return { ...summary(revised.state, true, "revision"), state: revised.output };
+    }
     if (parsed.command === "status") return summary(state, false, "status");
     if (parsed.command === "continue-run") {
         if (state.execution.runStatus === "complete") fail("Completed inventory cannot continue");
@@ -139,6 +145,13 @@ function main(argv = process.argv.slice(2)) {
         "bounded-probe"
     ].includes(kind)) fail("--kind must be canonical-stage or bounded-probe");
     const requested = stage(required(parsed.options, kind === "bounded-probe" ? "parent-stage" : "stage"), kind === "bounded-probe" ? "parent-stage" : "stage");
+    if (kind === "canonical-stage" && parsed.command === "advance" && requested === state.lastCompletedStage
+        && path.resolve(parsed.options.artifact || "") === state.canonicalArtifact && state.canonicalArtifactDigest) {
+        const current = requested === 8 ? sha256File(state.canonicalArtifact) : readJson(state.canonicalArtifact).outputDigest;
+        if (current !== state.canonicalArtifactDigest) fail("Previously advanced artifact changed");
+        validateCanonicalArtifactForAdvance(state, requested, state.canonicalArtifact);
+        return summary(state, false, kind);
+    }
     if (kind === "canonical-stage") assertCanonical(state, requested);
     else assertProbe(state, requested);
     if (parsed.command === "assert") return summary(state, false, kind);
@@ -155,10 +168,16 @@ function main(argv = process.argv.slice(2)) {
         return summary(state, true, kind);
     }
     if (parsed.command !== "advance") fail("Only assert or advance are valid for canonical-stage");
+    require("./revision.js").assertReissuedArtifact(state, requested, artifactPath);
     validateCanonicalArtifactForAdvance(state, requested, artifactPath);
     state.lastCompletedStage = requested;
     state.currentStage = requested + 1;
     state.canonicalArtifact = artifactPath;
+    state.canonicalArtifactDigest = requested === 8 ? sha256File(artifactPath) : readJson(artifactPath).outputDigest;
+    if (requested < 8) {
+        const current = readJson(artifactPath);
+        state.activeArtifacts = [...current.summary.lineage, { stage: requested, artifact: artifactPath, outputDigest: current.outputDigest }];
+    }
     state.execution.stagesCompletedThisRun.push(requested);
     state.execution.sameBlockerCount = 0;
     state.execution.stopReason = null;
@@ -172,6 +191,12 @@ function main(argv = process.argv.slice(2)) {
     if (requested === 8) state.stage8ArtifactDigest = sha256File(artifactPath);
     writeJson(stateFile, state);
     return summary(state, true, kind);
+}
+function main(argv = process.argv.slice(2)) {
+    const parsed = parseArgs(argv);
+    if (["status", "assert"].includes(parsed.command)) return runCommand(argv);
+    const file = path.resolve(required(parsed.options, "state"));
+    return require("./file_transaction.js").withFileLock(`${file}.lock`, () => runCommand(argv));
 }
 module.exports = {
     main,

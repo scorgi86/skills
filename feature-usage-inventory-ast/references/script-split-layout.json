@@ -4,6 +4,15 @@
     { "path": "shared/ast/src/cache/identity.js", "exports": ["createIdentity"] },
     { "path": "shared/ast/src/cache/storage.js", "exports": ["readEntry", "writeEntry"] }
   ],
+  "workflowIntegrityModules": [
+    "steps/step-0/src/execution_scope.js",
+    "shared/artifacts/src/canonical/checks.js",
+    "shared/artifacts/src/canonical/lineage.js",
+    "shared/artifacts/src/canonical/receipt_evidence.js",
+    "shared/evidence/src/canonicalization/source_anchor.js",
+    "state/src/file_transaction.js",
+    "flows/full-flow/src/transaction.js"
+  ],
   "commands": [
     {
       "name": "ast_batch",

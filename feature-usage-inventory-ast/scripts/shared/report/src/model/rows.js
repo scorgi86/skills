@@ -68,6 +68,12 @@ function normalizeRows(rows, prefix, defaultStatus) {
             id: cleanText(row.id) || `${prefix}-${String(index + 1).padStart(3, "0")}`
         };
         if (defaultStatus && !item.status) item.status = defaultStatus;
+        if (item.status && !STATUSES.has(item.status)) {
+            const { normalizeStatus, DECISION_CATEGORIES } = require("../../../dto/src/planning_contract.js");
+            item.originalStatus = item.originalStatus || item.status;
+            if (DECISION_CATEGORIES.has(item.status)) item.category = item.category || item.status;
+            item.status = normalizeStatus(item.status);
+        }
         for (const key of [
             "evidenceRefs",
             "scenarioRefs",

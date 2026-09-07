@@ -21,9 +21,13 @@ function normalizeBoundaryCandidates(request = {}, ownership = {}, sourceEvidenc
     const id = String(entry.id || `boundary-${index + 1}`);
     if (ids.has(id)) throw new Error(`Duplicate boundary candidate id: ${id}`);
     ids.add(id);
-    const evidenceRefs = unique(entry.evidenceRefs);
+    const confirmation = entry.confirmation;
+    const evidenceRefs = unique(entry.evidenceRefs || confirmation?.evidenceRefs);
+    if (!evidenceRefs.length && confirmation?.status === "source-confirmed") evidenceRefs.push(id);
     const ownershipRefs = unique(entry.ownershipRefs);
-    const anchor = entry.anchor || sourceAnchor(sourceEvidence, evidenceRefs);
+    const suppliedAnchor = entry.anchor || sourceAnchor(sourceEvidence, evidenceRefs);
+    const confirmationAnchor = confirmation ? Object.fromEntries(["file", "line", "endLine", "sourceHash", "sourceFragment"].filter(key => confirmation[key] !== undefined).map(key => [key, confirmation[key]])) : {};
+    const anchor = { ...suppliedAnchor, ...confirmationAnchor };
     const searchTerms = unique([entry.symbol, ...(entry.searchTerms || [])]);
     const consumerRepos = unique(entry.consumerRepos || entry.consumerScope);
     if (!entry.producerRepo || !entry.kind || !entry.symbol || !entry.relation) throw new Error(`${id}: producerRepo, kind, symbol and relation are required`);
@@ -32,7 +36,7 @@ function normalizeBoundaryCandidates(request = {}, ownership = {}, sourceEvidenc
     if (!searchTerms.length) throw new Error(`${id}: searchTerms are required`);
     if (!consumerRepos.length) throw new Error(`${id}: consumerRepos are required`);
     for (const ownershipId of ownershipRefs) if (!ownershipIds.has(ownershipId)) throw new Error(`${id}: ownership reference ${ownershipId} is missing`);
-    return { id, producerRepo: String(entry.producerRepo), kind: String(entry.kind), symbol: String(entry.symbol), relation: String(entry.relation), anchor: { file: String(anchor.file), line: Number(anchor.line) }, evidenceRefs, ownershipRefs, searchTerms, consumerRepos, status: "candidate" };
+    return { id, producerRepo: String(entry.producerRepo), kind: String(entry.kind), symbol: String(entry.symbol), relation: String(entry.relation), anchor: { ...anchor, file: String(anchor.file), line: Number(anchor.line) }, ...(confirmation ? { confirmation: { ...confirmation } } : {}), evidenceRefs, ownershipRefs, searchTerms, consumerRepos, status: "candidate" };
   });
 }
 

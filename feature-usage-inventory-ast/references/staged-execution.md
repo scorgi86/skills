@@ -122,6 +122,8 @@ Markdown may render these fields for people, but it must never be read by the ne
 
 ## Stage 7 Closure Contract
 
+See [Workflow integrity](workflow-integrity.md) for resolution receipts, immutable question history, full lineage validation and legacy reissue requirements.
+
 Stage 7 is the only owner of report-model construction and repair. Build the full model defined by `references/report-model.schema.json`, normalize it, validate it, and keep the canonical stage at 7 until every mandatory gate passes. Bounded probes or subagents may close a declared local evidence gap, but must return structured evidence for Stage 7; they never advance state.
 
 The Stage 7 report model must be wrapped by canonical schema 4.0 with `stage: 7`, `status: closed`, a trusted report-model digest, and transition to Stage 8. `node scripts/cli/src/commands/stage_state.js advance --stage 7` rejects any other artifact.

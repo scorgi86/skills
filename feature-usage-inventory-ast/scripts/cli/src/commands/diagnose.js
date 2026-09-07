@@ -1,7 +1,7 @@
 "use strict";
 const { parseArgs, runDiagnostics } = require("../../../shared/diagnostics/src/diagnose.js");
 function usage() {
-    console.log("Usage: node scripts/cli/src/commands/diagnose.js [--indexes index-a,index-b] [--strict] [--pretty]");
+    console.log("Usage: node scripts/cli/src/commands/diagnose.js [--indexes index-a,index-b] [--gitnexus-runner path/to/run.cjs] [--strict] [--pretty]");
 }
 function main() {
     let args;

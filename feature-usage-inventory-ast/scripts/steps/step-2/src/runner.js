@@ -51,12 +51,14 @@ function runStage2(request, dependencies = {}) {
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
   const budgets = normalizeBudgets(request, { factsBytes: DEFAULT_STAGE2_BUDGET, summaryBytes: 24 * 1024, evidenceBytes: 48 * 1024, reportBytes: 64 * 1024 });
   const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+    const priorScope = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8")).summary?.repositoryScope;
+    const repositoryScope = request.repositoryScope || priorScope;
   const previous = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const boundaries = [...(previous.facts || []).filter((item) => item.kind === "boundary").map(({ kind, boundaryKind, ...item }) => ({ ...item, kind: boundaryKind })), ...(request.boundaryCandidates || [])];
   const ownershipGraph = advanceOwnershipGraph(readOwnershipGraphArtifact(request.ownershipGraphArtifact), request);
   const ast = (dependencies.runAstBatch || runAstBatch)(request.ast || {});
   const sourceEvidence = (dependencies.runEvidenceChecks || runEvidenceChecks)({ ...(request.evidence || { checks: [] }), retainAllMatches: true });
-  const canonicalized = canonicalizeStage2Candidates([...candidatesFromAst(ast, request.repository || ""), ...candidatesFromSourceEvidence(sourceEvidence, request.repository || "")]);
+  const canonicalized = canonicalizeStage2Candidates([...candidatesFromAst(ast, request.repository || ""), ...candidatesFromSourceEvidence(sourceEvidence, request.repository || "")], {repositoryScope, exclusions: request.exclusions});
   const astResults = Array.isArray(ast.results) ? ast.results : [];
   const quality = {
       astFilesParsedOnce: Object.values(ast.stats.parseCounts || {}).every((count) => count === 1),
@@ -72,7 +74,10 @@ function runStage2(request, dependencies = {}) {
       emptyChecksAreCandidates: sourceEvidence.checks.filter((check) => check.status === "candidate-empty").length,
   };
   const facts = createStageFacts({ stage: 2, status: ast.status === "partial" ? "partial" : "candidate", transition, ast, sourceEvidence, quality, budgets, capabilities: normalizeCapabilities(request.capabilities || []) });
-  facts.runtime.projection = request.projection || {};
+  facts.repositoryScope = repositoryScope;
+    facts.repository = request.repository;
+    facts.exclusions = request.exclusions;
+    facts.runtime.projection = request.projection || {};
   facts.runtime.source = request.source || null;
   facts.runtime.cache = request.cache || { enabled: false, mode: "not-configured" };
   facts.runtime.report = request.report || {};
@@ -83,13 +88,11 @@ function runStage2(request, dependencies = {}) {
   if (ownershipGraph) facts.quality.ownershipGraph = validateOwnershipGraph(ownershipGraph);
   facts.runtime.boundarySource = "canonical-transition";
   facts.quality.coverageGate = evaluateStage2Coverage(facts, { requirePlan: true });
-  if (facts.quality.ownershipGraph && !facts.quality.ownershipGraph.ok) facts.quality.coverageGate.errors.push(...facts.quality.ownershipGraph.errors.map((error) => `ownershipGraph: ${error}`));
   applySafeBudget(facts, budgets.factsBytes, DEFAULT_STAGE2_BUDGET, 8192);
   facts.quality.coverageGate = evaluateStage2Coverage(facts, { requirePlan: true });
-  if (facts.quality.ownershipGraph && !facts.quality.ownershipGraph.ok) facts.quality.coverageGate.errors.push(...facts.quality.ownershipGraph.errors.map((error) => `ownershipGraph: ${error}`));
   applySafeBudget(facts, budgets.factsBytes, DEFAULT_STAGE2_BUDGET, 8192);
   if (!facts.quality.coverageGate.ok) facts.status = "partial";
-  return facts;
+  return require("../../../shared/artifacts/src/canonical/facts.js").prepareFacts(facts);
 }
 
 function buildStage2Summary(facts, artifact = null) {

@@ -1,6 +1,5 @@
 "use strict";
 const crypto = require("node:crypto");
-const { absenceProjection } = require("../../../shared/report/src/model/projection.js");
 const { canonicalJson } = require("../../../shared/report/src/model/serialization.js");
 const { validateReportModel } = require("../../../shared/report/src/model/validation.js");
 const { REQUIRED_BUNDLE_DOCUMENTS, listMarkdownDocuments } = require("../../../shared/report/src/bundle/documents.js");

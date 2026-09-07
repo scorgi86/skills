@@ -8,11 +8,11 @@ const test = require("node:test");
 const { normalizeReportModel } = require("../../src/model/normalization.js");
 const { validateReportModel } = require("../../src/model/validation.js");
 function fixture() { const root = fs.mkdtempSync(path.join(os.tmpdir(), "report-model-")); const file = path.join(root, "a.js"); fs.writeFileSync(file, "const x = true;\n"); const sourceHash = crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex"); return { root, sourceHash }; }
-function model() { const { root, sourceHash } = fixture(); return normalizeReportModel({ target: "X", scope: { repositories: [{ id: "repository-a", root, role: "source" }] }, capabilities: [{ id: "ownership", status: "confirmed", evidenceRefs: ["ev-1"] }], evidenceIndex: [{ id: "ev-1", status: "source-confirmed", repository: "repository-a", file: "a.js", sourceHash }], confirmedUsages: [{ id: "use-1", evidenceRefs: ["ev-1"] }], checkedNoUsage: [], transition: { "next stage": "8" } }); }
+function model() { const { root, sourceHash } = fixture(); return normalizeReportModel({ target: "X", scope: { repositories: [{ id: "repository-a", root, role: "source" }] }, capabilities: [{ id: "ownership", status: "confirmed", evidenceRefs: ["ev-1"] }], evidenceIndex: [{ id: "ev-1", status: "source-confirmed", repository: "repository-a", file: "a.js", line: 1, endLine: 1, sourceFragment: "const x = true;", sourceHash }], confirmedUsages: [{ id: "use-1", evidenceRefs: ["ev-1"] }], checkedNoUsage: [], transition: { "next stage": "8" } }); }
 test("model validator accepts canonical model", () => assert.equal(validateReportModel(model()).ok, true));
 test("model normalization accepts canonical Stage 2 confirmation fields", () => {
   const { root, sourceHash } = fixture();
-  const value = normalizeReportModel({ target: "X", scope: { repositories: [{ id: "repository-a", root, role: "source" }] }, capabilities: [{ id: "ownership", status: "confirmed", evidenceRefs: ["ev-1"] }], evidenceIndex: [{ id: "ev-1", repository: "repository-a", file: "a.js", confirmation: { status: "source-confirmed", sourceHash } }], confirmedUsages: [{ id: "use-1", evidenceRefs: ["ev-1"] }], transition: { "next stage": "8" } });
+  const value = normalizeReportModel({ target: "X", scope: { repositories: [{ id: "repository-a", root, role: "source" }] }, capabilities: [{ id: "ownership", status: "confirmed", evidenceRefs: ["ev-1"] }], evidenceIndex: [{ id: "ev-1", repository: "repository-a", file: "a.js", confirmation: { status: "source-confirmed", sourceHash, line: 1, endLine: 1, sourceFragment: "const x = true;" } }], confirmedUsages: [{ id: "use-1", evidenceRefs: ["ev-1"] }], transition: { "next stage": "8" } });
   assert.equal(value.evidenceIndex[0].status, "source-confirmed");
   assert.equal(value.evidenceIndex[0].sourceHash, sourceHash);
   assert.equal(validateReportModel(value).ok, true);
@@ -40,3 +40,48 @@ test("runtime enforces published model scalar and object types", () => { const v
 test("runtime enforces published absence item types and uniqueness", () => { const value = model(), absence = { id: "absence", status: "checked-no-usage", expectedNames: ["setX", "setX"], reason: 7, repository: "repository-a", searchScope: "src", performedChecks: ["text"], ordersChecked: ["N/A"], linkingMethodsChecked: ["N/A"], resultComplete: true, resultTruncated: false, consequence: "absent", evidenceRefs: ["ev-absence"] }; value.checkedNoUsage = [absence]; value.evidenceIndex.push({ ...absence, id: "ev-absence", evidenceKind: "absence", evidenceRefs: [] }); value.integrity.canonicalDigest = require("../../src/model/serialization.js").digest(require("../../src/model/serialization.js").withoutIntegrity(value)); const errors = validateReportModel(value).errors; assert.ok(errors.some((x) => x.path.endsWith("expectedNames") && x.code === "unique")); assert.ok(errors.some((x) => x.path.endsWith("reason") && x.code === "absence-contract")); });
 test("runtime enforces checkedNoUsage status and standalone absence evidence schema", () => { const value = model(), protocol = { status: "checked-no-usage", expectedNames: ["setX"], reason: "peer API", repository: "repository-a", searchScope: "src", performedChecks: ["text"], ordersChecked: ["N/A"], linkingMethodsChecked: ["N/A"], resultComplete: true, resultTruncated: false, consequence: "absent", evidenceRefs: ["ev-absence"] }; value.checkedNoUsage = [{ id: "absence", ...protocol, status: "candidate" }]; value.evidenceIndex.push({ id: "ev-absence", status: "checked-no-usage", evidenceRefs: ["ev-absence"] }); value.integrity.canonicalDigest = require("../../src/model/serialization.js").digest(require("../../src/model/serialization.js").withoutIntegrity(value)); const errors = validateReportModel(value).errors; assert.ok(errors.some((x) => x.path.endsWith(".status") && x.code === "absence-contract")); assert.ok(errors.some((x) => x.path.startsWith("evidenceIndex") && x.code === "absence-contract")); });
 test("runtime resolves capability and typed planning references", () => { const value = model(); value.capabilities.push({ id: "reference", status: "not-applicable", requiredForFinalReport: false, evidenceRefs: ["missing-evidence"] }); value.criticalPaths = [{ id: "path", status: "not-applicable", scenarioRefs: ["missing-scenario"], testSurfaceRefs: ["missing-test"] }]; value.integrity.canonicalDigest = require("../../src/model/serialization.js").digest(require("../../src/model/serialization.js").withoutIntegrity(value)); const paths = validateReportModel(value).errors.filter((x) => x.code === "broken-ref").map((x) => x.path); assert.ok(paths.some((x) => x.startsWith("capabilities"))); assert.ok(paths.some((x) => x.endsWith("scenarioRefs"))); assert.ok(paths.some((x) => x.endsWith("testSurfaceRefs"))); });
+test("unreferenced source-confirmed evidence also requires current exact anchors", () => {
+    const value = model();
+    value.evidenceIndex.push({...value.evidenceIndex[0], id: "ev-orphan", line: 999, endLine: 999});
+    value.integrity = normalizeReportModel(value).integrity;
+    assert.equal(validateReportModel(value).ok, false);
+});
+test("shared evidence is read once per model validation and duplicate IDs remain invalid", (t) => {
+    const value = model(), original = fs.readFileSync;
+    let sourceReads = 0;
+    t.mock.method(fs, "readFileSync", (...args) => { if (path.basename(String(args[0])) === "a.js") sourceReads += 1; return original(...args); });
+    assert.equal(validateReportModel(value).ok, true);
+    assert.equal(sourceReads, 1);
+    value.evidenceIndex.push({...value.evidenceIndex[0]});
+    value.integrity = normalizeReportModel(value).integrity;
+    assert.ok(validateReportModel(value).errors.some((error) => error.code === "duplicate-id"));
+});
+
+test("declared coverage blocks RRZA-shaped incomplete lifecycle despite confirmed decision", () => {
+ const value=model(); value.coverage={status:"partial",profile:{requiredCollections:["dictionary","criticalPaths"],requiredCriticalPaths:["open","save","cancel"],notApplicable:{},notApplicableCriticalPaths:{}}};
+ const result=validateReportModel(normalizeReportModel(value)); assert.ok(result.errors.some(x=>x.code==="research-incomplete"));assert.ok(result.errors.some(x=>x.code==="coverage-required"));assert.ok(result.errors.some(x=>x.code==="critical-path-required"));
+});
+test("complete research permits a proven product gap and justified nonapplicability", () => {
+ const value=model();value.coverage={status:"complete",profile:{requiredCollections:["dictionary","criticalPaths"],notApplicable:{dictionary:"No name transitions in this task"},requiredCriticalPaths:["save","cancel"],notApplicableCriticalPaths:{cancel:"Operation cannot be cancelled"}}};
+ value.criticalPaths=[{id:"save-path",coverageKey:"save",status:"confirmed",steps:["write data"],evidenceRefs:["ev-1"]}];value.gaps=[{id:"gap",category:"product-gap",status:"confirmed",expectedPath:"missing setter",evidenceRefs:["ev-1"]}];
+ assert.equal(validateReportModel(normalizeReportModel(value)).ok,true);
+ value.criticalPaths[0].status="candidate";assert.ok(validateReportModel(normalizeReportModel(value)).errors.some(x=>x.code==="critical-path-required"));
+});
+
+test("direct report rows normalize known intermediate categories without promoting proof",()=>{
+ const value=model();value.gaps=[{id:"gap",status:"product-gap",statement:"Absent API",expectedPath:"setX"}];value.scenarios=[{id:"candidate",status:"matched"}];const normalized=normalizeReportModel(value);
+ assert.equal(normalized.gaps[0].category,"product-gap");assert.equal(normalized.gaps[0].status,"unknown");assert.equal(normalized.scenarios[0].status,"candidate");
+ assert.throws(()=>normalizeReportModel({...value,scenarios:[{id:"bad",status:"typo"}]}),/Unsupported.*status/);
+});
+test("coverage profile validates requirement names and N/A reasons",()=>{
+ const {validateCoverageProfile}=require("../../src/model/coverage.js");
+ assert.equal(validateCoverageProfile({requiredCollections:[],notApplicable:{}}).ok,true);
+ for(const value of [{requiredCollections:["bogus"]},{requiredCollections:["dictionary"],notApplicable:{dictionary:" "}},{requiredCriticalPaths:["save"],notApplicableCriticalPaths:{open:"irrelevant"}},{requiredCollections:"dictionary"}])assert.equal(validateCoverageProfile(value).ok,false);
+});
+test("coverage diagnostics tolerate malformed rows without throwing",()=>{
+ const value=model();value.coverage={profile:{requiredCollections:["criticalPaths"],requiredCriticalPaths:["save"]}};value.criticalPaths=[null];assert.doesNotThrow(()=>validateReportModel(value));
+});
+test("model provenance retains typed confirmation obligations alongside receipts",()=>{
+ const value=model();const checkRequirements=[{check:"verify save",type:"source-confirmation",repository:"repository-a",file:"a.js"}];
+ assert.deepEqual(normalizeReportModel({...value,checkRequirements}).provenance.checkRequirements,checkRequirements);
+});

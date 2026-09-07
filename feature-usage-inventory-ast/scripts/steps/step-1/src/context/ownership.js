@@ -61,6 +61,8 @@ function normalizeOwnership(request, sourceEvidence, freshnessFileCache = new Ma
             const confirmation = confirmationWithFreshness(group.confirmation, request.sourceRoot, freshnessFileCache);
             const status = group.status || "candidate";
             return {
+                repository: group.repository || confirmation?.repository,
+                sourceFragment: group.sourceFragment,
                 id: group.id || `ownership-${index + 1}`,
                 order: group.order || "уточнить",
                 role: group.role || "владелец/контейнер",

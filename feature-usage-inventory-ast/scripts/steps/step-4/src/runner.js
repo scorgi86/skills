@@ -6,6 +6,8 @@ const fs = require("node:fs");
 
 const path = require("node:path");
 
+const { normalizeSearchProfile } = require("../../../shared/search/src/search_profile.js");
+
 const { runEvidenceChecks } = require("../../../shared/evidence/src/collection/source_evidence.js");
 
 function normalizeFamilies(request) {
@@ -26,6 +28,7 @@ function runStage4(request, dependencies = {}) {
   const families = normalizeFamilies(request);
   const checks = families.flatMap((family) => family.checks.map((check, index) => ({
     ...check,
+    extensions: normalizeSearchProfile(check.searchProfile || check.languages || check.extensions ? check : family).extensions,
     id: `${family.id}/${check.id || index + 1}`,
     retainAllMatches: true,
   })));
@@ -46,7 +49,9 @@ function runStage4(request, dependencies = {}) {
       id: family.id,
       receiver: family.receiver,
       relation: family.relation,
-      status: matched ? "candidate" : "candidate-empty",
+      status: familyChecks.some(check => check.resultComplete === false) ? "partial" : matched ? "candidate" : "candidate-empty",
+      searchedScope: familyChecks.map(check => check.spec),
+      absenceClaim: false,
       checkIds: familyChecks.map((check) => check.id),
       totalMatches: matched,
       fullObservationCount: familyChecks.reduce((sum, check) => sum + (check.fullMatches || []).length, 0),
@@ -57,7 +62,7 @@ function runStage4(request, dependencies = {}) {
     schemaVersion: "1.0.0",
     stage: 4,
     capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []),
-    status: "candidate",
+    status: sourceEvidence.checks.some(check => check.resultComplete === false) ? "partial" : "candidate",
     transition,
     recipientFamilies,
     priorEvidence: request.priorEvidence || [],

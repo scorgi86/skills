@@ -1,16 +1,16 @@
 "use strict";
 const path = require("node:path");
 const fs = require("node:fs");
-const { buildStage7, readJson, formatFacts, buildSummary } = require("../../../steps/step-7/src/runner.js");
+const { buildStage7, formatFacts, buildSummary } = require("../../../steps/step-7/src/runner.js");
+const { requiredOptions } = require("../options.js");
 function main() {
     try {
-        const args = process.argv.slice(2);
-        const get = (flag)=>args[args.indexOf(flag) + 1];
-        const requestFile = get("--request");
-        const output = get("--output");
-        if (!requestFile || !output) throw new Error("Provide --request <json-file> --output <facts.json>");
+        const args = requiredOptions(process.argv.slice(2), ["--request", "--output"]);
+        const requestFile = args["--request"], output = args["--output"];
         const absoluteRequest = path.resolve(requestFile);
-        const facts = buildStage7(readJson(absoluteRequest), {
+        const request = JSON.parse(fs.readFileSync(absoluteRequest, "utf8"));
+        if (!request || typeof request !== "object" || Array.isArray(request)) throw new Error("Stage 7 request must be a JSON object");
+        const facts = buildStage7(request, {
             artifactBase: path.dirname(absoluteRequest)
         });
         fs.writeFileSync(path.resolve(output), `${formatFacts(facts)}\n`);

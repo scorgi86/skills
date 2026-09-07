@@ -1,5 +1,6 @@
 "use strict";
 const crypto = require("node:crypto");
+const { receiptErrors, requirementErrors } = require("./checks.js");
 const SCHEMA_VERSION = "4.0.0";
 const CANONICAL_FIELDS = new Set([
     "schemaVersion",
@@ -48,6 +49,17 @@ function validateCanonicalStageResult(value) {
         }
     }
     if (!value?.summary || typeof value.summary !== "object" || Array.isArray(value.summary) || !value?.metrics || typeof value.metrics !== "object" || Array.isArray(value.metrics)) errors.push("summary and metrics must be objects");
+    if (value?.status === "closed" && (value?.openChecks?.length || value?.summary?.closure?.ok === false || value?.summary?.closure?.errors?.length)) errors.push("closed canonical result contains blockers; reissue the artifact and dependent downstream digests after resolving checks/gates");
+    for (const receipt of (Array.isArray(value?.facts) ? value.facts : []).filter(row => row?.kind === "check-resolution")) errors.push(...receiptErrors(receipt, new Set(value.evidenceRefs || []), value.summary?.repositoryScope || undefined, { requirements: value.summary?.checkRequirements || [], facts: value.facts }));
+    if (value?.summary?.checkRequirements !== undefined) {
+        errors.push(...requirementErrors(value.summary.checkRequirements));
+        if (Array.isArray(value.summary.checkRequirements)) for (const row of value.summary.checkRequirements) {
+            if (!value.openChecks?.includes(row?.check) && !value.facts?.some(fact => fact.kind === "check-resolution" && fact.check === row?.check)) errors.push(`checkRequirements has no open question or resolution: ${row?.check}`);
+        }
+    }
+    if (value?.summary?.checkOrigins !== undefined) {
+        if (!Array.isArray(value.summary.checkOrigins) || value.summary.checkOrigins.some(row => !row || typeof row.check !== "string" || !value.openChecks?.includes(row.check) || !/^[a-f0-9]{64}$/.test(row.originDigest || ""))) errors.push("summary.checkOrigins must bind current openChecks to sha256 origins");
+    }
     for (const [index, fact] of (value?.facts || []).entries())if (fact?.status === "checked-no-usage") {
         for (const field of [
             "expectedNames",

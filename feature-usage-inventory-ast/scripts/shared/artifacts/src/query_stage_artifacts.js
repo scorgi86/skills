@@ -5,6 +5,7 @@ const path = require("node:path");
 const { validateStageArtifact } = require("./stage_artifact_v4.js");
 
 const fs = require("node:fs");
+const { artifactLocation } = require("./artifact_location.js");
 
 function parseArgs(argv) {
   const options = { limit: 20 };
@@ -20,7 +21,7 @@ function includes(value, expected) { return !expected || String(value || "").toL
 function refs(item) { return Object.entries(item || {}).filter(([key, value]) => key.endsWith("Refs") && Array.isArray(value)).flatMap(([, value]) => value.map(String)); }
 
 function queryStageArtifacts(options) {
-  const root = path.resolve(options.artifact), validation = validateStageArtifact(root);
+  const { root } = artifactLocation(options.artifact), validation = validateStageArtifact(root);
   if (!validation.ok) throw new Error(`Invalid canonical stage artifact: ${validation.errors.join("; ")}`);
   const artifact = JSON.parse(fs.readFileSync(path.join(root, "canonical", "evidence.json"), "utf8"));
   const stageResult = JSON.parse(fs.readFileSync(path.join(root, "canonical", "stage-result.json"), "utf8"));

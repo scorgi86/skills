@@ -1,6 +1,7 @@
 "use strict";
 const { prepareFacts, normalizeStatus, canonicalFacts, unique, normalizeUsage, budgetMetrics } = require("./facts.js");
 const { SCHEMA_VERSION, digest } = require("./validation.js");
+const { closureErrors } = require("./checks.js");
 function createCanonicalStageResult({ facts, input = {}, usage, metrics = {} }) {
     if (!facts || !Number.isInteger(Number(facts.stage))) throw new Error("Canonical stage result requires numeric facts.stage");
     facts = prepareFacts(facts);
@@ -11,6 +12,11 @@ function createCanonicalStageResult({ facts, input = {}, usage, metrics = {} }) 
         status: normalizeStatus(facts.status),
         summary: {
             ...facts.summary || {},
+            ...((facts.checkRequirements || facts.provenance?.checkRequirements) ? { checkRequirements: facts.checkRequirements || facts.provenance.checkRequirements } : {}),
+            lineage: facts.summary?.lineage || facts.provenance?.lineage || [],
+            checkHistory: facts.summary?.checkHistory || facts.provenance?.checkHistory || [],
+            repositoryScope: facts.repositoryScope || facts.scope || null,
+            closure: { ok: closureErrors(facts).length === 0, errors: closureErrors(facts) },
             stage: Number(facts.stage),
             status: facts.status || "unknown",
             target: facts.target || facts.transition?.fields?.target || null,
@@ -24,6 +30,7 @@ function createCanonicalStageResult({ facts, input = {}, usage, metrics = {} }) 
             ...facts.evidenceRefs || [],
             ...(facts.canonicalEvidence || []).map((item)=>item.id),
             ...(facts.capabilities || []).flatMap((item)=>item.evidenceRefs || [])
+            ,...(facts.checkResolutions || facts.provenance?.checkResolutions || []).flatMap(item=>item.evidenceRefs || [])
         ]),
         openChecks: unique(facts.openChecks || []),
         metrics: {

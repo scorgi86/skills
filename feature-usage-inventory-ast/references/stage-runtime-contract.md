@@ -4,6 +4,10 @@ Use this contract when a stage executes AST queries or high-fanout source eviden
 
 ## Budgets
 
+Stage 3/4 consumer/family scopes may declare `searchProfile: {languages: ["cpp"], extensions: [".cpp", ".h"]}`; extensions override language expansion. Declare every relevant language per repository; legacy defaults focus on JS/TS and are not evidence of native-code absence. Search results record actual scope, limits and errors. Stage 5 captures `rg --files` through temporary file descriptors, preserving complete technical results without an in-memory child-process buffer limit. A process/storage failure remains incomplete; do not shrink scope to make it pass.
+
+Stage 0 limitations accept strings or structured rows with statement/detail/description/reason; structured fields are preserved, unsupported values fail early. Canonical selectors accept a stage root, `canonical/`, or canonical `stage-result.json`/`manifest.json`. A standalone legacy JSON result is readable as a result, not as an evidence bundle.
+
 Stages may declare:
 
 ```json

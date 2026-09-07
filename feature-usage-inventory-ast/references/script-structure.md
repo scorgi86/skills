@@ -31,12 +31,13 @@ CLI обрабатывает запуск и вывод; предметная л
 | shared/ast | parsing — parser/walker; analysis — файлы, анализ, символы, связи, evidence; cache — идентичность и проверяемое файловое хранение; query — запросы и цепочки; output — идентификация, группировка, проекция и политика; batch — пакетный анализ |
 | shared/evidence | collection — координатор, проверки, обход, группировка и выбор; canonicalization — адаптеры, идентификация, подтверждение и канонизация кандидатов |
 | shared/output | stage_facts — facts; summary — сборка, проекция, бюджет и compaction; остальные инструменты сохраняют собственные реализации |
-| shared/artifacts | canonical — facts, result и validation; хранение и запросы артефактов отдельно |
+| shared/artifacts | canonical — facts, result, validation, checks, lineage и receipt_evidence; хранение и запросы артефактов отдельно |
 | shared/report | model — строки и контракт, нормализация, сериализация, проверки, проекции; markdown — parser, requirements, validate_report и rules; bundle — состав и проверка документов |
-| state | state_model, persistence, stage_state; artifacts — проверки canonical и Stage 8; goal_contract отдельно |
+| state | state_model, persistence, stage_state; file_transaction — атомарная запись и блокировка; artifacts — проверки canonical и Stage 8; goal_contract отдельно |
+| steps/step-0 | execution_scope — согласование входов и параметры поиска; runner — поиск по репозиториям и подготовка результата |
 | steps/step-1 | context — GitNexus и ownership; summary; runner и существующие gate/render |
 | steps/step-8 | rendering — Markdown-функции и три документа; runner — проверка входа и сохранение |
-| flows/full-flow | stage_pipeline — один запрошенный этап 0–7 за вызов |
+| flows/full-flow | stage_pipeline — один запрошенный этап 0–7 за вызов, Stage 0 execution-scope preflight; transaction — prepare/archive/publish/advance и проверка кандидата перед публикацией/восстановлением |
 | shared/dto, ownership, diagnostics, search; остальные steps | Существующие обязанности сохранены; CLI-выполнение вынесено в команды |
 
 Индексы общих подсистем сохраняют именованные ленивые API. Для разбитых реализаций индекс собирает стабильный объект из выделенных функций. Индексы state и steps сохраняют прежние функции основного API. Внутренние файлы импортируют конкретные зависимости напрямую, без обращения через собственный индекс. У shared/search нет пустого индекса: его внутренние операции вызываются обработчиками поиска.

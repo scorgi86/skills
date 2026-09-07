@@ -1,7 +1,7 @@
 "use strict";
 const path = require("node:path");
 const fs = require("node:fs");
-const crypto = require("node:crypto");
+const { validateSourceAnchor } = require("../../../evidence/src/canonicalization/source_anchor.js");
 const { asArray, cleanText } = require("./rows.js");
 function repositoryMap(scope) {
     return new Map(asArray(scope?.repositories).filter((row)=>row && typeof row === "object" && cleanText(row.id) && cleanText(row.root) && cleanText(row.role)).map((row)=>[
@@ -26,7 +26,7 @@ function evidenceState(row, repositories) {
         code: "evidence-scope",
         message: "Evidence file must be inside its declared repository root"
     };
-    let currentHash;
+    let sourceBytes;
     try {
         const physicalRoot = fs.realpathSync(repository.root), physicalFile = fs.realpathSync(file), physicalRelative = path.relative(physicalRoot, physicalFile);
         if (!physicalRelative || physicalRelative.startsWith("..") || path.isAbsolute(physicalRelative)) return {
@@ -35,7 +35,7 @@ function evidenceState(row, repositories) {
             message: "Evidence file must physically remain inside its declared repository root"
         };
         if (!fs.statSync(physicalFile).isFile()) throw new Error("not a file");
-        currentHash = crypto.createHash("sha256").update(fs.readFileSync(physicalFile)).digest("hex");
+        sourceBytes = fs.readFileSync(physicalFile);
     } catch  {
         return {
             ok: false,
@@ -43,14 +43,7 @@ function evidenceState(row, repositories) {
             message: "Evidence source file is unavailable"
         };
     }
-    if (!/^[a-f0-9]{64}$/i.test(cleanText(row.sourceHash)) || currentHash !== cleanText(row.sourceHash).toLowerCase()) return {
-        ok: false,
-        code: "stale-evidence",
-        message: "Evidence hash must equal the current full-file SHA-256"
-    };
-    return {
-        ok: true
-    };
+    return validateSourceAnchor(row, sourceBytes);
 }
 module.exports = {
     repositoryMap,

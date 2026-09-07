@@ -24,27 +24,35 @@ function parseRawNameStatus(text) { return text.split(/\r?\n/).filter(Boolean).m
 
 function splitPatchSections(patch) { const sections = new Map(); const chunks = patch.split(/^diff --git a\/(.*?) b\/.*$/m); for (let index = 1; index < chunks.length; index += 2) sections.set(chunks[index], `diff --git a/${chunks[index]} b/${chunks[index + 1]}`); return sections; }
 
-function normalizeSurfaces(items) { if (!Array.isArray(items) || !items.length) throw new Error("Stage 6 requires declared sourceSurfaces"); return items.map((item) => { if (!item.path || !item.layer || !item.role) throw new Error("Each source surface requires path, layer, role"); return { path: String(item.path), layer: String(item.layer), role: String(item.role) }; }); }
+function normalizeSurfaces(items) { if (!Array.isArray(items) || !items.length) throw new Error("Stage 6 requires declared sourceSurfaces"); return items.map((item) => { if (!item.path || !item.layer || !item.role) throw new Error("Each source surface requires path, layer, role"); return { ...item, path: String(item.path), layer: String(item.layer), role: String(item.role), evidenceRefs: item.evidenceRefs || [] }; }); }
 
 function resolveMode(request) { return request.mode || (request.featureReference ? "feature-reference" : request.reference?.from || request.reference?.to ? "commit-range" : "commit-range"); }
 
 function featureReference(request, transition, surfaces) {
   const feature = request.featureReference || {};
   if (!feature.target || !feature.referenceEntity || !Array.isArray(feature.capabilities) || !feature.capabilities.length) throw new Error("feature-reference requires target, referenceEntity, and capabilities");
-  return { schemaVersion: "2.0.0", stage: 6, status: "candidate", mode: "feature-reference", transition, reference: { target: feature.target, referenceEntity: feature.referenceEntity, sourcePathsDigest: digest(surfaces.map((item) => item.path).sort().join("\n")) }, sourceSurfaces: surfaces.map((surface) => ({ ...surface, confirmed: true })), capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(feature.capabilities), priorArtifacts: request.priorArtifacts || [], openChecks: request.openChecks || [] };
+  return { schemaVersion: "2.0.0", stage: 6, status: "candidate", mode: "feature-reference", transition, reference: { target: feature.target, referenceEntity: feature.referenceEntity, sourcePathsDigest: digest(surfaces.map((item) => item.path).sort().join("\n")) }, sourceSurfaces: surfaces.map((surface) => ({ ...surface, confirmed: false })), capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(feature.capabilities), priorArtifacts: request.priorArtifacts || [], openChecks: request.openChecks || [] };
 }
 
+function attachEvidence(facts, request) {
+  const previous = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const sourceEvidence = request.sourceEvidence || (request.evidence ? require("../../../shared/evidence/src/collection/source_evidence.js").runEvidenceChecks({ ...request.evidence, retainAllMatches: true }) : undefined);
+  const prepared = require("../../../shared/artifacts/src/canonical/facts.js").prepareFacts({ ...facts, repositoryScope: request.repositoryScope || previous.summary?.repositoryScope, repository: request.repository, canonicalEvidence: request.canonicalEvidence || [], sourceEvidence });
+  const confirmed = new Set((prepared.canonicalEvidence || []).filter(e=>e.confirmation?.status === "source-confirmed").map(e=>e.id));
+  prepared.sourceSurfaces = prepared.sourceSurfaces.map(surface=>({ ...surface, confirmed: surface.evidenceRefs.length > 0 && surface.evidenceRefs.every(id=>confirmed.has(id)) }));
+  return prepared;
+}
 function runStage6(request, dependencies = {}) {
   if (Number(request && request.stage) !== 6 || !request.transitionArtifact) throw new Error("Stage 6 requires stage and transitionArtifact");
   const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const surfaces = normalizeSurfaces(request.sourceSurfaces);
   const mode = resolveMode(request);
-  if (mode === "feature-reference") return featureReference(request, transition, surfaces);
+  if (mode === "feature-reference") return attachEvidence(featureReference(request, transition, surfaces), request);
   if (!["worktree-diff", "commit-range"].includes(mode) || !request.reference?.repo) throw new Error("Stage 6 mode must be feature-reference, worktree-diff, or commit-range");
   if (mode === "worktree-diff") {
     const base = request.reference.base || "HEAD";
     const rawAndPatch = git(request.reference.repo, ["diff", "--raw", "--patch", "--unified=0", base], dependencies);
-    return buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit: null, parent: base, subject: "worktree" } });
+    return attachEvidence(buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit: null, parent: base, subject: "worktree" } }), request);
   }
   const ref = request.reference.to || request.reference.ref;
   if (!ref) throw new Error("commit-range requires reference.ref or reference.to");
@@ -52,7 +60,7 @@ function runStage6(request, dependencies = {}) {
   const [commit, parents, subject] = metadata;
   const parent = request.reference.from || parents.split(" ")[0];
   const rawAndPatch = git(request.reference.repo, ["diff", "--raw", "--patch", "--unified=0", parent, commit], dependencies);
-  return buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit, parent, subject } });
+  return attachEvidence(buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit, parent, subject } }), request);
 }
 
 function buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata }) {

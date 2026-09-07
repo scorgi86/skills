@@ -35,34 +35,37 @@ function createTraversalOptions(request = {}, check = {}) {
     return {
         excludeDirs: new Set(names),
         excludeFilePatterns: patterns,
+        diagnostics: [],
         followSymlinks: check.followSymlinks === true || check.followSymlinks === undefined && request.followSymlinks === true
     };
 }
 function listFiles(entry, extensions, seen = new Set(), options = createTraversalOptions()) {
     const resolved = path.resolve(entry);
-    let stat;
+    const skip = (file, reason) => options.diagnostics?.push({ code: "excluded", file, reason });
     try {
-        stat = fs.statSync(resolved);
-    } catch  {
+        const stat = fs.statSync(resolved), real = fs.realpathSync(resolved);
+        if (seen.has(real)) { skip(resolved, "already-visited"); return []; }
+        if (stat.isFile()) {
+            if (extensions.has(path.extname(resolved).toLowerCase()) && !isExcludedFile(resolved, options)) return [resolved];
+            skip(resolved, "extension-or-exclusion"); return [];
+        }
+        if (!stat.isDirectory()) { skip(resolved, "unsupported-file-type"); return []; }
+        seen.add(real);
+        const files = [];
+        for (const child of fs.readdirSync(resolved, { withFileTypes: true })) {
+            const full = path.join(resolved, child.name);
+            if (options.excludeDirs.has(child.name)) { skip(full, "directory-exclusion"); continue; }
+            if (child.isDirectory() || child.isSymbolicLink()) {
+                if (shouldTraverseEntry(child, options)) files.push(...listFiles(full, extensions, seen, options));
+                else skip(full, "symlink-policy");
+            } else if (child.isFile() && extensions.has(path.extname(child.name).toLowerCase()) && !isExcludedFile(full, options)) files.push(full);
+            else skip(full, "extension-or-exclusion");
+        }
+        return files;
+    } catch (error) {
+        options.diagnostics?.push({ code: error.code || "traversal-error", file: resolved, message: error.message });
         return [];
     }
-    const real = fs.realpathSync(resolved);
-    if (seen.has(real)) return [];
-    if (stat.isFile()) return extensions.has(path.extname(resolved).toLowerCase()) && !isExcludedFile(resolved, options) ? [
-        resolved
-    ] : [];
-    if (!stat.isDirectory()) return [];
-    seen.add(real);
-    const files = [];
-    for (const child of fs.readdirSync(resolved, {
-        withFileTypes: true
-    })){
-        if (options.excludeDirs.has(child.name)) continue;
-        const full = path.join(resolved, child.name);
-        if ((child.isDirectory() || child.isSymbolicLink()) && shouldTraverseEntry(child, options)) files.push(...listFiles(full, extensions, seen, options));
-        else if (child.isFile() && extensions.has(path.extname(child.name).toLowerCase()) && !isExcludedFile(full, options)) files.push(full);
-    }
-    return files;
 }
 function traversalKey(entries, extensions, options) {
     return JSON.stringify({

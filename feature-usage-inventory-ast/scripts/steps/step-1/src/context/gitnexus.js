@@ -1,5 +1,6 @@
 "use strict";
 const path = require("node:path");
+const { resolveGitNexus } = require("../../../../shared/diagnostics/src/gitnexus_runtime.js");
 const { spawnSync } = require("node:child_process");
 function compactSymbol(value) {
     return value && {
@@ -59,20 +60,7 @@ function gitNexusInvocation(config) {
     if (config.file) args.push("--file", String(config.file));
     if (config.limit) args.push("--limit", String(config.limit));
     args.push(String(config.seed));
-    if (config.runnerPath) return {
-        command: process.execPath,
-        args: [
-            path.resolve(config.runnerPath),
-            ...args
-        ],
-        shell: false
-    };
-    const command = config.command || "gitnexus";
-    return {
-        command,
-        args,
-        shell: /\.(?:cmd|bat)$/i.test(command)
-    };
+    return resolveGitNexus(config, args);
 }
 function runGitNexusContext(config = {}, dependencies = {}) {
     if (config.enabled === false || !config.seed) return {
@@ -81,7 +69,8 @@ function runGitNexusContext(config = {}, dependencies = {}) {
         requests: []
     };
     const invoke = dependencies.spawnSync || spawnSync;
-    const call = gitNexusInvocation(config);
+    let call;
+    try { call = gitNexusInvocation(config); } catch(error) { return { status: "tool-unavailable", reason: error.message, requests: [] }; }
     const result = invoke(call.command, call.args, {
         cwd: config.cwd,
         encoding: "utf8",
@@ -97,7 +86,7 @@ function runGitNexusContext(config = {}, dependencies = {}) {
     };
     if (result.error || result.status !== 0) {
         request.status = "tool-unavailable";
-        request.reason = result.error ? result.error.message : String(result.stderr || result.stdout || "GitNexus context failed").trim();
+        request.reason = result.error ? `${result.error.code || "PROCESS_ERROR"}: ${result.error.message}${result.error.code === "EPERM" ? "; process execution denied; use an authorized runtime or record tool-unavailable" : ""}` : String(result.stderr || result.stdout || "GitNexus context failed").trim();
         return {
             status: "tool-unavailable",
             reason: request.reason,
