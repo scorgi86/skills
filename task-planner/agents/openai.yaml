@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Planner"
+  short_description: "Prepare a verified implementation plan"
+  default_prompt: "Use $task-planner to prepare an implementation-ready plan for this task."
