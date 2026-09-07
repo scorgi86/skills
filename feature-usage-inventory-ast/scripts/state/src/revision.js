@@ -1,13 +1,12 @@
 "use strict";
 const fs = require("node:fs");
 const path = require("node:path");
-const crypto = require("node:crypto");
 const { initialState, stage, validateState } = require("./state_model.js");
 const { readJson, sha256File } = require("./persistence.js");
 const { validateCanonicalArtifactForAdvance } = require("./artifacts/canonical_validation.js");
-const { withFileLock } = require("./file_transaction.js");
+const { StateStore } = require("./persistence/state_store.js");
 
-function createRevision(state, sourceState, options) {
+function buildRevisionState(state, sourceState, options) {
   const requested = stage(options.stage);
   if (requested > 7) throw new Error("revise supports closed stages 0..7; Stage 8 is a read-only rendering");
   if (!options["output-state"]) throw new Error("Missing --output-state");
@@ -46,20 +45,13 @@ function createRevision(state, sourceState, options) {
     reason: options.reason.trim(),
     supersededArtifacts: active.slice(requested),
   };
-  validateState(next);
-  // Validate every argument and original before creating destination directories.
-  fs.mkdirSync(path.dirname(output), { recursive: true });
-  withFileLock(`${output}.lock`, () => {
-    const temporary = `${output}.${crypto.randomUUID()}.tmp`;
-    try {
-      fs.writeFileSync(temporary, `${JSON.stringify(next, null, 2)}\n`, { flag: "wx" });
-      // link is an atomic create-if-absent publication; it cannot overwrite a racing writer.
-      fs.linkSync(temporary, output);
-    } finally {
-      if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
-    }
-  });
-  return { state: next, output };
+  return { state: validateState(next), output };
+}
+
+function createRevision(state, sourceState, options) {
+  const revision = buildRevisionState(state, sourceState, options);
+  const created = new StateStore(revision.output).create(revision.state);
+  return { state: created.state, output: revision.output };
 }
 
 function assertReissuedArtifact(state, requested, artifactPath) {
@@ -69,4 +61,4 @@ function assertReissuedArtifact(state, requested, artifactPath) {
     throw new Error(`Stage ${requested} revision must reissue an artifact in a new location with a new digest; preserve the original`);
   }
 }
-module.exports = { createRevision, assertReissuedArtifact };
+module.exports = { buildRevisionState, createRevision, assertReissuedArtifact };

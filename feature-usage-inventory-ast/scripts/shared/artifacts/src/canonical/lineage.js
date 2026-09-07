@@ -133,13 +133,16 @@ function validatePriorLineage({ stage, repositoryScope, priorArtifacts, artifact
     };
 }
 function buildLineageFromPrevious(previousPath, stage, scope, artifactBase = process.cwd()) {
-    if (stage === 0) return [];
+    return loadLineageFromPrevious(previousPath, stage, scope, artifactBase).lineage;
+}
+function loadLineageFromPrevious(previousPath, stage, scope, artifactBase = process.cwd()) {
+    if (stage === 0) return { prior: [], lineage: [], transition: null };
     if (!previousPath) fail(`stage ${stage} requires transitionArtifact or active state canonicalArtifact`);
     const file = canonicalResultPath(path.resolve(artifactBase, previousPath)), previous = read(file);
     if (previous.stage !== stage - 1) fail(`expected stage ${stage - 1} tip`);
     const links = previous.summary?.lineage;
     if (!Array.isArray(links) || links.length !== stage - 1) fail("legacy artifact has missing lineage");
-    return validatePriorLineage({
+    const validated = validatePriorLineage({
         stage,
         repositoryScope: scope,
         artifactBase: path.dirname(file),
@@ -148,10 +151,12 @@ function buildLineageFromPrevious(previousPath, stage, scope, artifactBase = pro
             file
         ],
         expectedArtifact: file
-    }).lineage;
+    });
+    return { ...validated, transition: previous };
 }
 module.exports = {
     validatePriorLineage,
     buildLineageFromPrevious,
+    loadLineageFromPrevious,
     validateCheckHistory
 };

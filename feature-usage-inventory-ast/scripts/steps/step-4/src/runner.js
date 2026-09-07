@@ -9,6 +9,7 @@ const path = require("node:path");
 const { normalizeSearchProfile } = require("../../../shared/search/src/search_profile.js");
 
 const { runEvidenceChecks } = require("../../../shared/evidence/src/collection/source_evidence.js");
+const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
 
 function normalizeFamilies(request) {
   if (!Array.isArray(request.recipientFamilies) || !request.recipientFamilies.length) throw new Error("Stage 4 requires recipientFamilies");
@@ -21,10 +22,10 @@ function normalizeFamilies(request) {
   });
 }
 
-function runStage4(request, dependencies = {}) {
+function runStage4(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 4) throw new Error("stage4_runner accepts only stage: 4");
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
-  const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const transition = extractTransition(transitionForRequest(context, request) || fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const families = normalizeFamilies(request);
   const checks = families.flatMap((family) => family.checks.map((check, index) => ({
     ...check,

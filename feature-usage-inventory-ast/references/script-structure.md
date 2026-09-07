@@ -44,13 +44,13 @@ CLI обрабатывает запуск и вывод; предметная л
 
 Stage 7 возвращает модель с digest без последующего изменения. Stage 8 остаётся отдельным запуском. Имя full-flow не означает автоматическое выполнение всех этапов. Кэши source evidence принадлежат одному запросу; форматы digest canonical result и report model остаются разными.
 
-Pipeline открывает один `InventorySession` на запуск. Session загружает immutable snapshot один раз, runner получает deep-frozen StageContext третьим аргументом после существующих `request` и `dependencies`, а изменения state выполняются только чистыми transitions внутри session. `StageUnitOfWork` публикует partial без продвижения state и фиксирует closed через WAL `prepared → artifact-published → state-prepared → state-committed`. Заменённый partial переносится в стабильный `.history`, если на него ссылается check history; временный `.attempts` после commit удаляется. State commit защищён единым `<state>.lock` и CAS по digest snapshot; после commit допускаются только идемпотентное recovery и cleanup.
+Pipeline открывает один `InventorySession` на запуск. Session загружает immutable snapshot один раз, runner получает внутренне маркированный deep-frozen StageContext третьим аргументом после существующих `request` и `dependencies`. Контекст переносит уже прочитанный transition и валидированную lineage; прямые вызовы runner сохраняют прежний файловый fallback. Изменения state выполняются только чистыми transitions внутри session. `StageUnitOfWork` публикует partial под journal lock без блокировки state, потому что state не меняется; closed дополнительно фиксирует state под единым `<state>.lock` и CAS через WAL `prepared → artifact-published → state-prepared → state-committed`. Заменённый partial переносится в стабильный `.history`, если на него ссылается check history; временный `.attempts` после commit удаляется. После state commit допускаются только идемпотентное recovery и cleanup.
 
 References, schemas и fixtures находятся на прежних местах. Перенос сохраняет базы разрешения ресурсов и относительных пользовательских путей, включая cwd там, где он использовался.
 
 ## Тесты и карты миграции
 
-`npm test` запускает `scripts/tests/all.test.js` с прежним режимом изоляции. Перенесённые наборы подключены один раз в исходном порядке; новые контрактные проверки добавлены после них. Сквозные тесты остаются на уровне подсистемы, профильные — в соответствующих логических папках.
+`npm test` использует стандартное обнаружение `*.test.js`, отдельный процесс для каждого файла и один test-файл за раз. Это исключает пересечение глобальных подмен Node API между наборами; отдельный ручной реестр тестов не поддерживается. Сквозные BDD-тесты находятся в `scripts/behavior/tests`, тесты подсистем — рядом с соответствующими логическими блоками.
 
 - [Текущая карта разбивки](script-split-layout.json) перечисляет новые пути, экспортируемые функции и команды.
 - [Историческая карта переноса](script-layout.json) сохраняет предыдущую миграцию целых файлов. Её пути описывают состояние до текущей разбивки и не являются реестром запуска.

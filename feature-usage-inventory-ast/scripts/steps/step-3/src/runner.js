@@ -9,13 +9,14 @@ const { extractTransition } = require("../../../shared/dto/src/extract_stage_tra
 const { runEvidenceChecks } = require("../../../shared/evidence/src/collection/source_evidence.js");
 
 const { normalizeSearchProfile } = require("../../../shared/search/src/search_profile.js");
+const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
 
 function escapeRegex(value) { return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
 
-function runStage3(request, dependencies = {}) {
+function runStage3(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 3) throw new Error("stage3_runner accepts only stage: 3");
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
-  const previous = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const previous = transitionForRequest(context, request) || JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const transition = extractTransition(previous);
   const boundaries = (previous.facts || []).filter((item) => item.kind === "boundary").map(({ kind, boundaryKind, ...item }) => ({ ...item, kind: boundaryKind }));
   const scopes = new Map((request.consumerScopes || []).map((item) => [item.id, item]));

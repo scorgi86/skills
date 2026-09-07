@@ -24,6 +24,7 @@ const { normalizeCapabilities } = require("../../../shared/dto/src/capability_co
 const { evaluateStage2Coverage } = require("./coverage_gate.js");
 
 const { applySafeBudget } = require("../../../shared/output/src/measure_context.js");
+const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
 
 const DEFAULT_STAGE2_BUDGET = 96 * 1024;
 
@@ -46,14 +47,14 @@ function advanceOwnershipGraph(prior, request = {}) {
   return buildOwnershipGraph({ ...base, maxOrder: request.ownershipGraphMaxOrder ?? base.maxOrder, nodes: [...nodes.values()], edges: [...edges.values()] });
 }
 
-function runStage2(request, dependencies = {}) {
+function runStage2(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 2) throw new Error("stage2_runner accepts only stage: 2");
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
   const budgets = normalizeBudgets(request, { factsBytes: DEFAULT_STAGE2_BUDGET, summaryBytes: 24 * 1024, evidenceBytes: 48 * 1024, reportBytes: 64 * 1024 });
-  const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
-    const priorScope = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8")).summary?.repositoryScope;
+  const previous = transitionForRequest(context, request) || JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const transition = extractTransition(previous);
+    const priorScope = previous.summary?.repositoryScope;
     const repositoryScope = request.repositoryScope || priorScope;
-  const previous = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const boundaries = [...(previous.facts || []).filter((item) => item.kind === "boundary").map(({ kind, boundaryKind, ...item }) => ({ ...item, kind: boundaryKind })), ...(request.boundaryCandidates || [])];
   const ownershipGraph = advanceOwnershipGraph(readOwnershipGraphArtifact(request.ownershipGraphArtifact), request);
   const ast = (dependencies.runAstBatch || runAstBatch)(request.ast || {});

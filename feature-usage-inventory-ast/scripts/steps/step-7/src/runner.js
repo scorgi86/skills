@@ -11,19 +11,26 @@ const { normalizeReportModel } = require("../../../shared/report/src/model/norma
 const { validateReportModel } = require("../../../shared/report/src/model/validation.js");
 const { validatePriorLineage } = require("../../../shared/artifacts/src/canonical/lineage.js");
 const { resolveChecks } = require("../../../shared/artifacts/src/canonical/checks.js");
+const { lineageForRequest } = require("../../../state/src/session/inventory_session.js");
 
 const { readCanonicalStageResult: readJson } = require("../../../shared/artifacts/src/stage_artifact_v4.js");
 
 function requireArray(value, name) { if (!Array.isArray(value)) throw new Error(`${name} must be an array`); return value; }
 
-function buildStage7(request, dependencies = {}) {
+function buildStage7(request, dependencies = {}, context = null) {
   if (Number(request?.stage) !== 7) throw new Error("Stage 7 requires stage: 7");
   if (request.coverage?.profile !== undefined) throw new Error("Stage 7 request.coverage.profile is output-only; use coverageProfile declared at Stage 0");
   if (request.repositoryScope && request.scope && require("../../../shared/artifacts/src/canonical/checks.js").scopeDigest(request.repositoryScope) !== require("../../../shared/artifacts/src/canonical/checks.js").scopeDigest(request.scope)) throw new Error("Stage 7 conflicting repositoryScope and scope");
   const scope = request.repositoryScope || request.scope;
   const priorArtifacts = requireArray(request.priorArtifacts, "priorArtifacts"); if (!priorArtifacts.length) throw new Error("Stage 7 requires priorArtifacts");
   const artifactBase = dependencies.artifactBase || process.cwd();
-  const { prior, lineage } = validatePriorLineage({ stage: 7, repositoryScope: request.repositoryScope || request.scope, priorArtifacts, artifactBase, expectedArtifact: dependencies.expectedArtifact || request.expectedArtifact, expectedArtifacts: dependencies.expectedArtifacts });
+  const hasDistinctExpectedTip = dependencies.expectedArtifact !== undefined && dependencies.expectedArtifact !== request.expectedArtifact;
+  const retained = dependencies.expectedArtifacts === undefined && !hasDistinctExpectedTip
+    ? lineageForRequest(context, request, artifactBase) : null;
+  const validated = retained
+    ? retained
+    : validatePriorLineage({ stage: 7, repositoryScope: request.repositoryScope || request.scope, priorArtifacts, artifactBase, expectedArtifact: dependencies.expectedArtifact || request.expectedArtifact, expectedArtifacts: dependencies.expectedArtifacts });
+  const { prior, lineage } = validated;
   if (Array.isArray(request.evidenceIndex) && request.evidenceIndex.length) throw new Error("Stage 7 evidenceIndex must be supplied through bounded canonical evidence selectors");
   const selections = (request.evidenceSelectors || []).map((selector) => { if (!selector.artifact) throw new Error("Each evidence selector requires artifact"); const selection = require("../../../shared/artifacts/src/query_stage_artifacts.js").queryStageArtifacts({ ...selector, artifact: path.resolve(artifactBase, selector.artifact) }); if (selection.truncated && selector.allowTruncated !== true) throw new Error(`Truncated evidence selector must be narrowed or explicitly marked allowTruncated: ${selector.artifact}`); return selection; });
   const selectedEvidence = mergeRows(selections.flatMap((selection) => selection.evidence));

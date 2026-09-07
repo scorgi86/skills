@@ -28,6 +28,26 @@ class StateStore {
     return readSnapshot(this.stateFile);
   }
 
+  create(state) {
+    const validated = validateState(structuredClone(state));
+    if (fs.existsSync(this.stateFile)) throw new Error(`State already exists: ${this.stateFile}`);
+    return withFileLock(this.lockFile, () => {
+      if (fs.existsSync(this.stateFile)) throw new Error(`State already exists: ${this.stateFile}`);
+      const temporary = `${this.stateFile}.${crypto.randomUUID()}.tmp`;
+      try {
+        fs.writeFileSync(temporary, `${JSON.stringify(validated, null, 2)}\n`, { flag: "wx" });
+        try { fs.linkSync(temporary, this.stateFile); }
+        catch (error) {
+          if (error.code === "EEXIST") throw new Error(`State already exists: ${this.stateFile}`);
+          throw error;
+        }
+      } finally {
+        if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
+      }
+      return readSnapshot(this.stateFile);
+    });
+  }
+
   commit(snapshot, draft) {
     if (!(snapshot instanceof SessionSnapshot) || !snapshot.digest) {
       throw new Error("StateStore commit requires a persisted SessionSnapshot");

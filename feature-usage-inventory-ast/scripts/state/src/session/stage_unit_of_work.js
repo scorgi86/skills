@@ -44,7 +44,9 @@ class StageUnitOfWork {
       }
       return response;
     };
-    return this.inventoryLock ? withFileLock(this.inventoryLock, commit) : commit();
+    const pending = this.currentCandidate(journal) || this.artifacts.read(prepared);
+    const advancesState = pending.canonical.status === "closed";
+    return this.inventoryLock && advancesState ? withFileLock(this.inventoryLock, commit) : commit();
   }
 
   loadOrPrepare() {
@@ -119,6 +121,4 @@ class StageUnitOfWork {
   }
 }
 
-function runStageUnitOfWork(options) { return new StageUnitOfWork(options).run(); }
-
-module.exports = { StageUnitOfWork, runStageUnitOfWork };
+module.exports = { StageUnitOfWork };

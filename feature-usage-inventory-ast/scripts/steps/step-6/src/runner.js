@@ -9,6 +9,7 @@ const crypto = require("node:crypto");
 const { extractTransition } = require("../../../shared/dto/src/extract_stage_transition.js");
 
 const fs = require("node:fs");
+const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
 
 function git(repo, args, dependencies = {}) {
   const result = (dependencies.spawnSync || childProcess.spawnSync)("git", ["-C", path.resolve(repo), ...args], { encoding: "utf8", windowsHide: true });
@@ -34,25 +35,26 @@ function featureReference(request, transition, surfaces) {
   return { schemaVersion: "2.0.0", stage: 6, status: "candidate", mode: "feature-reference", transition, reference: { target: feature.target, referenceEntity: feature.referenceEntity, sourcePathsDigest: digest(surfaces.map((item) => item.path).sort().join("\n")) }, sourceSurfaces: surfaces.map((surface) => ({ ...surface, confirmed: false })), capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(feature.capabilities), priorArtifacts: request.priorArtifacts || [], openChecks: request.openChecks || [] };
 }
 
-function attachEvidence(facts, request) {
-  const previous = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+function attachEvidence(facts, request, previous) {
+  previous = previous || JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const sourceEvidence = request.sourceEvidence || (request.evidence ? require("../../../shared/evidence/src/collection/source_evidence.js").runEvidenceChecks({ ...request.evidence, retainAllMatches: true }) : undefined);
   const prepared = require("../../../shared/artifacts/src/canonical/facts.js").prepareFacts({ ...facts, repositoryScope: request.repositoryScope || previous.summary?.repositoryScope, repository: request.repository, canonicalEvidence: request.canonicalEvidence || [], sourceEvidence });
   const confirmed = new Set((prepared.canonicalEvidence || []).filter(e=>e.confirmation?.status === "source-confirmed").map(e=>e.id));
   prepared.sourceSurfaces = prepared.sourceSurfaces.map(surface=>({ ...surface, confirmed: surface.evidenceRefs.length > 0 && surface.evidenceRefs.every(id=>confirmed.has(id)) }));
   return prepared;
 }
-function runStage6(request, dependencies = {}) {
+function runStage6(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 6 || !request.transitionArtifact) throw new Error("Stage 6 requires stage and transitionArtifact");
-  const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const previous = transitionForRequest(context, request) || JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const transition = extractTransition(previous);
   const surfaces = normalizeSurfaces(request.sourceSurfaces);
   const mode = resolveMode(request);
-  if (mode === "feature-reference") return attachEvidence(featureReference(request, transition, surfaces), request);
+  if (mode === "feature-reference") return attachEvidence(featureReference(request, transition, surfaces), request, previous);
   if (!["worktree-diff", "commit-range"].includes(mode) || !request.reference?.repo) throw new Error("Stage 6 mode must be feature-reference, worktree-diff, or commit-range");
   if (mode === "worktree-diff") {
     const base = request.reference.base || "HEAD";
     const rawAndPatch = git(request.reference.repo, ["diff", "--raw", "--patch", "--unified=0", base], dependencies);
-    return attachEvidence(buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit: null, parent: base, subject: "worktree" } }), request);
+    return attachEvidence(buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit: null, parent: base, subject: "worktree" } }), request, previous);
   }
   const ref = request.reference.to || request.reference.ref;
   if (!ref) throw new Error("commit-range requires reference.ref or reference.to");
@@ -60,7 +62,7 @@ function runStage6(request, dependencies = {}) {
   const [commit, parents, subject] = metadata;
   const parent = request.reference.from || parents.split(" ")[0];
   const rawAndPatch = git(request.reference.repo, ["diff", "--raw", "--patch", "--unified=0", parent, commit], dependencies);
-  return attachEvidence(buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit, parent, subject } }), request);
+  return attachEvidence(buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata: { commit, parent, subject } }), request, previous);
 }
 
 function buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, metadata }) {

@@ -12,6 +12,7 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 
 const { extractTransition } = require("../../../shared/dto/src/extract_stage_transition.js");
+const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
 
 const { runEvidenceChecks } = require("../../../shared/evidence/src/collection/source_evidence.js");
 
@@ -83,11 +84,11 @@ function fingerprintFiles(files) {
   return [...new Set(files.map((file) => path.resolve(file)))].sort().map((file) => ({ file, sha256: crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex") }));
 }
 
-function runStage5(request, dependencies = {}) {
+function runStage5(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 5) throw new Error("stage5_runner accepts only stage: 5");
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
   if (!Array.isArray(request.checks) || !request.checks.length) throw new Error("Stage 5 requires targeted checks");
-  const transition = extractTransition(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  const transition = extractTransition(transitionForRequest(context, request) || fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const coverage = (dependencies.findExactNameCoverage || findExactNameCoverage)(request.nameCoverage, dependencies);
   const coverageCheck = coverage.matchingFiles.length ? [{
     id: coverage.id,

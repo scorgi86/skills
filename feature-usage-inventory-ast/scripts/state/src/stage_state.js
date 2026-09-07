@@ -2,7 +2,8 @@
 const path = require("node:path");
 const fs = require("node:fs");
 const { fail, initialState, stage, assertCanonical, assertProbe } = require("./state_model.js");
-const { writeJson, sha256File } = require("./persistence.js");
+const { sha256File } = require("./persistence.js");
+const { StateStore } = require("./persistence/state_store.js");
 const { InventorySession } = require("./session/inventory_session.js");
 const transitions = require("./model/transitions.js");
 const { validateStage8Manifest } = require("./artifacts/stage8_validation.js");
@@ -71,14 +72,10 @@ function runCommand(argv) {
     const parsed = parseArgs(argv);
     const stateFile = path.resolve(required(parsed.options, "state"));
     if (parsed.command === "init") {
-        if (fs.existsSync(stateFile)) fail(`State already exists: ${stateFile}`);
-        fs.mkdirSync(path.dirname(stateFile), {
-            recursive: true
-        });
         const objectiveDigest = parsed.options["objective-digest"] || null;
         const value = initialState(parsed.options.mode || "continuous", parsed.options.driver || (objectiveDigest ? "goal" : "interactive"), objectiveDigest);
-        writeJson(stateFile, value);
-        return summary(value, true, "init");
+        const created = new StateStore(stateFile).create(value);
+        return summary(created.state, true, "init");
     }
     const session = InventorySession.open({ stateFile });
     const state = session.state;
@@ -153,11 +150,6 @@ function runCommand(argv) {
     return summary(advanced.snapshot.state, advanced.changed, kind);
 }
 function main(argv = process.argv.slice(2)) {
-    const parsed = parseArgs(argv);
-    if (parsed.command === "init") {
-        const file = path.resolve(required(parsed.options, "state"));
-        return require("./file_transaction.js").withFileLock(`${file}.lock`, () => runCommand(argv));
-    }
     return runCommand(argv);
 }
 module.exports = {

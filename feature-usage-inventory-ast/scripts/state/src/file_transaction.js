@@ -2,6 +2,16 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { randomUUID } = require("node:crypto");
 
+function renameWithRetry(from, to, rename = fs.renameSync, attempts = 80) {
+  for (let attempt = 1; ; attempt += 1) {
+    try { return rename(from, to); }
+    catch (error) {
+      if (!['EPERM', 'EBUSY'].includes(error.code) || attempt >= attempts) throw error;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
+    }
+  }
+}
+
 function atomicWriteJson(file, value) {
   const temporary = `${file}.${randomUUID()}.tmp`;
   let owned = false;
@@ -9,7 +19,7 @@ function atomicWriteJson(file, value) {
     const fd = fs.openSync(temporary, "wx");
     owned = true;
     try { fs.writeFileSync(fd, `${JSON.stringify(value, null, 2)}\n`); } finally { fs.closeSync(fd); }
-    fs.renameSync(temporary, file);
+    renameWithRetry(temporary, file);
   } finally {
     if (owned && fs.existsSync(temporary)) fs.unlinkSync(temporary);
   }
@@ -31,4 +41,4 @@ function withFileLock(file, run) {
     fs.unlinkSync(file);
   }
 }
-module.exports = { atomicWriteJson, withFileLock };
+module.exports = { atomicWriteJson, renameWithRetry, withFileLock };

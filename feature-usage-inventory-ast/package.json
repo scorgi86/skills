@@ -9,7 +9,7 @@
     "diagnose": "node scripts/index.js diagnose --pretty",
     "canonicalize-stage": "node scripts/index.js canonical_stage_cli",
     "validate": "node scripts/index.js quick_validate . && node scripts/index.js validate_skill .",
-    "test": "node --test --experimental-test-isolation=none scripts/tests/all.test.js"
+    "test": "node --test --test-isolation=process --test-concurrency=1"
   },
   "dependencies": {
     "@swc/core": "1.15.43"

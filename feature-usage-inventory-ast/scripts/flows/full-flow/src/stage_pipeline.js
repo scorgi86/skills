@@ -12,8 +12,7 @@ const fs = require("node:fs");
 
 const { writeStageArtifact } = require("../../../shared/artifacts/src/stage_artifact_v4.js");
 const { closureErrors, resolveChecks } = require("../../../shared/artifacts/src/canonical/checks.js");
-const { buildLineageFromPrevious, validateCheckHistory } = require("../../../shared/artifacts/src/canonical/lineage.js");
-const { runStageUnitOfWork } = require("../../../state/src/session/stage_unit_of_work.js");
+const { validateCheckHistory } = require("../../../shared/artifacts/src/canonical/lineage.js");
 const { prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
 const { InventorySession } = require("../../../state/src/session/inventory_session.js");
 
@@ -42,7 +41,7 @@ function runnerFor(stage) {
   if (stage === 4) return require("../../../steps/step-4/src/runner.js").runStage4;
   if (stage === 5) return require("../../../steps/step-5/src/runner.js").runStage5;
   if (stage === 6) return require("../../../steps/step-6/src/runner.js").runStage6;
-  if (stage === 7) return (request) => require("../../../steps/step-7/src/runner.js").buildStage7(request, { artifactBase: request.artifactBase || process.cwd() });
+  if (stage === 7) return (request, dependencies = {}, context = null) => require("../../../steps/step-7/src/runner.js").buildStage7(request, { artifactBase: request.artifactBase || process.cwd(), ...dependencies }, context);
   throw new Error("stage_pipeline supports stages 0..7; Stage 8 uses its digest-bound renderer");
 }
 
@@ -71,7 +70,7 @@ function runStagePipeline(options = {}) {
   const outputRoot = options.outputRoot || defaultOutputRoot(request, options.cwd);
   require("./output_readiness.js").assertOutputReady(outputRoot);
   const session = InventorySession.open(options.stateFile ? { stateFile: options.stateFile } : {});
-  return runStageUnitOfWork({ outputRoot, stage, request, stateFile: options.stateFile,
+  return session.beginStage({ outputRoot, stage, request, stateFile: options.stateFile,
     validateCandidate({ canonical }) {
       if (initialProfile && digestLineage(canonical.summary?.coverageProfile) !== digestLineage(initialProfile)) {
         throw new Error("Stage 0 coverageProfile is missing or incompatible; preserve this transaction and reissue the run");
@@ -88,11 +87,12 @@ function runStagePipeline(options = {}) {
       const active = options.stateFile ? session.assertStage(stage).state : null;
       const transitionArtifact = request.transitionArtifact ? require("../../../shared/artifacts/src/artifact_location.js").canonicalResultPath(path.resolve(request.artifactBase || process.cwd(), request.transitionArtifact)) : active?.canonicalArtifact;
       if (active?.canonicalArtifact && transitionArtifact && transitionArtifact !== active.canonicalArtifact) throw new Error("Transition artifact is not the active state revision");
-      const lineage = buildLineageFromPrevious(active?.canonicalArtifact || request.transitionArtifact, stage, request.repositoryScope, request.artifactBase);
+      const stageContext = session.loadStageContext({ stage, previous: previous?.canonical || null,
+        repositoryScope: request.repositoryScope, transitionArtifact: active?.canonicalArtifact || request.transitionArtifact,
+        artifactBase: request.artifactBase });
+      const { lineage } = stageContext;
       const profile = stage === 0 ? initialProfile : require("./coverage_profile.js").coverageProfile(request, lineage);
       const runnerRequest = { ...request, ...(transitionArtifact ? { transitionArtifact } : {}), ...(stage === 7 ? { expectedArtifact: active?.canonicalArtifact } : {}) };
-      const stageContext = session.createStageContext({ stage, previous: previous?.canonical || null,
-        lineage, repositoryScope: request.repositoryScope, transitionArtifact: transitionArtifact || null });
       const runnerResult = (options.runner || runnerFor(stage))(runnerRequest, options.dependencies || {}, stageContext);
       let facts = runnerResult;
       if (stage !== 7) {
