@@ -3,7 +3,7 @@ const test = require("node:test"), assert = require("node:assert/strict");
 const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
 const { randomUUID } = require("node:crypto"), { spawnSync } = require("node:child_process");
 const { runStagePipeline } = require("../src/stage_pipeline.js");
-const { runTransaction } = require("../src/transaction.js");
+const { runStageUnitOfWork } = require("../../../state/src/session/stage_unit_of_work.js");
 const { writeStageArtifact } = require("../../../shared/artifacts/src/stage_artifact_v4.js");
 const { digest } = require("../../../shared/artifacts/src/canonical/validation.js");
 const { main: state } = require("../../../state/src/stage_state.js");
@@ -99,7 +99,7 @@ test("fresh candidate validation precedes journal creation and archive", t => {
   const f = fixture(t); write(f, f.target, "partial");
   const prior = fs.readFileSync(path.join(f.target, "canonical", "stage-result.json"));
   let advances = 0;
-  assert.throws(() => runTransaction({ ...f, stage: 0,
+  assert.throws(() => runStageUnitOfWork({ ...f, stage: 0,
     prepare: directory => write(f, directory, "closed"),
     validateCandidate: () => { throw new Error("descriptor rejected"); },
     advance: () => { advances++; }

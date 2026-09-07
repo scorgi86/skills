@@ -32,6 +32,22 @@ test("pipeline does not advance a partial transaction", () => {
   assert.equal(result.stateChanged, false);
 });
 
+test("pipeline gives the runner an immutable session context", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage-context-"));
+  const state = path.join(root, "state.json");
+  runState(["init", "--state", state]);
+  let received;
+  const result = runStagePipeline({ request: request(root), outputRoot: root, stateFile: state,
+    runner(_request, _dependencies, context) {
+      received = context;
+      assert.throws(() => { context.state.currentStage = 7; }, TypeError);
+      return { stage: 0, status: "candidate" };
+    } });
+  assert.equal(result.status, "closed");
+  assert.equal(received.stage, 0);
+  assert.equal(received.state.currentStage, 0);
+});
+
 test("canonical pipeline advances stages 0 through 7 and preserves Stage 8 digest binding", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage-pipeline-e2e-"));
   const state = path.join(root, "inventory-state.json");

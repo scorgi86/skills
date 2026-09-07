@@ -13,8 +13,9 @@ const fs = require("node:fs");
 const { writeStageArtifact } = require("../../../shared/artifacts/src/stage_artifact_v4.js");
 const { closureErrors, resolveChecks } = require("../../../shared/artifacts/src/canonical/checks.js");
 const { buildLineageFromPrevious, validateCheckHistory } = require("../../../shared/artifacts/src/canonical/lineage.js");
-const { runTransaction } = require("./transaction.js");
+const { runStageUnitOfWork } = require("../../../state/src/session/stage_unit_of_work.js");
 const { prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
+const { InventorySession } = require("../../../state/src/session/inventory_session.js");
 
 function slug(value) {
   return String(value || "inventory").normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase() || "inventory";
@@ -59,8 +60,6 @@ function carryPlanningFacts(request, produced) {
   return result;
 }
 
-function runState(args) { return require("../../../state/src/stage_state.js").main(args); }
-
 function runStagePipeline(options = {}) {
   const request = options.request;
   if (!request || !Number.isInteger(Number(request.stage))) throw new Error("Pipeline request requires stage 0..7");
@@ -71,7 +70,8 @@ function runStagePipeline(options = {}) {
   const initialProfile = stage === 0 ? require("./coverage_profile.js").coverageProfile(request) : undefined;
   const outputRoot = options.outputRoot || defaultOutputRoot(request, options.cwd);
   require("./output_readiness.js").assertOutputReady(outputRoot);
-  return runTransaction({ outputRoot, stage, request, stateFile: options.stateFile,
+  const session = InventorySession.open(options.stateFile ? { stateFile: options.stateFile } : {});
+  return runStageUnitOfWork({ outputRoot, stage, request, stateFile: options.stateFile,
     validateCandidate({ canonical }) {
       if (initialProfile && digestLineage(canonical.summary?.coverageProfile) !== digestLineage(initialProfile)) {
         throw new Error("Stage 0 coverageProfile is missing or incompatible; preserve this transaction and reissue the run");
@@ -85,17 +85,15 @@ function runStagePipeline(options = {}) {
           || digestLineage(previous.canonical.summary.repositoryScope) !== digestLineage(request.repositoryScope))) {
         throw new Error("Partial artifact has missing or different scope/stage; reissue the stage and dependent artifacts without modifying the original");
       }
-      let active = null;
-      if (options.stateFile) {
-        runState(["assert", "--state", options.stateFile, "--stage", String(stage)]);
-        active = JSON.parse(fs.readFileSync(path.resolve(options.stateFile), "utf8"));
-      }
+      const active = options.stateFile ? session.assertStage(stage).state : null;
       const transitionArtifact = request.transitionArtifact ? require("../../../shared/artifacts/src/artifact_location.js").canonicalResultPath(path.resolve(request.artifactBase || process.cwd(), request.transitionArtifact)) : active?.canonicalArtifact;
       if (active?.canonicalArtifact && transitionArtifact && transitionArtifact !== active.canonicalArtifact) throw new Error("Transition artifact is not the active state revision");
       const lineage = buildLineageFromPrevious(active?.canonicalArtifact || request.transitionArtifact, stage, request.repositoryScope, request.artifactBase);
       const profile = stage === 0 ? initialProfile : require("./coverage_profile.js").coverageProfile(request, lineage);
       const runnerRequest = { ...request, ...(transitionArtifact ? { transitionArtifact } : {}), ...(stage === 7 ? { expectedArtifact: active?.canonicalArtifact } : {}) };
-      const runnerResult = (options.runner || runnerFor(stage))(runnerRequest, options.dependencies || {});
+      const stageContext = session.createStageContext({ stage, previous: previous?.canonical || null,
+        lineage, repositoryScope: request.repositoryScope, transitionArtifact: transitionArtifact || null });
+      const runnerResult = (options.runner || runnerFor(stage))(runnerRequest, options.dependencies || {}, stageContext);
       let facts = runnerResult;
       if (stage !== 7) {
         const produced = prepareFacts({ ...carryPlanningFacts(request, runnerResult), repositoryScope: request.repositoryScope });
@@ -118,13 +116,13 @@ function runStagePipeline(options = {}) {
       }
       writeStageArtifact({ outputDir, facts, input: request, usage: options.usage, retainRaw: options.retainRaw === true, metrics: options.metrics || {} });
     },
-    advance({ resultFile, canonical }) {
+    advance({ resultFile, canonical }, commitOptions = {}) {
       validateCheckHistory(canonical);
       const directory = path.dirname(resultFile);
       const manifest = path.join(directory, "manifest.json");
       if (canonical.status !== "closed") return { status: "partial", stage, artifact: resultFile, manifest, stateChanged: false, runnerStatus: canonical.summary.runnerStatus || "partial" };
-      const state = options.stateFile ? runState(["advance", "--state", options.stateFile, "--stage", String(stage), "--artifact", resultFile]) : null;
-      return { status: "closed", stage, artifact: resultFile, evidence: path.join(directory, "evidence.json"), manifest, rawRetained: JSON.parse(fs.readFileSync(manifest, "utf8")).retainRaw, stateChanged: Boolean(state?.stateChanged), nextStage: stage + 1 };
+      const state = options.stateFile ? session.advanceStage(stage, resultFile, commitOptions) : null;
+      return { status: "closed", stage, artifact: resultFile, evidence: path.join(directory, "evidence.json"), manifest, rawRetained: JSON.parse(fs.readFileSync(manifest, "utf8")).retainRaw, stateChanged: Boolean(state?.changed), nextStage: stage + 1 };
     }
   });
 }

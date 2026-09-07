@@ -33,6 +33,7 @@ test("publish rename failure restores partial then resumes prepared work without
  assert.throws(()=>execute(f,runner),/injected renameSync/);restore();
  assert.equal(fs.readFileSync(path.join(f.target,"canonical/stage-result.json"),"utf8"),before);assert.equal(fs.existsSync(f.journal),true);
  assert.equal(execute(f,runner).status,"closed");assert.equal(calls,1);assert.equal(JSON.parse(fs.readFileSync(f.stateFile)).currentStage,1);
+ assert.equal(fs.existsSync(path.join(f.outputRoot,".attempts","stage-0")),false);
 });
 test("publication before failed state save resumes without rerunning producer",t=>{
  const f=fixture(t);let calls=0;const runner=()=>{calls++;return candidate();};
@@ -47,6 +48,36 @@ test("state advanced before failed journal deletion resumes idempotently",t=>{
  assert.throws(()=>execute(f,runner),/injected unlinkSync/);restore();
  const before=fs.readFileSync(f.stateFile,"utf8");assert.equal(JSON.parse(before).currentStage,1);
  assert.equal(execute(f,runner).status,"closed");assert.equal(calls,1);assert.equal(fs.readFileSync(f.stateFile,"utf8"),before);assert.equal(fs.existsSync(f.journal),false);
+});
+test("state CAS rejects a concurrent command and resumes without rerunning producer",t=>{
+ const f=fixture(t);let calls=0;
+ assert.throws(()=>execute(f,()=>{calls++;stateCommand(["continue-run","--state",f.stateFile]);return candidate();}),/State conflict/);
+ assert.equal(JSON.parse(fs.readFileSync(f.stateFile)).currentStage,0);assert.equal(fs.existsSync(f.journal),true);
+ assert.equal(execute(f,()=>{calls++;return candidate();}).status,"closed");assert.equal(calls,1);
+ assert.equal(JSON.parse(fs.readFileSync(f.stateFile)).currentStage,1);
+});
+test("unknown WAL phase is rejected before recovery effects",t=>{
+ const f=fixture(t);let calls=0;const runner=()=>{calls++;return candidate();};
+ const restore=inject(t,"renameSync",(_from,to)=>path.resolve(to)===f.stateFile);
+ assert.throws(()=>execute(f,runner),/injected renameSync/);restore();
+ const journal=JSON.parse(fs.readFileSync(f.journal));journal.phase="unknown";fs.writeFileSync(f.journal,JSON.stringify(journal));
+ const before=fs.readFileSync(f.stateFile,"utf8");
+ assert.throws(()=>execute(f,runner),/Pending transaction/);assert.equal(calls,1);assert.equal(fs.readFileSync(f.stateFile,"utf8"),before);
+});
+test("untrusted WAL archive path is rejected before filesystem effects",t=>{
+ const f=fixture(t);let calls=0;const restore=inject(t,"renameSync",(_from,to)=>path.resolve(to)===f.stateFile);
+ assert.throws(()=>execute(f,()=>{calls++;return candidate();}),/injected renameSync/);restore();
+ const journal=JSON.parse(fs.readFileSync(f.journal));journal.archivePath=path.join(f.root,"outside-history");fs.writeFileSync(f.journal,JSON.stringify(journal));
+ const stateBefore=fs.readFileSync(f.stateFile,"utf8"),artifactBefore=fs.readFileSync(path.join(f.target,"canonical/stage-result.json"),"utf8");
+ assert.throws(()=>execute(f,()=>{calls++;return candidate();}),/invalid archive path/);
+ assert.equal(calls,1);assert.equal(fs.readFileSync(f.stateFile,"utf8"),stateBefore);assert.equal(fs.readFileSync(path.join(f.target,"canonical/stage-result.json"),"utf8"),artifactBefore);
+});
+test("legacy WAL ignores an injected archive path and keeps recovery inside its attempt",t=>{
+ const f=fixture(t);let calls=0;const restore=inject(t,"renameSync",(_from,to)=>path.resolve(to)===f.stateFile);
+ assert.throws(()=>execute(f,()=>{calls++;return candidate();}),/injected renameSync/);restore();
+ const journal=JSON.parse(fs.readFileSync(f.journal));journal.version=1;journal.phase="published";journal.archivePath=path.join(f.root,"outside-history");fs.writeFileSync(f.journal,JSON.stringify(journal));
+ assert.equal(execute(f,()=>{calls++;return candidate();}).status,"closed");assert.equal(calls,1);
+ assert.equal(fs.existsSync(path.join(f.root,"outside-history")),false);assert.equal(JSON.parse(fs.readFileSync(f.stateFile)).currentStage,1);
 });
 test("real CLI partial omission retains check and explicit scope receipt closes same stage",t=>{
  const f=fixture(t), requestFile=path.join(f.root,"request.json"), cli=path.resolve(__dirname,"../../../cli/src/commands/stage_pipeline.js");

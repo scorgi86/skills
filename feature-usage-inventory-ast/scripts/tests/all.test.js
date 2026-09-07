@@ -26,6 +26,7 @@ require("../steps/step-8/tests/stage8_runner.test.js");
 require("../shared/artifacts/tests/stage_artifact_v4.test.js");
 require("../flows/full-flow/tests/stage_pipeline.test.js");
 require("../state/tests/stage_state.test.js");
+require("../state/tests/session_primitives.test.js");
 require("../cli/tests/entry-points.test.js");
 require("../cli/tests/commands/import-contract.test.js");
 require("../shared/ast/tests/query/contracts.test.js");

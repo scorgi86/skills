@@ -11,7 +11,12 @@
     "shared/artifacts/src/canonical/receipt_evidence.js",
     "shared/evidence/src/canonicalization/source_anchor.js",
     "state/src/file_transaction.js",
-    "flows/full-flow/src/transaction.js"
+    "state/src/model/transitions.js",
+    "state/src/session/inventory_session.js",
+    "state/src/session/stage_unit_of_work.js",
+    "state/src/persistence/state_store.js",
+    "state/src/persistence/artifact_store.js",
+    "state/src/persistence/journal_store.js"
   ],
   "commands": [
     {
@@ -569,6 +574,13 @@
         "state/src/stage_state.js",
         "state/src/state_model.js",
         "state/src/persistence.js",
+        "state/src/model/transitions.js",
+        "state/src/session/session_snapshot.js",
+        "state/src/session/inventory_session.js",
+        "state/src/session/stage_unit_of_work.js",
+        "state/src/persistence/state_store.js",
+        "state/src/persistence/artifact_store.js",
+        "state/src/persistence/journal_store.js",
         "state/src/artifacts/canonical_validation.js",
         "state/src/artifacts/stage8_validation.js"
       ],
@@ -577,6 +589,9 @@
         "assertCanonical": "state/src/state_model.js",
         "assertProbe": "state/src/state_model.js",
         "initialState": "state/src/state_model.js",
+        "InventorySession": "state/src/session/inventory_session.js",
+        "SessionSnapshot": "state/src/session/session_snapshot.js",
+        "StateStore": "state/src/persistence/state_store.js",
         "main": "state/src/stage_state.js",
         "parseArgs": "state/src/stage_state.js",
         "validateStage8Manifest": "state/src/artifacts/stage8_validation.js",
@@ -597,7 +612,6 @@
         "parseArgs": "state/src/stage_state.js",
         "initialState": "state/src/state_model.js",
         "validateState": "state/src/state_model.js",
-        "loadState": "state/src/persistence.js",
         "assertCanonical": "state/src/state_model.js",
         "assertProbe": "state/src/state_model.js",
         "artifact": "state/src/stage_state.js",

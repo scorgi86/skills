@@ -76,23 +76,16 @@ test("root entry reports missing and unknown commands through the existing dispa
   }
 });
 
-test("pipeline keeps validation, runner, artifact validation and state advancement in order", () => {
+test("pipeline validates, runs and advances through InventorySession without the state CLI bridge", () => {
   const pipeline = require(path.join(scripts, "flows/full-flow"));
   const state = require(path.join(scripts, "state"));
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "pipeline-order-"));
   const stateFile = path.join(directory, "state.json"), outputRoot = path.join(directory, "artifacts");
   state.main(["init", "--state", stateFile]);
-  const events = [], original = state.main;
-  state.main = function (args) {
-    events.push(args[0]);
-    if (args[0] === "advance") {
-      assert.equal(require(path.join(scripts, "shared/artifacts/src/stage_artifact_v4")).validateStageArtifact(path.join(outputRoot, "stage-0")).ok, true);
-    }
-    return original(args);
-  };
-  try {
-    const result = pipeline.runStagePipeline({ request: { stage: 0, target: "X", coverageProfile: {}, repositoryScope: { repositories: [{ id: "source", root: directory, role: "source" }] } }, stateFile, outputRoot, runner() { events.push("runner"); return { stage: 0, status: "candidate", canonicalFacts: [] }; } });
-    assert.equal(result.status, "closed");
-    assert.deepEqual(events, ["assert", "runner", "advance"]);
-  } finally { state.main = original; }
+  const events = [];
+  const result = pipeline.runStagePipeline({ request: { stage: 0, target: "X", coverageProfile: {}, repositoryScope: { repositories: [{ id: "source", root: directory, role: "source" }] } }, stateFile, outputRoot, runner() { events.push("runner"); return { stage: 0, status: "candidate", canonicalFacts: [] }; } });
+  assert.equal(result.status, "closed");
+  assert.deepEqual(events, ["runner"]);
+  assert.equal(require(path.join(scripts, "shared/artifacts/src/stage_artifact_v4")).validateStageArtifact(path.join(outputRoot, "stage-0")).ok, true);
+  assert.equal(JSON.parse(fs.readFileSync(stateFile, "utf8")).currentStage, 1);
 });
