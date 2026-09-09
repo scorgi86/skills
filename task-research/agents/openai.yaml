@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Research"
+  short_description: "Staged Graph and AST research with source evidence"
+  default_prompt: "Use $task-research to map a feature across the declared repositories and verify every important Graph or AST candidate in current source."
