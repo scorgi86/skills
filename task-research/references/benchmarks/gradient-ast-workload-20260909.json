@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "ast-ab-workload/1.0.0",
+  "target": "Исследуй все о градиентах",
+  "stage1": {
+    "queries": [
+      {
+        "id": "format-model",
+        "command": "symbols",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+        "options": {
+          "terms": "GradPath,CSrcRect,CGradFill,CUniFill",
+          "kind": "function"
+        }
+      },
+      {
+        "id": "path-enums",
+        "command": "symbols",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\commonDefines.js",
+        "options": {
+          "terms": "c_oAscFillGradType,c_oAscFillGradPathType"
+        }
+      },
+      {
+        "id": "ppty-reader",
+        "command": "methods",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+        "options": {
+          "terms": "ReadGradPath"
+        }
+      },
+      {
+        "id": "ppty-writer",
+        "command": "methods",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\SerializeWriter.js",
+        "options": {
+          "terms": "WriteSrcRect"
+        }
+      },
+      {
+        "id": "api-readback",
+        "command": "methods",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+        "options": {
+          "terms": "asc_getSrcRect,asc_putSrcRect"
+        }
+      }
+    ]
+  },
+  "stage2": {
+    "queries": [
+      {
+        "id": "unified-fill-owners",
+        "command": "owners",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+        "options": {
+          "type": "CUniFill"
+        }
+      },
+      {
+        "id": "gradient-model-bridges",
+        "command": "symbols",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+        "options": {
+          "terms": "addAscFillGrad,CreateAscFill,correctUniGradFill,createGradPath,CorrectUniFill",
+          "kind": "function"
+        }
+      },
+      {
+        "id": "gradient-api-aliases",
+        "command": "methods",
+        "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+        "options": {
+          "terms": "asc_getSrcRect,asc_putSrcRect,write,read",
+          "owner": "asc_CFillGrad"
+        }
+      }
+    ]
+  }
+}
