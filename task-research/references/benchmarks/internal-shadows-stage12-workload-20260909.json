@@ -1,0 +1,1158 @@
+{
+  "schemaVersion": "stage12-ab-workload/1.0.0",
+  "target": "Исследуй все о внутренних тенях",
+  "repositoryScope": {
+    "repositories": [
+      {
+        "id": "sdkjs",
+        "root": "C:\\work\\r7\\projects\\sdkjs",
+        "role": "producer"
+      },
+      {
+        "id": "web-apps",
+        "root": "C:\\work\\r7\\projects\\web-apps",
+        "role": "consumer"
+      },
+      {
+        "id": "desktop-apps",
+        "root": "C:\\work\\r7\\projects\\desktop-apps",
+        "role": "consumer"
+      }
+    ]
+  },
+  "stage1": {
+    "stage": 1,
+    "transitionArtifact": "C:\\work\\r7\\projects\\context\\inventories\\internal-shadows\\stage-0\\report.md",
+    "sourceRoot": "C:\\work\\r7\\projects\\sdkjs",
+    "budgets": {
+      "summaryBytes": 8192,
+      "factsBytes": 98304,
+      "evidenceBytes": 32768,
+      "reportBytes": 49152
+    },
+    "gitnexus": {
+      "enabled": false,
+      "seed": "CInnerShdw",
+      "reason": "sdkjs local runner failed with EPERM; web-apps index is stale; global CLI unavailable"
+    },
+    "ast": {
+      "id": "internal-shadow-stage1-current",
+      "queries": [
+        {
+          "id": "format-model-owners",
+          "command": "owners",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "options": {
+            "type": "CInnerShdw"
+          },
+          "groupFilters": {
+            "owner": "*"
+          }
+        },
+        {
+          "id": "effect-type",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Effects.js",
+          "options": {
+            "owner": "EffectType",
+            "field": "EFFECT_TYPE_INNERSHDW"
+          },
+          "groupFilters": {
+            "field": "EFFECT_TYPE_INNERSHDW"
+          }
+        },
+        {
+          "id": "format-reader",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+          "options": {
+            "owner": "BinaryPPTYLoader",
+            "field": "ReadInnerShdw"
+          },
+          "groupFilters": {
+            "field": "ReadInnerShdw"
+          }
+        },
+        {
+          "id": "format-writer",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\SerializeWriter.js",
+          "options": {
+            "terms": "innerShdw"
+          },
+          "groupFilters": {
+            "field": "innerShdw"
+          }
+        },
+        {
+          "id": "json-readwrite",
+          "command": "owners",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+          "options": {
+            "type": "CInnerShdw"
+          },
+          "groupFilters": {
+            "owner": "*"
+          }
+        },
+        {
+          "id": "smartart-owners",
+          "command": "owners",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Data.js",
+          "options": {
+            "type": "CEffectProperties"
+          },
+          "groupFilters": {
+            "owner": "*"
+          }
+        },
+        {
+          "id": "theme-owner",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\EffectStyle.js",
+          "options": {
+            "owner": "EffectStyle",
+            "field": "effectProperties"
+          },
+          "groupFilters": {
+            "field": "effectProperties"
+          }
+        }
+      ]
+    },
+    "evidence": {
+      "checks": [
+        {
+          "id": "model",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "pattern": {
+            "value": "function CInnerShdw|CInnerShdw.prototype.(Write_ToBinary|Read_FromBinary|createDuplicate)",
+            "regex": true
+          },
+          "maxMatches": 10,
+          "maxGroups": 10
+        },
+        {
+          "id": "container",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "pattern": {
+            "value": "function CEffectLst|this.innerShdw = null|this.innerShdw = new CInnerShdw",
+            "regex": true
+          },
+          "maxMatches": 12,
+          "maxGroups": 12
+        },
+        {
+          "id": "properties-owner",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "pattern": {
+            "value": "function CEffectProperties|this.EffectLst = null|this.EffectLst = new CEffectLst",
+            "regex": true
+          },
+          "maxMatches": 12,
+          "maxGroups": 12
+        },
+        {
+          "id": "sppr-owner",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "pattern": {
+            "value": "function CSpPr|this.effectProps = null|this.effectProps = pr",
+            "regex": true
+          },
+          "maxMatches": 12,
+          "maxGroups": 12
+        },
+        {
+          "id": "smartart-owners",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Data.js",
+          "pattern": {
+            "value": "function BgFormat|function Whole|this.effect = null|this.effect = oPr",
+            "regex": true
+          },
+          "maxMatches": 20,
+          "maxGroups": 20
+        },
+        {
+          "id": "theme-owner",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\EffectStyle.js",
+          "pattern": {
+            "value": "class EffectStyle|this.effectProperties = null|this.effectProperties = pr|effectProperties.EffectLst",
+            "regex": true
+          },
+          "maxMatches": 16,
+          "maxGroups": 16
+        },
+        {
+          "id": "binary-readwrite",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "pattern": {
+            "value": "innerShdw.Write_ToBinary|innerShdw.Read_FromBinary|EffectLst.Write_ToBinary|EffectLst.Read_FromBinary",
+            "regex": true
+          },
+          "maxMatches": 16,
+          "maxGroups": 16
+        },
+        {
+          "id": "format-readwrite",
+          "files": [
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\SerializeWriter.js"
+          ],
+          "pattern": {
+            "value": "ReadInnerShdw|oEffectLst.innerShdw|WriteEffectLst|EFFECT_TYPE_INNERSHDW",
+            "regex": true
+          },
+          "maxMatches": 32,
+          "maxGroups": 24
+        },
+        {
+          "id": "json-readwrite",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+          "pattern": {
+            "value": "innerShdw|CInnerShdw|SerEffectLst|EffectLstFromJSON|EffectPropsFromJSON",
+            "regex": true
+          },
+          "maxMatches": 48,
+          "maxGroups": 24
+        },
+        {
+          "id": "history-copy",
+          "files": [
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Data.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\EffectStyle.js"
+          ],
+          "pattern": {
+            "value": "CInnerShdw.prototype.createDuplicate|CEffectLst.prototype.(createDuplicate|merge)|CEffectProperties.prototype.(createDuplicate|merge)|CSpPr.prototype.(createDuplicate|setEffectPr)|BgFormat.prototype.setEffect|Whole.prototype.setEffect|createDuplicate\\(\\) \\{",
+            "regex": true
+          },
+          "maxMatches": 36,
+          "maxGroups": 24
+        }
+      ]
+    },
+    "ownership": {
+      "expectedIds": [
+        "model",
+        "effect-list",
+        "effect-properties",
+        "sppr",
+        "bg-format",
+        "whole",
+        "effect-style",
+        "binary",
+        "format-serializer",
+        "json-serializer",
+        "history-copy"
+      ],
+      "groups": [
+        {
+          "id": "model",
+          "order": 0,
+          "role": "direct model",
+          "object": "CInnerShdw",
+          "relation": "defines",
+          "evidenceRefs": [
+            "model"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Format.js",
+            "line": 3403
+          }
+        },
+        {
+          "id": "effect-list",
+          "order": 1,
+          "role": "immediate container",
+          "object": "CEffectLst.innerShdw",
+          "relation": "contains",
+          "evidenceRefs": [
+            "container"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Format.js",
+            "line": 7265
+          }
+        },
+        {
+          "id": "effect-properties",
+          "order": 2,
+          "role": "container",
+          "object": "CEffectProperties.EffectLst",
+          "relation": "contains",
+          "evidenceRefs": [
+            "properties-owner"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Format.js",
+            "line": 7204
+          }
+        },
+        {
+          "id": "sppr",
+          "order": 3,
+          "role": "owner branch",
+          "object": "CSpPr.effectProps",
+          "relation": "contains",
+          "evidenceRefs": [
+            "sppr-owner"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Format.js",
+            "line": 7434
+          }
+        },
+        {
+          "id": "bg-format",
+          "order": 3,
+          "role": "owner branch",
+          "object": "BgFormat.effect",
+          "relation": "contains",
+          "evidenceRefs": [
+            "smartart-owners"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Data.js",
+            "line": 1352
+          }
+        },
+        {
+          "id": "whole",
+          "order": 3,
+          "role": "owner branch",
+          "object": "Whole.effect",
+          "relation": "contains",
+          "evidenceRefs": [
+            "smartart-owners"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Data.js",
+            "line": 1471
+          }
+        },
+        {
+          "id": "effect-style",
+          "order": 3,
+          "role": "owner branch",
+          "object": "EffectStyle.effectProperties",
+          "relation": "contains",
+          "evidenceRefs": [
+            "theme-owner"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/EffectStyle.js",
+            "line": 35
+          }
+        },
+        {
+          "id": "binary",
+          "order": "auxiliary",
+          "role": "binary serialization/readback",
+          "object": "CInnerShdw/CEffectLst/CEffectProperties",
+          "relation": "serializes",
+          "evidenceRefs": [
+            "binary-readwrite"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Format.js",
+            "line": 3413
+          }
+        },
+        {
+          "id": "format-serializer",
+          "order": "auxiliary",
+          "role": "format serialization/readback",
+          "object": "BinaryPPTYLoader/CBinaryFileWriter",
+          "relation": "serializes",
+          "evidenceRefs": [
+            "format-readwrite"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Shapes/SerializeWriter.js",
+            "line": 2533
+          }
+        },
+        {
+          "id": "json-serializer",
+          "order": "auxiliary",
+          "role": "JSON serialization/readback",
+          "object": "WriterToJSON/ReaderFromJSON",
+          "relation": "serializes",
+          "evidenceRefs": [
+            "json-readwrite"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "word/fromToJSON.js",
+            "line": 2261
+          }
+        },
+        {
+          "id": "history-copy",
+          "order": "auxiliary",
+          "role": "copy/merge/history",
+          "object": "container owner methods",
+          "relation": "propagates",
+          "evidenceRefs": [
+            "history-copy"
+          ],
+          "status": "confirmed",
+          "confirmation": {
+            "method": "manual source read",
+            "file": "common/Drawings/Format/Format.js",
+            "line": 7636
+          }
+        }
+      ]
+    },
+    "ownershipGraph": {
+      "maxOrder": 3,
+      "nodes": [
+        {
+          "id": "inner-shadow",
+          "entity": "CInnerShdw",
+          "order": 0
+        },
+        {
+          "id": "effect-list",
+          "entity": "CEffectLst"
+        },
+        {
+          "id": "effect-properties",
+          "entity": "CEffectProperties"
+        },
+        {
+          "id": "sppr",
+          "entity": "CSpPr"
+        },
+        {
+          "id": "bg-format",
+          "entity": "BgFormat"
+        },
+        {
+          "id": "whole",
+          "entity": "Whole"
+        },
+        {
+          "id": "effect-style",
+          "entity": "EffectStyle"
+        }
+      ],
+      "edges": [
+        {
+          "from": "effect-list",
+          "to": "inner-shadow",
+          "relation": "contains",
+          "propertyOrMethod": "innerShdw",
+          "status": "confirmed",
+          "anchors": [
+            "common/Drawings/Format/Format.js:7265"
+          ]
+        },
+        {
+          "from": "effect-properties",
+          "to": "effect-list",
+          "relation": "contains",
+          "propertyOrMethod": "EffectLst",
+          "status": "confirmed",
+          "anchors": [
+            "common/Drawings/Format/Format.js:7204"
+          ]
+        },
+        {
+          "from": "sppr",
+          "to": "effect-properties",
+          "relation": "contains",
+          "propertyOrMethod": "effectProps",
+          "status": "confirmed",
+          "anchors": [
+            "common/Drawings/Format/Format.js:7434"
+          ]
+        },
+        {
+          "from": "bg-format",
+          "to": "effect-properties",
+          "relation": "contains",
+          "propertyOrMethod": "effect",
+          "status": "confirmed",
+          "anchors": [
+            "common/Drawings/Format/Data.js:1352"
+          ]
+        },
+        {
+          "from": "whole",
+          "to": "effect-properties",
+          "relation": "contains",
+          "propertyOrMethod": "effect",
+          "status": "confirmed",
+          "anchors": [
+            "common/Drawings/Format/Data.js:1471"
+          ]
+        },
+        {
+          "from": "effect-style",
+          "to": "effect-properties",
+          "relation": "contains",
+          "propertyOrMethod": "effectProperties",
+          "status": "confirmed",
+          "anchors": [
+            "common/Drawings/Format/EffectStyle.js:35"
+          ]
+        }
+      ]
+    },
+    "boundaries": [
+      {
+        "id": "sdkjs-webapps-shadow",
+        "producerRepo": "sdkjs",
+        "kind": "format-owner",
+        "symbol": "CSpPr.effectProps",
+        "relation": "candidate UI boundary",
+        "evidenceRefs": [
+          "sppr-owner"
+        ],
+        "ownershipRefs": [
+          "sppr"
+        ],
+        "consumerRepos": [
+          "web-apps"
+        ],
+        "searchTerms": [
+          "ShapeShadowSettings",
+          "ShapeShadowMenu",
+          "asc_getShadow",
+          "asc_putShadow"
+        ]
+      }
+    ],
+    "capabilities": [
+      {
+        "id": "definition",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "model"
+        ]
+      },
+      {
+        "id": "ownership",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "container",
+          "properties-owner",
+          "sppr-owner",
+          "smartart-owners",
+          "theme-owner"
+        ]
+      },
+      {
+        "id": "storage",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "container",
+          "properties-owner"
+        ]
+      },
+      {
+        "id": "serialization",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "binary-readwrite",
+          "format-readwrite",
+          "json-readwrite"
+        ]
+      },
+      {
+        "id": "readback",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "binary-readwrite",
+          "format-readwrite",
+          "json-readwrite"
+        ]
+      },
+      {
+        "id": "mutation",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "history-copy"
+        ]
+      },
+      {
+        "id": "theme-style",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "theme-owner"
+        ]
+      },
+      {
+        "id": "recipients",
+        "status": "unchecked"
+      },
+      {
+        "id": "render-output",
+        "status": "unchecked"
+      },
+      {
+        "id": "lifecycle",
+        "status": "unchecked"
+      },
+      {
+        "id": "tests",
+        "status": "unchecked"
+      }
+    ],
+    "coverageContract": {
+      "categories": [
+        {
+          "id": "direct-model",
+          "status": "applicable",
+          "groupIds": [
+            "model"
+          ],
+          "requiredBeforeClose": true
+        },
+        {
+          "id": "immediate-container",
+          "status": "applicable",
+          "groupIds": [
+            "effect-list",
+            "effect-properties"
+          ],
+          "requiredBeforeClose": true
+        },
+        {
+          "id": "owner-branches",
+          "status": "applicable",
+          "groupIds": [
+            "sppr",
+            "bg-format",
+            "whole",
+            "effect-style"
+          ],
+          "requiredBeforeClose": true
+        },
+        {
+          "id": "serialization",
+          "status": "applicable",
+          "groupIds": [
+            "binary",
+            "format-serializer",
+            "json-serializer"
+          ],
+          "requiredBeforeClose": true
+        },
+        {
+          "id": "history-copy",
+          "status": "applicable",
+          "groupIds": [
+            "history-copy"
+          ]
+        },
+        {
+          "id": "index-limitations",
+          "status": "open",
+          "reason": "sdkjs runner EPERM; web-apps index stale; global GitNexus CLI unavailable",
+          "requiredBeforeClose": false
+        }
+      ],
+      "baseline": {
+        "ownershipIds": [
+          "model",
+          "effect-list",
+          "effect-properties",
+          "sppr",
+          "bg-format",
+          "whole",
+          "effect-style",
+          "binary",
+          "format-serializer",
+          "json-serializer",
+          "history-copy"
+        ]
+      }
+    },
+    "observations": [
+      {
+        "id": "gitnexus-limitation",
+        "status": "tool-unavailable",
+        "scope": "sdkjs, web-apps, desktop-apps",
+        "result": "sdkjs runner EPERM; web-apps index stale; desktop-apps has no index; global CLI unavailable"
+      }
+    ],
+    "claimLedger": {
+      "required": true,
+      "claims": [
+        {
+          "id": "model-claim",
+          "status": "confirmed",
+          "groupIds": [
+            "model",
+            "effect-list",
+            "effect-properties"
+          ]
+        },
+        {
+          "id": "owners-claim",
+          "status": "confirmed",
+          "groupIds": [
+            "sppr",
+            "bg-format",
+            "whole",
+            "effect-style"
+          ]
+        },
+        {
+          "id": "serialization-claim",
+          "status": "confirmed",
+          "groupIds": [
+            "binary",
+            "format-serializer",
+            "json-serializer"
+          ]
+        },
+        {
+          "id": "history-copy-claim",
+          "status": "confirmed",
+          "groupIds": [
+            "history-copy"
+          ]
+        },
+        {
+          "id": "graph-limitation-claim",
+          "status": "tool-unavailable",
+          "observationIds": [
+            "gitnexus-limitation"
+          ]
+        }
+      ]
+    }
+  },
+  "stage2": {
+    "stage": 2,
+    "transitionArtifact": "C:\\work\\r7\\projects\\context\\inventories\\internal-shadows\\stage-1\\report.md",
+    "ownershipGraphArtifact": "C:\\work\\r7\\projects\\context\\inventories\\internal-shadows\\stage-1\\facts.json",
+    "boundaryArtifact": "C:\\work\\r7\\projects\\context\\inventories\\internal-shadows\\stage-1\\boundaries.json",
+    "anchorRoot": "C:\\work\\r7\\projects",
+    "budgets": {
+      "factsBytes": 196608,
+      "summaryBytes": 24576,
+      "evidenceBytes": 49152,
+      "reportBytes": 65536
+    },
+    "projection": {
+      "maxGroupsPerQuery": 12,
+      "source": {
+        "maxGroupsPerCheck": 8
+      },
+      "compactAnchors": true,
+      "adaptive": {
+        "enabled": true,
+        "targetRatio": 0.85,
+        "minGroupsPerQuery": 2,
+        "minSourceGroupsPerCheck": 1
+      },
+      "humanDictionary": true
+    },
+    "ast": {
+      "id": "internal-shadow-stage2-current",
+      "queries": [
+        {
+          "id": "shape-owner",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shape.js",
+          "options": {
+            "owner": "CShape",
+            "field": "spPr"
+          },
+          "groupFilters": {
+            "field": "spPr"
+          }
+        },
+        {
+          "id": "image-owner",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Image.js",
+          "options": {
+            "owner": "CImageShape",
+            "field": "spPr"
+          },
+          "groupFilters": {
+            "field": "spPr"
+          }
+        },
+        {
+          "id": "group-owner",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GroupShape.js",
+          "options": {
+            "owner": "CGroupShape",
+            "field": "spPr"
+          },
+          "groupFilters": {
+            "field": "spPr"
+          }
+        },
+        {
+          "id": "public-shape-shadow",
+          "command": "fields",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+          "options": {
+            "owner": "asc_CShapeProperty",
+            "field": "shadow"
+          },
+          "groupFilters": {
+            "field": "shadow"
+          }
+        },
+        {
+          "id": "public-shadow-type",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "options": {
+            "terms": "asc_CShadowProperty,COuterShdw,OuterShadowEffectDefaults"
+          },
+          "groupFilters": {
+            "owner": "asc_CShadowProperty*"
+          }
+        },
+        {
+          "id": "controller-shadow",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\CommonController.js",
+          "options": {
+            "terms": "props.shadow,changeShadow,getOuterShdwAsc"
+          },
+          "groupFilters": {
+            "field": "shadow"
+          }
+        },
+        {
+          "id": "graphic-shadow-read",
+          "command": "methods",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+          "options": {
+            "owner": "CGraphicObjectBase"
+          },
+          "groupFilters": {
+            "field": "getOuterShdw*"
+          }
+        },
+        {
+          "id": "web-shadow-settings",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\web-apps\\apps\\common\\main\\lib\\view\\ShapeShadowSettings.js",
+          "options": {
+            "terms": "OuterShadowEffectDefaults,asc_CShadowProperty,asc_putShadow,shadowProps"
+          },
+          "groupFilters": {
+            "field": "*shadow*"
+          }
+        },
+        {
+          "id": "web-shadow-menu",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\web-apps\\apps\\common\\main\\lib\\view\\ShapeShadowMenu.js",
+          "options": {
+            "terms": "OuterShadowEffectDefaults,getOuterShdwAsc,asc_putShadow"
+          },
+          "groupFilters": {
+            "field": "*Shadow*"
+          }
+        },
+        {
+          "id": "de-shape-settings",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\web-apps\\apps\\documenteditor\\main\\app\\view\\ShapeSettings.js",
+          "options": {
+            "terms": "ShapeShadowMenu,asc_putShadow,asc_getShadow,applyShapePropsWithShadow"
+          },
+          "groupFilters": {
+            "field": "*Shadow*"
+          }
+        },
+        {
+          "id": "pe-shape-settings",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\web-apps\\apps\\presentationeditor\\main\\app\\view\\ShapeSettings.js",
+          "options": {
+            "terms": "ShapeShadowMenu,asc_putShadow,asc_getShadow,applyShapePropsWithShadow"
+          },
+          "groupFilters": {
+            "field": "*Shadow*"
+          }
+        },
+        {
+          "id": "sse-shape-settings",
+          "command": "find",
+          "file": "C:\\work\\r7\\projects\\web-apps\\apps\\spreadsheeteditor\\main\\app\\view\\ShapeSettings.js",
+          "options": {
+            "terms": "ShapeShadowMenu,asc_putShadow,asc_getShadow,applyShapePropsWithShadow"
+          },
+          "groupFilters": {
+            "field": "*Shadow*"
+          }
+        }
+      ]
+    },
+    "evidence": {
+      "checks": [
+        {
+          "id": "drawing-owners",
+          "files": [
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shape.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Image.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GroupShape.js"
+          ],
+          "pattern": {
+            "value": "prototype.setSpPr|this.spPr =",
+            "regex": true
+          },
+          "maxMatches": 24,
+          "maxGroups": 6
+        },
+        {
+          "id": "shape-shadow-api",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+          "pattern": {
+            "value": "asc_CShapeProperty.prototype.asc_(get|put)Shadow|this.shadow",
+            "regex": true
+          },
+          "maxMatches": 24,
+          "maxGroups": 4
+        },
+        {
+          "id": "outer-shadow-api-type",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "pattern": {
+            "value": "function asc_CShadowProperty|InitClass\\(asc_CShadowProperty, COuterShdw|OuterShadowEffectDefaults|COuterShdw.prototype.getAscShdw",
+            "regex": true
+          },
+          "maxMatches": 36,
+          "maxGroups": 6
+        },
+        {
+          "id": "controller-dispatch",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\CommonController.js",
+          "pattern": {
+            "value": "props.shadow|changeShadow\\(props.shadow\\)|getOuterShdwAsc",
+            "regex": true
+          },
+          "maxMatches": 36,
+          "maxGroups": 6
+        },
+        {
+          "id": "drawing-shadow-methods",
+          "files": [
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shape.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Image.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GroupShape.js",
+            "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js"
+          ],
+          "pattern": {
+            "value": "prototype.changeShadow|prototype.getOuterShdw|spPr.changeShadow",
+            "regex": true
+          },
+          "maxMatches": 48,
+          "maxGroups": 8
+        },
+        {
+          "id": "web-common-outer-shadow",
+          "files": [
+            "C:\\work\\r7\\projects\\web-apps\\apps\\common\\main\\lib\\view\\ShapeShadowSettings.js",
+            "C:\\work\\r7\\projects\\web-apps\\apps\\common\\main\\lib\\view\\ShapeShadowMenu.js"
+          ],
+          "pattern": {
+            "value": "внешн.*тен|OuterShadowEffectDefaults|asc_CShadowProperty|getOuterShdwAsc|asc_putShadow",
+            "regex": true
+          },
+          "maxMatches": 72,
+          "maxGroups": 8
+        },
+        {
+          "id": "editor-shadow-bridges",
+          "files": [
+            "C:\\work\\r7\\projects\\web-apps\\apps\\documenteditor\\main\\app\\view\\ShapeSettings.js",
+            "C:\\work\\r7\\projects\\web-apps\\apps\\presentationeditor\\main\\app\\view\\ShapeSettings.js",
+            "C:\\work\\r7\\projects\\web-apps\\apps\\spreadsheeteditor\\main\\app\\view\\ShapeSettings.js"
+          ],
+          "pattern": {
+            "value": "ShapeShadowMenu|asc_putShadow|asc_getShadow|applyShapePropsWithShadow",
+            "regex": true
+          },
+          "maxMatches": 96,
+          "maxGroups": 9
+        }
+      ]
+    },
+    "ownershipGraphMaxOrder": 4,
+    "ownershipGraphNodes": [
+      {
+        "id": "shape",
+        "entity": "CShape"
+      },
+      {
+        "id": "image",
+        "entity": "CImageShape"
+      },
+      {
+        "id": "group",
+        "entity": "CGroupShape"
+      }
+    ],
+    "ownershipGraphCandidates": [
+      {
+        "id": "shape-sppr",
+        "from": "shape",
+        "to": "sppr",
+        "relation": "contains",
+        "propertyOrMethod": "spPr/setSpPr",
+        "status": "confirmed",
+        "anchors": [
+          "sdkjs/common/Drawings/Format/Shape.js:1219"
+        ]
+      },
+      {
+        "id": "image-sppr",
+        "from": "image",
+        "to": "sppr",
+        "relation": "contains",
+        "propertyOrMethod": "spPr/setSpPr",
+        "status": "confirmed",
+        "anchors": [
+          "sdkjs/common/Drawings/Format/Image.js:130"
+        ]
+      },
+      {
+        "id": "group-sppr",
+        "from": "group",
+        "to": "sppr",
+        "relation": "contains",
+        "propertyOrMethod": "spPr/setSpPr",
+        "status": "confirmed",
+        "anchors": [
+          "sdkjs/common/Drawings/Format/GroupShape.js:235"
+        ]
+      }
+    ],
+    "capabilities": [
+      {
+        "id": "definition",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "outer-shadow-api-type"
+        ]
+      },
+      {
+        "id": "ownership",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "drawing-owners"
+        ]
+      },
+      {
+        "id": "mutation",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "controller-dispatch",
+          "drawing-shadow-methods"
+        ]
+      },
+      {
+        "id": "input",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "shape-shadow-api",
+          "web-common-outer-shadow",
+          "editor-shadow-bridges"
+        ]
+      },
+      {
+        "id": "recipients",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "controller-dispatch",
+          "drawing-shadow-methods"
+        ]
+      },
+      {
+        "id": "readback",
+        "status": "confirmed",
+        "evidenceRefs": [
+          "controller-dispatch",
+          "web-common-outer-shadow"
+        ]
+      },
+      {
+        "id": "render-output",
+        "status": "unchecked"
+      },
+      {
+        "id": "lifecycle",
+        "status": "unchecked"
+      },
+      {
+        "id": "tests",
+        "status": "unchecked"
+      },
+      {
+        "id": "reference",
+        "status": "reference-only",
+        "reason": "public and web-apps shadow surface is explicitly implemented for COuterShdw, not CInnerShdw"
+      }
+    ],
+    "source": {
+      "repositories": [
+        {
+          "name": "sdkjs",
+          "commit": "4a1375c4bcd42134a5a224c4f853465b95c97298"
+        },
+        {
+          "name": "web-apps",
+          "commit": "85cb84e2f16813c774e7b6005abbd7464b4c4d01"
+        },
+        {
+          "name": "desktop-apps",
+          "commit": "2d3925074215089cc41a8430cf6b8bdf3d08b300"
+        }
+      ],
+      "gitnexus": {
+        "status": "candidate",
+        "repo": "sdkjs",
+        "indexedCommit": "d2daafb5cbde536961a876f34f714cc7a1ab630f",
+        "currentCommit": "4a1375c4bcd42134a5a224c4f853465b95c97298",
+        "query": "context CInnerShdw",
+        "result": "exact symbol with callers fCreateEffectByType, CEffectLst.Read_FromBinary, BinaryPPTYLoader and ReaderFromJSON.EffectFromJSON; confirmed again in authoritative source"
+      }
+    },
+    "cache": {
+      "enabled": false,
+      "mode": "no-cache"
+    },
+    "report": {
+      "title": "Этап 2. Расширение словаря внутренних теней"
+    }
+  },
+  "adapter": {
+    "transition": "same fields, version-specific Markdown/canonical JSON serialization",
+    "stage2ExternalArtifacts": "ownershipGraphArtifact and boundaryArtifact disabled equally"
+  }
+}

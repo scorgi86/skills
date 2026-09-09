@@ -1,0 +1,615 @@
+{
+  "schemaVersion": "stage12-runner-ab/1.0.0",
+  "generatedAt": "2026-09-09T10:07:30.040Z",
+  "methodology": {
+    "warmup": 1,
+    "runs": 5,
+    "order": "alternating",
+    "cache": "fresh per sample and shared Stage 1 to Stage 2",
+    "transitionAdapters": "version-specific serialization of the same fields",
+    "stage2ExternalArtifacts": "disabled equally"
+  },
+  "requestFiles": [
+    {
+      "stage": 1,
+      "path": "C:\\work\\R7\\projects\\context\\inventories\\internal-shadows\\stage-1-request.json",
+      "digest": "f142d725bc0b3f99d3b1f69b29649470281fa84126a96ca8ae5c80dc214075ed"
+    },
+    {
+      "stage": 2,
+      "path": "C:\\work\\R7\\projects\\context\\inventories\\internal-shadows\\stage-2-request.json",
+      "digest": "9eedb68351624d6dc4717a938d737eaf914606332579785758e3c228744c62c8"
+    }
+  ],
+  "repositories": [
+    {
+      "root": "C:\\work\\R7\\projects\\sdkjs",
+      "head": "c00624bf4e82de81a71c06ba4fc240139cbeb4c9",
+      "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "root": "C:\\work\\R7\\projects\\web-apps",
+      "head": "b5596497daf5c123370021dd66e944ca8dbb892a",
+      "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "root": "C:\\work\\R7\\projects\\desktop-apps",
+      "head": "2d3925074215089cc41a8430cf6b8bdf3d08b300",
+      "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "environment": {
+    "node": "v24.20.0",
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "AMD Ryzen 7 5800HS with Radeon Graphics         "
+  },
+  "before": {
+    "commit": "16ced79",
+    "runs": 5,
+    "pairMedianMs": 10806.457200000019,
+    "stages": [
+      {
+        "stage": 1,
+        "wallMedianMs": 5972.348499999993,
+        "astMedianMs": 5850.496599999999,
+        "evidenceMedianMs": 80.607600000003,
+        "residualMedianMs": 39.52599999999802,
+        "statuses": [
+          "candidate"
+        ],
+        "discoveryDigests": [
+          "64b003fe1d4fe7931b8719a754015f73d17d04b99edb6eabd513351e26cad145"
+        ],
+        "astDigests": [
+          "1c0e6f36466a082708e9531768c8a71ad788235ed359af749efe43b224867c8a"
+        ],
+        "evidenceDigests": [
+          "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4"
+        ],
+        "ownershipDigests": [
+          "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e"
+        ],
+        "astFiles": [
+          7
+        ],
+        "astQueries": [
+          7
+        ],
+        "cacheHits": [
+          0
+        ],
+        "cacheMisses": [
+          7
+        ],
+        "sourceChecks": [
+          10
+        ]
+      },
+      {
+        "stage": 2,
+        "wallMedianMs": 4807.684600000004,
+        "astMedianMs": 4706.425299999999,
+        "evidenceMedianMs": 70.23639999999432,
+        "residualMedianMs": 34.44430000000284,
+        "statuses": [
+          "candidate"
+        ],
+        "discoveryDigests": [
+          "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29"
+        ],
+        "astDigests": [
+          "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553"
+        ],
+        "evidenceDigests": [
+          "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe"
+        ],
+        "ownershipDigests": [
+          "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        ],
+        "astFiles": [
+          12
+        ],
+        "astQueries": [
+          12
+        ],
+        "cacheHits": [
+          1
+        ],
+        "cacheMisses": [
+          11
+        ],
+        "sourceChecks": [
+          7
+        ]
+      }
+    ],
+    "samples": [
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 6072.898699999998,
+            "astMs": 5978.576100000002,
+            "evidenceMs": 64.70439999999871,
+            "residualMs": 29.61819999999716,
+            "status": "candidate",
+            "discoveryDigest": "64b003fe1d4fe7931b8719a754015f73d17d04b99edb6eabd513351e26cad145",
+            "astDigest": "1c0e6f36466a082708e9531768c8a71ad788235ed359af749efe43b224867c8a",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 4807.684600000004,
+            "astMs": 4706.425299999999,
+            "evidenceMs": 67.92780000000494,
+            "residualMs": 33.33150000000023,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 10880.583300000002
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 5691.625499999995,
+            "astMs": 5592.082000000002,
+            "evidenceMs": 60.01749999999447,
+            "residualMs": 39.52599999999802,
+            "status": "candidate",
+            "discoveryDigest": "64b003fe1d4fe7931b8719a754015f73d17d04b99edb6eabd513351e26cad145",
+            "astDigest": "1c0e6f36466a082708e9531768c8a71ad788235ed359af749efe43b224867c8a",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 4749.6391,
+            "astMs": 4669.893999999993,
+            "evidenceMs": 54.25209999999788,
+            "residualMs": 25.493000000009488,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 10441.264599999995
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 5662.2035999999935,
+            "astMs": 5534.0723,
+            "evidenceMs": 80.607600000003,
+            "residualMs": 47.52369999999064,
+            "status": "candidate",
+            "discoveryDigest": "64b003fe1d4fe7931b8719a754015f73d17d04b99edb6eabd513351e26cad145",
+            "astDigest": "1c0e6f36466a082708e9531768c8a71ad788235ed359af749efe43b224867c8a",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 5134.332999999999,
+            "astMs": 5015.442800000004,
+            "evidenceMs": 70.23639999999432,
+            "residualMs": 48.65380000000005,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 10796.536599999992
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 6101.491100000014,
+            "astMs": 5972.4041,
+            "evidenceMs": 92.4438000000082,
+            "residualMs": 36.64320000000589,
+            "status": "candidate",
+            "discoveryDigest": "64b003fe1d4fe7931b8719a754015f73d17d04b99edb6eabd513351e26cad145",
+            "astDigest": "1c0e6f36466a082708e9531768c8a71ad788235ed359af749efe43b224867c8a",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 4704.966100000005,
+            "astMs": 4596.421799999996,
+            "evidenceMs": 74.10000000000582,
+            "residualMs": 34.44430000000284,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 10806.457200000019
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 5972.348499999993,
+            "astMs": 5850.496599999999,
+            "evidenceMs": 80.69569999999658,
+            "residualMs": 41.156199999997625,
+            "status": "candidate",
+            "discoveryDigest": "64b003fe1d4fe7931b8719a754015f73d17d04b99edb6eabd513351e26cad145",
+            "astDigest": "1c0e6f36466a082708e9531768c8a71ad788235ed359af749efe43b224867c8a",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 4976.750499999995,
+            "astMs": 4864.268800000005,
+            "evidenceMs": 70.64250000000175,
+            "residualMs": 41.83919999998761,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 10949.098999999987
+      }
+    ]
+  },
+  "current": {
+    "commit": "ec3e8a6",
+    "runs": 5,
+    "pairMedianMs": 12354.42809999999,
+    "stages": [
+      {
+        "stage": 1,
+        "wallMedianMs": 6845.047300000006,
+        "astMedianMs": 6142.229300000006,
+        "evidenceMedianMs": 75.09769999999844,
+        "residualMedianMs": 628.6677000000054,
+        "statuses": [
+          "partial"
+        ],
+        "discoveryDigests": [
+          "c7fdbc5ccde6052fdf675c8d351f5473100ad8e99153d627e3d4c1fa4bbc9fda"
+        ],
+        "astDigests": [
+          "ccbefa1675af6b26c266c5ef1aa1471b818914cb2b8621c18e159663b3dbfb09"
+        ],
+        "evidenceDigests": [
+          "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4"
+        ],
+        "ownershipDigests": [
+          "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e"
+        ],
+        "astFiles": [
+          7
+        ],
+        "astQueries": [
+          7
+        ],
+        "cacheHits": [
+          0
+        ],
+        "cacheMisses": [
+          7
+        ],
+        "sourceChecks": [
+          10
+        ]
+      },
+      {
+        "stage": 2,
+        "wallMedianMs": 5446.135699999999,
+        "astMedianMs": 4546.332399999999,
+        "evidenceMedianMs": 59.28719999999157,
+        "residualMedianMs": 859.8275999999896,
+        "statuses": [
+          "candidate"
+        ],
+        "discoveryDigests": [
+          "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29"
+        ],
+        "astDigests": [
+          "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553"
+        ],
+        "evidenceDigests": [
+          "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe"
+        ],
+        "ownershipDigests": [
+          "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        ],
+        "astFiles": [
+          12
+        ],
+        "astQueries": [
+          12
+        ],
+        "cacheHits": [
+          1
+        ],
+        "cacheMisses": [
+          11
+        ],
+        "sourceChecks": [
+          7
+        ]
+      }
+    ],
+    "samples": [
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 6845.047300000006,
+            "astMs": 6141.281900000002,
+            "evidenceMs": 75.09769999999844,
+            "residualMs": 628.6677000000054,
+            "status": "partial",
+            "discoveryDigest": "c7fdbc5ccde6052fdf675c8d351f5473100ad8e99153d627e3d4c1fa4bbc9fda",
+            "astDigest": "ccbefa1675af6b26c266c5ef1aa1471b818914cb2b8621c18e159663b3dbfb09",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 5446.135699999999,
+            "astMs": 4546.332399999999,
+            "evidenceMs": 52.48399999999674,
+            "residualMs": 847.3193000000028,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 12291.183000000005
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 6833.446100000001,
+            "astMs": 6142.229300000006,
+            "evidenceMs": 71.88590000000113,
+            "residualMs": 619.3308999999936,
+            "status": "partial",
+            "discoveryDigest": "c7fdbc5ccde6052fdf675c8d351f5473100ad8e99153d627e3d4c1fa4bbc9fda",
+            "astDigest": "ccbefa1675af6b26c266c5ef1aa1471b818914cb2b8621c18e159663b3dbfb09",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 5301.2183,
+            "astMs": 4407.855600000003,
+            "evidenceMs": 52.2213000000047,
+            "residualMs": 841.1413999999932,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 12134.664400000001
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 6928.045299999998,
+            "astMs": 6203.637799999997,
+            "evidenceMs": 82.86590000000433,
+            "residualMs": 641.5415999999968,
+            "status": "partial",
+            "discoveryDigest": "c7fdbc5ccde6052fdf675c8d351f5473100ad8e99153d627e3d4c1fa4bbc9fda",
+            "astDigest": "ccbefa1675af6b26c266c5ef1aa1471b818914cb2b8621c18e159663b3dbfb09",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 5426.382799999992,
+            "astMs": 4500.161699999997,
+            "evidenceMs": 66.39350000000559,
+            "residualMs": 859.8275999999896,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 12354.42809999999
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 6781.411699999997,
+            "astMs": 6084.765999999989,
+            "evidenceMs": 68.2847000000038,
+            "residualMs": 628.3610000000044,
+            "status": "partial",
+            "discoveryDigest": "c7fdbc5ccde6052fdf675c8d351f5473100ad8e99153d627e3d4c1fa4bbc9fda",
+            "astDigest": "ccbefa1675af6b26c266c5ef1aa1471b818914cb2b8621c18e159663b3dbfb09",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 5707.585200000001,
+            "astMs": 4695.22159999999,
+            "evidenceMs": 59.28719999999157,
+            "residualMs": 953.0764000000199,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 12488.996899999998
+      },
+      {
+        "stages": [
+          {
+            "stage": 1,
+            "wallMs": 7701.995999999999,
+            "astMs": 6880.732799999983,
+            "evidenceMs": 93.23420000000624,
+            "residualMs": 728.0290000000095,
+            "status": "partial",
+            "discoveryDigest": "c7fdbc5ccde6052fdf675c8d351f5473100ad8e99153d627e3d4c1fa4bbc9fda",
+            "astDigest": "ccbefa1675af6b26c266c5ef1aa1471b818914cb2b8621c18e159663b3dbfb09",
+            "evidenceDigest": "5d880be35e9c2b2c6145e2040b376e38757b5a7a2bc63c05e4a466f16b367bd4",
+            "ownershipDigest": "b93fab4bc84fae57ecfaf0dd737de3343fffd7395d1c956014605bacbdaf253e",
+            "astFiles": 7,
+            "astQueries": 7,
+            "cacheHits": 0,
+            "cacheMisses": 7,
+            "sourceChecks": 10
+          },
+          {
+            "stage": 2,
+            "wallMs": 6189.395199999999,
+            "astMs": 5200.720700000005,
+            "evidenceMs": 65.85949999999139,
+            "residualMs": 922.8150000000023,
+            "status": "candidate",
+            "discoveryDigest": "7dfd858b4dc70e3833545716aebac06b01dacfdad4787393b184b601ca949b29",
+            "astDigest": "b11be172f58757048c59d3435d40b4391aac7db20ff4e1f36239a0f3663f2553",
+            "evidenceDigest": "4d35988a0898a9dac9d421cf138bc3d7783eacb1b08ba05d6b00ffecc719dcfe",
+            "ownershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "astFiles": 12,
+            "astQueries": 12,
+            "cacheHits": 1,
+            "cacheMisses": 11,
+            "sourceChecks": 7
+          }
+        ],
+        "pairMs": 13891.391199999998
+      }
+    ]
+  },
+  "comparison": {
+    "pairGainPercent": -14.324499429840602,
+    "stage1GainPercent": -14.612322104110534,
+    "stage2GainPercent": -13.279804170181924,
+    "stage1DiscoveryEqual": false,
+    "stage2DiscoveryEqual": true,
+    "stage1AstEqual": false,
+    "stage2AstEqual": true,
+    "stage1EvidenceEqual": true,
+    "stage2EvidenceEqual": true,
+    "stage1OwnershipEqual": true
+  }
+}
