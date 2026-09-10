@@ -5,7 +5,7 @@ description: 'Research direct and indirect feature usage with GitNexus, AST, own
 
 # Task Research
 
-Runtime version: `4.1.0`; canonical artifact and state schema: `4.0.0`. Execute full inventories through `scripts/cli/src/commands/stage_pipeline.js`; treat Stage 8 as the separate digest-bound renderer.
+Runtime version: `4.1.0`; canonical artifact and state schema: `4.0.0`. Execute a prepared full inventory through `node scripts/index.js full_run`; use `stage_pipeline` when an individual stage must be inspected or reissued.
 
 ## Essential Contract
 
@@ -49,13 +49,14 @@ Do not escalate solely because candidates occur in multiple directories. Escalat
 
 ## Full Inventory
 
-Read `references/staged-execution.md` and initialize or advance through `scripts/cli/src/commands/stage_pipeline.js`; `inventory-state.json` is the continuation authority. Stages 0–7 produce validated canonical facts and the Stage 7 report model. Stage 8 verifies the trusted Stage 7 digest and renders read-only; it must not research, reinterpret, or repair facts.
+Read `references/staged-execution.md`; for a prepared Stage 0–7 request package also read `references/full-run-package.md`. `inventory-state.json` is the continuation authority. Stages 0–7 produce validated canonical facts and the Stage 7 report model. Stage 8 verifies the trusted Stage 7 digest and renders read-only; it must not research, reinterpret, or repair facts.
 
 A bounded probe may attach evidence to the current stage but cannot advance state. Complete only after Stage 8 closes and every mandatory capability is confirmed, checked absent, or explicitly non-applicable under `references/evidence-rules.md`.
 
 ## Primary Entry Points
 
 - `scripts/index.js <command> [arguments]` — unified entry to the existing CLI commands, for example `node scripts/index.js prototype_ast --help`.
+- `scripts/index.js full_run --package <research-package.json> --state <inventory-state.json> --output-root <directory>` — continuous Stage 0–8 execution and continuation.
 - `scripts/cli/src/commands/stage_pipeline.js` — Stage 0–7 transaction coordinator and automatic artifact path.
 - `scripts/cli/src/commands/query_stage_artifacts.js` — bounded canonical evidence selectors.
 - `scripts/cli/src/commands/stage8_runner.js` — digest-bound renderer.

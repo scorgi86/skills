@@ -16,6 +16,7 @@ scripts/cli/tests/
 
 ```text
 node scripts/index.js prototype_ast --help
+node scripts/index.js full_run --package research-package.json --state inventory-state.json --output-root artifacts
 node scripts/index.js stage_pipeline --request request.json --state inventory-state.json
 node scripts/index.js stage8_runner --model report-model.json --output-dir stage-8 --state inventory-state.json
 ```
@@ -37,7 +38,7 @@ CLI обрабатывает запуск и вывод; предметная л
 | steps/step-0 | execution_scope — согласование входов и параметры поиска; runner — поиск по репозиториям и подготовка результата |
 | steps/step-1 | context — GitNexus и ownership; summary; runner и существующие gate/render |
 | steps/step-8 | rendering — Markdown-функции и три документа; runner — проверка входа и сохранение |
-| flows/full-flow | stage_pipeline — один асинхронный запрошенный этап 0–7 за вызов и Stage 0 execution-scope preflight; транзакционное выполнение принадлежит `state/session/StageUnitOfWork` |
+| flows/full-flow | full_run — последовательная сборка подготовленных запросов и продолжение Stage 0–8; stage_pipeline — один асинхронный запрошенный этап 0–7 за вызов и Stage 0 execution-scope preflight; транзакционное выполнение принадлежит `state/session/StageUnitOfWork` |
 | shared/dto, ownership, diagnostics, search; остальные steps | Существующие обязанности сохранены; CLI-выполнение вынесено в команды |
 
 Индексы общих подсистем сохраняют именованные ленивые API. Для разбитых реализаций индекс собирает стабильный объект из выделенных функций. Индексы state и steps сохраняют прежние функции основного API. Внутренние файлы импортируют конкретные зависимости напрямую, без обращения через собственный индекс. У shared/search нет пустого индекса: его внутренние операции вызываются обработчиками поиска.
