@@ -1,0 +1,3897 @@
+{
+  "schemaVersion": "parallel-ast-ab/1.0.0",
+  "generatedAt": "2026-09-10T14:45:15.700Z",
+  "methodology": {
+    "modes": [
+      "warm",
+      "cold",
+      "mixed"
+    ],
+    "concurrency": 2,
+    "coldSequentialControl": 1,
+    "series": 2,
+    "warmup": 1,
+    "measuredRuns": 6,
+    "execution": "isolated child and cache per sample; A/B alternated with reversed series start; seeding excluded from measured runner interval"
+  },
+  "provenance": {
+    "baseline": "C:\\work\\skills\\migration-output\\warm-cache-preflight-before",
+    "current": "C:\\work\\skills\\task-research",
+    "baselineCommit": "e761e44",
+    "harnessDigest": "98d2411d1b3134ded27382ca727c61f5b506a654637c2101364d7420d01287f0",
+    "workloadDigest": "db892aa9246b9432d5dcb561ab63e00fb986ae579612a51306d321d94e777199",
+    "baselineImplementationDigest": "f397c8f88f80464a3706a2f1019865c0935d5c430e98f0d7ba99ab8d63bcfe9a",
+    "currentImplementationDigest": "bc08d67529d15869347360da694bbcd8191328327627a4350a5e2c8e87a82225",
+    "repositories": [
+      {
+        "root": "C:\\work\\r7\\projects\\sdkjs",
+        "head": "d61be341c627a6000159dbd3ad725a9b2d6ede00",
+        "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "root": "C:\\work\\r7\\projects\\web-apps",
+        "head": "b5596497daf5c123370021dd66e944ca8dbb892a",
+        "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "root": "C:\\work\\r7\\projects\\desktop-apps",
+        "head": "2d3925074215089cc41a8430cf6b8bdf3d08b300",
+        "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "win32",
+      "arch": "x64",
+      "cpu": "AMD Ryzen 7 5800HS with Radeon Graphics         "
+    }
+  },
+  "comparisons": [
+    {
+      "series": 1,
+      "comparable": true,
+      "warmGainPercent": 20.983142710106204,
+      "mixedGainPercent": -0.6732255457860352,
+      "coldGainPercent": 1.6331730037106547,
+      "currentColdParallelGainPercent": 20.069089867002575
+    },
+    {
+      "series": 2,
+      "comparable": true,
+      "warmGainPercent": 27.96337371052372,
+      "mixedGainPercent": 7.018800601980206,
+      "coldGainPercent": 0.6259702612151989,
+      "currentColdParallelGainPercent": 24.081221000446728
+    }
+  ],
+  "series": [
+    {
+      "scenarios": {
+        "warm": {
+          "baseline": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1373.6049000000003,
+                    "astMs": 1151.7548000000006,
+                    "evidenceMs": 138.76290000000154,
+                    "residualMs": 83.08719999999812,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1965.0421000000006,
+                    "astMs": 1833.3871,
+                    "evidenceMs": 63.453700000000026,
+                    "residualMs": 68.20130000000063,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 543196,
+                "maxRssBytes": 556232704
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1448.5131000000001,
+                    "astMs": 1236.2378000000008,
+                    "evidenceMs": 133.64120000000003,
+                    "residualMs": 78.63409999999931,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2169.6859000000004,
+                    "astMs": 2029.9044000000013,
+                    "evidenceMs": 80.97779999999875,
+                    "residualMs": 58.80370000000039,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 533860,
+                "maxRssBytes": 546672640
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1549.0668999999998,
+                    "astMs": 1309.0132000000012,
+                    "evidenceMs": 161.93139999999948,
+                    "residualMs": 78.12229999999909,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2385.851200000001,
+                    "astMs": 2226.7091999999993,
+                    "evidenceMs": 87.89640000000145,
+                    "residualMs": 71.2456000000002,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 536672,
+                "maxRssBytes": 549552128
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1144.4381999999987,
+                    "astMs": 952.6031000000003,
+                    "evidenceMs": 122.60629999999946,
+                    "residualMs": 69.22879999999896,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1844.4476000000013,
+                    "astMs": 1695.0861000000004,
+                    "evidenceMs": 90.21950000000106,
+                    "residualMs": 59.141999999999825,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 520404,
+                "maxRssBytes": 532893696
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1314.5241000000005,
+                    "astMs": 1059.2397,
+                    "evidenceMs": 139.6766000000007,
+                    "residualMs": 115.60779999999977,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2552.872299999999,
+                    "astMs": 2400.5732000000007,
+                    "evidenceMs": 81.48369999999886,
+                    "residualMs": 70.8153999999995,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 533448,
+                "maxRssBytes": 546250752
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1077.5939999999991,
+                    "astMs": 904.4827000000005,
+                    "evidenceMs": 110.41679999999906,
+                    "residualMs": 62.69449999999961,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1603.1139000000003,
+                    "astMs": 1492.8395,
+                    "evidenceMs": 63.556000000000495,
+                    "residualMs": 46.71839999999975,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 533052,
+                "maxRssBytes": 545845248
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 1344.0645000000004,
+                "astMs": 1105.4972500000003,
+                "evidenceMs": 136.20205000000078,
+                "residualMs": 78.3781999999992,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  7
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 2067.3640000000005,
+                "astMs": 1931.6457500000006,
+                "evidenceMs": 81.2307499999988,
+                "residualMs": 63.67165000000023,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  12
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "current": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1148.743699999999,
+                    "astMs": 883.6391999999996,
+                    "evidenceMs": 188.91529999999875,
+                    "residualMs": 76.18920000000071,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2013.0411000000004,
+                    "astMs": 1851.2493000000013,
+                    "evidenceMs": 94.41899999999987,
+                    "residualMs": 67.37279999999919,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 489708,
+                "maxRssBytes": 501460992
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 964.4265000000014,
+                    "astMs": 728.9263999999985,
+                    "evidenceMs": 166.880799999999,
+                    "residualMs": 68.61930000000393,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2412.6098,
+                    "astMs": 2225.1322,
+                    "evidenceMs": 103.37660000000142,
+                    "residualMs": 84.10099999999875,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 465900,
+                "maxRssBytes": 477081600
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1089.793099999999,
+                    "astMs": 807.7494999999999,
+                    "evidenceMs": 194.18359999999848,
+                    "residualMs": 87.86000000000058,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2304.5414999999994,
+                    "astMs": 2130.7991,
+                    "evidenceMs": 97.37099999999919,
+                    "residualMs": 76.3714,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 446452,
+                "maxRssBytes": 457166848
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 724.1530000000002,
+                    "astMs": 550.5810999999994,
+                    "evidenceMs": 125.08209999999963,
+                    "residualMs": 48.489800000001196,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1442.9537,
+                    "astMs": 1334.9845000000005,
+                    "evidenceMs": 62.61479999999938,
+                    "residualMs": 45.35440000000017,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 469864,
+                "maxRssBytes": 481140736
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 892.4215000000004,
+                    "astMs": 681.7469000000001,
+                    "evidenceMs": 138.63609999999971,
+                    "residualMs": 72.03850000000057,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1533.3896000000004,
+                    "astMs": 1396.0584999999992,
+                    "evidenceMs": 76.79000000000087,
+                    "residualMs": 60.54110000000037,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 467080,
+                "maxRssBytes": 478289920
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1058.5782999999992,
+                    "astMs": 816.7993999999999,
+                    "evidenceMs": 170.20789999999943,
+                    "residualMs": 71.57099999999991,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1527.5058999999983,
+                    "astMs": 1411.7847000000002,
+                    "evidenceMs": 67.70759999999973,
+                    "residualMs": 48.013599999998405,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 455996,
+                "maxRssBytes": 466939904
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 1011.5024000000003,
+                "astMs": 768.3379499999992,
+                "evidenceMs": 168.5443499999992,
+                "residualMs": 71.80475000000024,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  7
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 1773.2153500000004,
+                "astMs": 1631.5170000000007,
+                "evidenceMs": 85.60450000000037,
+                "residualMs": 63.95694999999978,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  12
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          }
+        },
+        "cold": {
+          "baseline": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4216.5928,
+                    "astMs": 3990.7945999999997,
+                    "evidenceMs": 147.5636000000004,
+                    "residualMs": 78.23460000000023,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4519.167100000001,
+                    "astMs": 4378.4977,
+                    "evidenceMs": 83.8830999999991,
+                    "residualMs": 56.786300000001575,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 583724,
+                "maxRssBytes": 597733376
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5049.5238,
+                    "astMs": 4810.7139,
+                    "evidenceMs": 155.41150000000016,
+                    "residualMs": 83.39840000000004,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4354.5986,
+                    "astMs": 4196.9579,
+                    "evidenceMs": 90.27640000000065,
+                    "residualMs": 67.36429999999928,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 603000,
+                "maxRssBytes": 617472000
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4152.558099999999,
+                    "astMs": 3947.1792,
+                    "evidenceMs": 134.80239999999958,
+                    "residualMs": 70.57649999999967,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3750.3152,
+                    "astMs": 3623.0126,
+                    "evidenceMs": 68.1840000000002,
+                    "residualMs": 59.11859999999979,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 603952,
+                "maxRssBytes": 618446848
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4055.9292,
+                    "astMs": 3836.1569,
+                    "evidenceMs": 134.14139999999998,
+                    "residualMs": 85.63090000000011,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3457.614699999999,
+                    "astMs": 3335.9825,
+                    "evidenceMs": 74.52660000000014,
+                    "residualMs": 47.10559999999896,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 583316,
+                "maxRssBytes": 597315584
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4763.8273,
+                    "astMs": 4543.4143,
+                    "evidenceMs": 144.5052999999998,
+                    "residualMs": 75.90769999999975,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4378.8978,
+                    "astMs": 4233.437199999999,
+                    "evidenceMs": 82.29160000000047,
+                    "residualMs": 63.16899999999987,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 603268,
+                "maxRssBytes": 617746432
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4623.6666,
+                    "astMs": 4464.9754,
+                    "evidenceMs": 111.10210000000006,
+                    "residualMs": 47.589099999999235,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2971.415499999999,
+                    "astMs": 2859.62,
+                    "evidenceMs": 61.777100000000246,
+                    "residualMs": 50.01839999999902,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 583084,
+                "maxRssBytes": 597078016
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 4420.1296999999995,
+                "astMs": 4227.885,
+                "evidenceMs": 139.6538499999997,
+                "residualMs": 77.07114999999999,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  0
+                ],
+                "cacheMisses": [
+                  7
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 4052.4569,
+                "astMs": 3909.98525,
+                "evidenceMs": 78.40910000000031,
+                "residualMs": 57.95245000000068,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  1
+                ],
+                "cacheMisses": [
+                  11
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "current": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4292.374599999999,
+                    "astMs": 4085.6769000000004,
+                    "evidenceMs": 149.41300000000047,
+                    "residualMs": 57.28469999999834,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4356.4127,
+                    "astMs": 4197.970400000001,
+                    "evidenceMs": 90.22340000000077,
+                    "residualMs": 68.21889999999803,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 584372,
+                "maxRssBytes": 598396928
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5366.0457,
+                    "astMs": 5152.4885,
+                    "evidenceMs": 141.36040000000048,
+                    "residualMs": 72.1967999999988,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4268.514999999999,
+                    "astMs": 4106.3796999999995,
+                    "evidenceMs": 90.0671999999995,
+                    "residualMs": 72.06810000000041,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 583652,
+                "maxRssBytes": 597659648
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4673.7664,
+                    "astMs": 4480.7695,
+                    "evidenceMs": 130.16660000000047,
+                    "residualMs": 62.830299999999625,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4556.3166,
+                    "astMs": 4404.161400000001,
+                    "evidenceMs": 94.03349999999955,
+                    "residualMs": 58.12169999999969,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 583076,
+                "maxRssBytes": 597069824
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3968.1755000000003,
+                    "astMs": 3819.3929000000003,
+                    "evidenceMs": 99.97350000000006,
+                    "residualMs": 48.809099999999944,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2962.6566999999995,
+                    "astMs": 2851.8611999999994,
+                    "evidenceMs": 64.21200000000044,
+                    "residualMs": 46.58349999999973,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 610116,
+                "maxRssBytes": 624758784
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4292.884499999999,
+                    "astMs": 4098.6122,
+                    "evidenceMs": 136.46669999999995,
+                    "residualMs": 57.805599999999686,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3873.3314,
+                    "astMs": 3719.2607,
+                    "evidenceMs": 95.75900000000001,
+                    "residualMs": 58.3117000000002,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 583768,
+                "maxRssBytes": 597778432
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3956.5124000000005,
+                    "astMs": 3807.1015,
+                    "evidenceMs": 101.54950000000008,
+                    "residualMs": 47.86140000000023,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2957.2526,
+                    "astMs": 2843.4804000000004,
+                    "evidenceMs": 63.692800000000716,
+                    "residualMs": 50.079399999998714,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 584700,
+                "maxRssBytes": 598732800
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 4292.62955,
+                "astMs": 4092.14455,
+                "evidenceMs": 133.3166500000002,
+                "residualMs": 57.54514999999901,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  0
+                ],
+                "cacheMisses": [
+                  7
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 4070.9231999999997,
+                "astMs": 3912.8201999999997,
+                "evidenceMs": 90.14530000000013,
+                "residualMs": 58.216699999999946,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  1
+                ],
+                "cacheMisses": [
+                  11
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "currentSequential": {
+            "samples": [
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5930.4449,
+                    "astMs": 5719.8307,
+                    "evidenceMs": 154.91839999999956,
+                    "residualMs": 55.69580000000042,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4904.491899999999,
+                    "astMs": 4739.411099999999,
+                    "evidenceMs": 92.33710000000065,
+                    "residualMs": 72.74369999999908,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 391896,
+                "maxRssBytes": 401301504
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5926.5548,
+                    "astMs": 5708.363600000001,
+                    "evidenceMs": 142.03429999999935,
+                    "residualMs": 76.15689999999995,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4622.0091,
+                    "astMs": 4474.1318,
+                    "evidenceMs": 70.0609000000004,
+                    "residualMs": 77.8163999999997,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 397676,
+                "maxRssBytes": 407220224
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 6630.478099999999,
+                    "astMs": 6479.2417000000005,
+                    "evidenceMs": 102.47439999999915,
+                    "residualMs": 48.761999999999716,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3831.7405,
+                    "astMs": 3730.573800000001,
+                    "evidenceMs": 58.582400000001144,
+                    "residualMs": 42.58429999999771,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 408572,
+                "maxRssBytes": 418377728
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5326.0011,
+                    "astMs": 5170.3577000000005,
+                    "evidenceMs": 107.33290000000034,
+                    "residualMs": 48.31049999999959,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4279.902999999999,
+                    "astMs": 4127.3839,
+                    "evidenceMs": 73.82979999999952,
+                    "residualMs": 78.6893,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 408800,
+                "maxRssBytes": 418611200
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5399.9094,
+                    "astMs": 5228.9733,
+                    "evidenceMs": 114.32090000000062,
+                    "residualMs": 56.61519999999928,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3845.2536,
+                    "astMs": 3738.412199999999,
+                    "evidenceMs": 59.714600000001155,
+                    "residualMs": 47.1268,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 414108,
+                "maxRssBytes": 424046592
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 6366.2264000000005,
+                    "astMs": 6174.1102,
+                    "evidenceMs": 131.26890000000003,
+                    "residualMs": 60.84730000000036,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4789.5951000000005,
+                    "astMs": 4675.6474,
+                    "evidenceMs": 68.71799999999894,
+                    "residualMs": 45.229700000001685,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 406420,
+                "maxRssBytes": 416174080
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 5928.49985,
+                "astMs": 5714.0971500000005,
+                "evidenceMs": 122.79490000000033,
+                "residualMs": 56.15549999999985,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  0
+                ],
+                "cacheMisses": [
+                  7
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 4450.95605,
+                "astMs": 4300.75785,
+                "evidenceMs": 69.38944999999967,
+                "residualMs": 59.93524999999954,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  1
+                ],
+                "cacheMisses": [
+                  11
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          }
+        },
+        "mixed": {
+          "baseline": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2793.3626000000004,
+                    "astMs": 2565.2849000000006,
+                    "evidenceMs": 167.7504000000008,
+                    "residualMs": 60.32729999999901,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2894.317100000001,
+                    "astMs": 2755.6918000000005,
+                    "evidenceMs": 69.84220000000096,
+                    "residualMs": 68.78309999999965,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 598008,
+                "maxRssBytes": 612360192
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2800.375,
+                    "astMs": 2570.6625999999997,
+                    "evidenceMs": 158.99379999999928,
+                    "residualMs": 70.71860000000106,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2775.8827999999994,
+                    "astMs": 2647.037299999999,
+                    "evidenceMs": 67.94540000000052,
+                    "residualMs": 60.90009999999984,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 613492,
+                "maxRssBytes": 628215808
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2868.0734,
+                    "astMs": 2649.1589000000004,
+                    "evidenceMs": 146.32589999999982,
+                    "residualMs": 72.58860000000004,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2884.5730999999996,
+                    "astMs": 2751.964899999999,
+                    "evidenceMs": 76.47250000000167,
+                    "residualMs": 56.135699999998906,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 614824,
+                "maxRssBytes": 629579776
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2824.747700000001,
+                    "astMs": 2603.5002000000004,
+                    "evidenceMs": 151.1782000000003,
+                    "residualMs": 70.06930000000011,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2776.2330999999995,
+                    "astMs": 2643.6427000000003,
+                    "evidenceMs": 81.51819999999861,
+                    "residualMs": 51.07220000000052,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 601700,
+                "maxRssBytes": 616140800
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2924.5599999999995,
+                    "astMs": 2707.179299999999,
+                    "evidenceMs": 162.3135000000002,
+                    "residualMs": 55.06720000000041,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2906.4327999999987,
+                    "astMs": 2748.2402999999995,
+                    "evidenceMs": 89.13790000000154,
+                    "residualMs": 69.05459999999766,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 597640,
+                "maxRssBytes": 611983360
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2786.7380000000003,
+                    "astMs": 2583.3536000000004,
+                    "evidenceMs": 143.97400000000016,
+                    "residualMs": 59.410399999999754,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2835.319300000001,
+                    "astMs": 2696.4989000000005,
+                    "evidenceMs": 75.80649999999878,
+                    "residualMs": 63.01390000000174,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 617848,
+                "maxRssBytes": 632676352
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 2812.5613500000004,
+                "astMs": 2593.4269000000004,
+                "evidenceMs": 155.08599999999979,
+                "residualMs": 65.19829999999956,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  4
+                ],
+                "cacheMisses": [
+                  3
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 2859.9462000000003,
+                "astMs": 2722.3696,
+                "evidenceMs": 76.13950000000023,
+                "residualMs": 61.95700000000079,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  6
+                ],
+                "cacheMisses": [
+                  6
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "current": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3360.830900000001,
+                    "astMs": 3127.2794000000004,
+                    "evidenceMs": 162.0482000000011,
+                    "residualMs": 71.5032999999994,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3108.357899999999,
+                    "astMs": 2955.3858,
+                    "evidenceMs": 82.41429999999855,
+                    "residualMs": 70.5578000000005,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 597796,
+                "maxRssBytes": 612143104
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2855.0987000000005,
+                    "astMs": 2612.9127,
+                    "evidenceMs": 164.58099999999922,
+                    "residualMs": 77.60500000000138,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3072.5807000000004,
+                    "astMs": 2905.8561,
+                    "evidenceMs": 87.43339999999989,
+                    "residualMs": 79.29120000000057,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 599376,
+                "maxRssBytes": 613761024
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2769.8456000000006,
+                    "astMs": 2543.2856999999995,
+                    "evidenceMs": 168.10199999999986,
+                    "residualMs": 58.457900000001246,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2732.5594,
+                    "astMs": 2582.8014999999996,
+                    "evidenceMs": 86.65220000000045,
+                    "residualMs": 63.10570000000007,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 600000,
+                "maxRssBytes": 614400000
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3045.0670999999993,
+                    "astMs": 2810.3363,
+                    "evidenceMs": 176.39019999999982,
+                    "residualMs": 58.34059999999954,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2948.3364999999994,
+                    "astMs": 2798.4067000000014,
+                    "evidenceMs": 93.1359999999986,
+                    "residualMs": 56.793799999999464,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 614408,
+                "maxRssBytes": 629153792
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2863.6976999999997,
+                    "astMs": 2629.1277,
+                    "evidenceMs": 174.79969999999958,
+                    "residualMs": 59.770300000000134,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2783.3203000000003,
+                    "astMs": 2643.6063999999997,
+                    "evidenceMs": 68.35049999999865,
+                    "residualMs": 71.363400000002,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 620108,
+                "maxRssBytes": 634990592
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2846.8477000000003,
+                    "astMs": 2619.8540999999996,
+                    "evidenceMs": 153.65520000000015,
+                    "residualMs": 73.33840000000055,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2809.1754,
+                    "astMs": 2655.7791000000007,
+                    "evidenceMs": 84.84189999999944,
+                    "residualMs": 68.55439999999999,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 615844,
+                "maxRssBytes": 630624256
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 2859.3982,
+                "astMs": 2624.4909,
+                "evidenceMs": 166.34149999999954,
+                "residualMs": 65.63679999999977,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  4
+                ],
+                "cacheMisses": [
+                  3
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 2878.7559499999998,
+                "astMs": 2727.092900000001,
+                "evidenceMs": 85.74704999999994,
+                "residualMs": 69.55610000000024,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  6
+                ],
+                "cacheMisses": [
+                  6
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "scenarios": {
+        "warm": {
+          "baseline": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1248.3226999999988,
+                    "astMs": 1063.2173999999995,
+                    "evidenceMs": 112.4481999999989,
+                    "residualMs": 72.65710000000036,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2066.6931000000004,
+                    "astMs": 1901.7769000000008,
+                    "evidenceMs": 97.09519999999975,
+                    "residualMs": 67.82099999999991,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 535912,
+                "maxRssBytes": 548773888
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1321.9964,
+                    "astMs": 1086.2183999999997,
+                    "evidenceMs": 146.83489999999983,
+                    "residualMs": 88.94310000000041,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1960.1548000000003,
+                    "astMs": 1812.7466999999997,
+                    "evidenceMs": 88.06919999999991,
+                    "residualMs": 59.33890000000065,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 534236,
+                "maxRssBytes": 547057664
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1286.200999999999,
+                    "astMs": 1101.027399999999,
+                    "evidenceMs": 114.92759999999907,
+                    "residualMs": 70.246000000001,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1801.8973000000005,
+                    "astMs": 1672.6363999999994,
+                    "evidenceMs": 79.90070000000014,
+                    "residualMs": 49.36020000000099,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 540292,
+                "maxRssBytes": 553259008
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1518.3420999999998,
+                    "astMs": 1293.720299999999,
+                    "evidenceMs": 164.13869999999952,
+                    "residualMs": 60.483100000001286,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2172.132099999999,
+                    "astMs": 2021.1898,
+                    "evidenceMs": 80.63220000000001,
+                    "residualMs": 70.31009999999878,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 534648,
+                "maxRssBytes": 547479552
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1108.2502000000004,
+                    "astMs": 938.7655000000013,
+                    "evidenceMs": 118.65439999999944,
+                    "residualMs": 50.830299999999625,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1592.8001999999997,
+                    "astMs": 1469.3662000000004,
+                    "evidenceMs": 78.15130000000136,
+                    "residualMs": 45.28269999999793,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 531896,
+                "maxRssBytes": 544661504
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 1239.4392000000007,
+                    "astMs": 1023.1013999999996,
+                    "evidenceMs": 141.56570000000102,
+                    "residualMs": 74.77210000000014,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1956.8955000000005,
+                    "astMs": 1804.5386999999992,
+                    "evidenceMs": 83.84759999999915,
+                    "residualMs": 68.50920000000224,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 440936,
+                "maxRssBytes": 451518464
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 1267.261849999999,
+                "astMs": 1074.7178999999996,
+                "evidenceMs": 130.11005000000023,
+                "residualMs": 71.45155000000068,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  7
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 1958.5251500000004,
+                "astMs": 1808.6426999999994,
+                "evidenceMs": 82.23989999999958,
+                "residualMs": 63.57995000000028,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  12
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "current": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 929.2194,
+                    "astMs": 728.0054,
+                    "evidenceMs": 122.01560000000063,
+                    "residualMs": 79.19839999999931,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1517.0751,
+                    "astMs": 1379.9017000000003,
+                    "evidenceMs": 78.76389999999992,
+                    "residualMs": 58.40949999999975,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 448788,
+                "maxRssBytes": 459558912
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 809.0445,
+                    "astMs": 612.037699999999,
+                    "evidenceMs": 141.3122000000003,
+                    "residualMs": 55.69460000000072,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1487.438400000001,
+                    "astMs": 1344.0535,
+                    "evidenceMs": 85.20480000000134,
+                    "residualMs": 58.180099999999584,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 434308,
+                "maxRssBytes": 444731392
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 878.1343000000015,
+                    "astMs": 703.0113000000001,
+                    "evidenceMs": 113.44710000000123,
+                    "residualMs": 61.67590000000018,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1516.7975999999999,
+                    "astMs": 1381.6797000000006,
+                    "evidenceMs": 73.1377999999986,
+                    "residualMs": 61.980100000000675,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 449660,
+                "maxRssBytes": 460451840
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 866.8113000000012,
+                    "astMs": 635.8091000000004,
+                    "evidenceMs": 180.22400000000016,
+                    "residualMs": 50.77820000000065,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1489.3730000000014,
+                    "astMs": 1359.8518999999997,
+                    "evidenceMs": 64.17109999999957,
+                    "residualMs": 65.35000000000218,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 447744,
+                "maxRssBytes": 458489856
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 965.2037999999993,
+                    "astMs": 707.8011999999999,
+                    "evidenceMs": 174.2548000000006,
+                    "residualMs": 83.14779999999882,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1773.8919999999998,
+                    "astMs": 1623.749600000001,
+                    "evidenceMs": 74.9956000000002,
+                    "residualMs": 75.14679999999862,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 452188,
+                "maxRssBytes": 463040512
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 954.7695000000003,
+                    "astMs": 736.1340999999993,
+                    "evidenceMs": 149.98049999999967,
+                    "residualMs": 68.65490000000136,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 7,
+                    "cacheMisses": 0,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 1491.7119999999995,
+                    "astMs": 1363.4372000000003,
+                    "evidenceMs": 73.02529999999933,
+                    "residualMs": 55.2494999999999,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 12,
+                    "cacheMisses": 0,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 446576,
+                "maxRssBytes": 457293824
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 903.6768500000007,
+                "astMs": 705.40625,
+                "evidenceMs": 145.64634999999998,
+                "residualMs": 65.16540000000077,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  7
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 1504.2547999999997,
+                "astMs": 1371.6694500000003,
+                "evidenceMs": 74.0666999999994,
+                "residualMs": 60.194800000000214,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  12
+                ],
+                "cacheMisses": [
+                  0
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          }
+        },
+        "cold": {
+          "baseline": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4265.1342,
+                    "astMs": 4043.4352000000003,
+                    "evidenceMs": 143.95169999999962,
+                    "residualMs": 77.74730000000045,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4063.360199999999,
+                    "astMs": 3926.7283000000007,
+                    "evidenceMs": 78.02649999999994,
+                    "residualMs": 58.60539999999855,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 604480,
+                "maxRssBytes": 618987520
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3985.6372,
+                    "astMs": 3785.5607999999997,
+                    "evidenceMs": 140.8161,
+                    "residualMs": 59.26030000000037,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3820.7321999999995,
+                    "astMs": 3687.6997999999994,
+                    "evidenceMs": 75.85279999999966,
+                    "residualMs": 57.17960000000039,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 585284,
+                "maxRssBytes": 599330816
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4397.83,
+                    "astMs": 4174.7923,
+                    "evidenceMs": 144.8723,
+                    "residualMs": 78.16539999999986,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4529.4461,
+                    "astMs": 4375.9484,
+                    "evidenceMs": 88.01600000000144,
+                    "residualMs": 65.48169999999845,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 602668,
+                "maxRssBytes": 617132032
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4036.6566000000003,
+                    "astMs": 3826.3856,
+                    "evidenceMs": 151.32079999999996,
+                    "residualMs": 58.95020000000022,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3996.8269,
+                    "astMs": 3861.3196,
+                    "evidenceMs": 71.84879999999976,
+                    "residualMs": 63.65850000000046,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 602340,
+                "maxRssBytes": 616796160
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4282.3886999999995,
+                    "astMs": 4098.2819,
+                    "evidenceMs": 131.02229999999963,
+                    "residualMs": 53.084499999999935,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3758.2409,
+                    "astMs": 3616.5016000000005,
+                    "evidenceMs": 85.46150000000034,
+                    "residualMs": 56.27779999999893,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 576240,
+                "maxRssBytes": 590069760
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4229.4444,
+                    "astMs": 4001.9284000000002,
+                    "evidenceMs": 154.95690000000013,
+                    "residualMs": 72.55909999999994,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3807.1825,
+                    "astMs": 3667.8103,
+                    "evidenceMs": 85.98859999999968,
+                    "residualMs": 53.383600000000115,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 606912,
+                "maxRssBytes": 621477888
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 4247.2893,
+                "astMs": 4022.6818000000003,
+                "evidenceMs": 144.4119999999998,
+                "residualMs": 65.90970000000016,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  0
+                ],
+                "cacheMisses": [
+                  7
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 3908.7795499999997,
+                "astMs": 3774.5096999999996,
+                "evidenceMs": 81.74400000000014,
+                "residualMs": 57.89249999999947,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  1
+                ],
+                "cacheMisses": [
+                  11
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "current": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4164.5097000000005,
+                    "astMs": 3942.8781999999997,
+                    "evidenceMs": 141.88829999999962,
+                    "residualMs": 79.74320000000125,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4294.7042,
+                    "astMs": 4139.4209,
+                    "evidenceMs": 91.5591000000004,
+                    "residualMs": 63.724199999999655,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 585028,
+                "maxRssBytes": 599068672
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4123.4059,
+                    "astMs": 3920.566,
+                    "evidenceMs": 131.55489999999963,
+                    "residualMs": 71.28500000000031,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3741.8262000000004,
+                    "astMs": 3604.1859999999997,
+                    "evidenceMs": 79.24539999999979,
+                    "residualMs": 58.39480000000094,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 584888,
+                "maxRssBytes": 598925312
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4498.3471,
+                    "astMs": 4302.8394,
+                    "evidenceMs": 135.03709999999955,
+                    "residualMs": 60.47060000000056,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4481.481599999999,
+                    "astMs": 4329.6642999999995,
+                    "evidenceMs": 87.46360000000095,
+                    "residualMs": 64.35369999999875,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 585500,
+                "maxRssBytes": 599552000
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4141.3031,
+                    "astMs": 3925.274,
+                    "evidenceMs": 139.3780999999999,
+                    "residualMs": 76.6510000000003,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3976.929,
+                    "astMs": 3859.1217000000006,
+                    "evidenceMs": 70.13259999999991,
+                    "residualMs": 47.674699999999575,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 602688,
+                "maxRssBytes": 617152512
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4108.583799999999,
+                    "astMs": 3887.3412,
+                    "evidenceMs": 152.5667000000003,
+                    "residualMs": 68.67589999999927,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3651.4768000000004,
+                    "astMs": 3519.6607999999997,
+                    "evidenceMs": 80.63630000000012,
+                    "residualMs": 51.179700000000594,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 586880,
+                "maxRssBytes": 600965120
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 4109.561900000001,
+                    "astMs": 3879.5243,
+                    "evidenceMs": 156.27289999999948,
+                    "residualMs": 73.76470000000108,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3944.7592999999997,
+                    "astMs": 3791.8051000000005,
+                    "evidenceMs": 86.48359999999957,
+                    "residualMs": 66.47059999999965,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 584176,
+                "maxRssBytes": 598196224
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 4132.3544999999995,
+                "astMs": 3922.92,
+                "evidenceMs": 140.63319999999976,
+                "residualMs": 72.5248500000007,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  0
+                ],
+                "cacheMisses": [
+                  7
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 3960.84415,
+                "astMs": 3825.4634000000005,
+                "evidenceMs": 83.55994999999984,
+                "residualMs": 61.0595000000003,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  1
+                ],
+                "cacheMisses": [
+                  11
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "currentSequential": {
+            "samples": [
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 6204.202499999999,
+                    "astMs": 6000.8687,
+                    "evidenceMs": 128.60649999999987,
+                    "residualMs": 74.72729999999956,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4392.6165,
+                    "astMs": 4247.8447,
+                    "evidenceMs": 78.36609999999928,
+                    "residualMs": 66.40570000000116,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 411904,
+                "maxRssBytes": 421789696
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5803.4337,
+                    "astMs": 5594.7904,
+                    "evidenceMs": 143.42630000000008,
+                    "residualMs": 65.21699999999964,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4695.307600000001,
+                    "astMs": 4548.5768,
+                    "evidenceMs": 79.79399999999987,
+                    "residualMs": 66.93680000000131,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 393548,
+                "maxRssBytes": 402993152
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5976.0213,
+                    "astMs": 5760.0453,
+                    "evidenceMs": 139.88460000000032,
+                    "residualMs": 76.09140000000025,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4703.441,
+                    "astMs": 4554.990400000001,
+                    "evidenceMs": 87.20190000000002,
+                    "residualMs": 61.24869999999919,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 396456,
+                "maxRssBytes": 405970944
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5879.6201,
+                    "astMs": 5665.3279999999995,
+                    "evidenceMs": 145.64030000000002,
+                    "residualMs": 68.65180000000055,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4839.786500000001,
+                    "astMs": 4699.2486,
+                    "evidenceMs": 75.90560000000005,
+                    "residualMs": 64.63230000000112,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 394992,
+                "maxRssBytes": 404471808
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5844.9373,
+                    "astMs": 5638.4451,
+                    "evidenceMs": 137.85400000000027,
+                    "residualMs": 68.63819999999942,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4476.685000000001,
+                    "astMs": 4329.076100000001,
+                    "evidenceMs": 80.30739999999969,
+                    "residualMs": 67.30150000000049,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 409896,
+                "maxRssBytes": 419733504
+              },
+              {
+                "mode": 1,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 5857.6193,
+                    "astMs": 5643.402,
+                    "evidenceMs": 138.91440000000057,
+                    "residualMs": 75.30289999999968,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 0,
+                    "cacheMisses": 7,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 4774.136099999999,
+                    "astMs": 4639.7144,
+                    "evidenceMs": 70.85819999999876,
+                    "residualMs": 63.563500000000204,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 1,
+                    "cacheMisses": 11,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 388904,
+                "maxRssBytes": 398237696
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 5868.6197,
+                "astMs": 5654.365,
+                "evidenceMs": 139.39950000000044,
+                "residualMs": 71.68955000000005,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  0
+                ],
+                "cacheMisses": [
+                  7
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 4699.3743,
+                "astMs": 4551.783600000001,
+                "evidenceMs": 79.08004999999957,
+                "residualMs": 65.51900000000114,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  1
+                ],
+                "cacheMisses": [
+                  11
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          }
+        },
+        "mixed": {
+          "baseline": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3327.8660999999993,
+                    "astMs": 3084.9972,
+                    "evidenceMs": 182.79360000000088,
+                    "residualMs": 60.075299999998606,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3057.662900000001,
+                    "astMs": 2905.8631000000005,
+                    "evidenceMs": 81.52079999999842,
+                    "residualMs": 70.27900000000227,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 593920,
+                "maxRssBytes": 608174080
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3281.9339999999993,
+                    "astMs": 3031.6488,
+                    "evidenceMs": 179.75820000000022,
+                    "residualMs": 70.52699999999913,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3351.258100000001,
+                    "astMs": 3202.2513,
+                    "evidenceMs": 84.34130000000005,
+                    "residualMs": 64.66550000000097,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 615328,
+                "maxRssBytes": 630095872
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2937.2234000000008,
+                    "astMs": 2734.0717999999997,
+                    "evidenceMs": 138.8268999999991,
+                    "residualMs": 64.32470000000194,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2926.499100000001,
+                    "astMs": 2781.0496999999996,
+                    "evidenceMs": 87.77139999999963,
+                    "residualMs": 57.6780000000017,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 597632,
+                "maxRssBytes": 611975168
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2956.532399999999,
+                    "astMs": 2738.7342,
+                    "evidenceMs": 161.24079999999958,
+                    "residualMs": 56.55739999999969,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3022.0041,
+                    "astMs": 2865.435299999999,
+                    "evidenceMs": 84.91430000000037,
+                    "residualMs": 71.65450000000055,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 596620,
+                "maxRssBytes": 610938880
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2969.0068,
+                    "astMs": 2789.0346999999992,
+                    "evidenceMs": 128.05050000000028,
+                    "residualMs": 51.92160000000058,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2267.7558,
+                    "astMs": 2154.8550999999998,
+                    "evidenceMs": 64.52480000000105,
+                    "residualMs": 48.37589999999909,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 594856,
+                "maxRssBytes": 609132544
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2310.108,
+                    "astMs": 2146.4376999999995,
+                    "evidenceMs": 115.51609999999982,
+                    "residualMs": 48.154200000000856,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2256.1872999999996,
+                    "astMs": 2141.6654,
+                    "evidenceMs": 69.0684999999994,
+                    "residualMs": 45.45340000000033,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 617516,
+                "maxRssBytes": 632336384
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 2962.7695999999996,
+                "astMs": 2763.8844499999996,
+                "evidenceMs": 150.03384999999935,
+                "residualMs": 58.31634999999915,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  4
+                ],
+                "cacheMisses": [
+                  3
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 2974.2516000000005,
+                "astMs": 2823.2424999999994,
+                "evidenceMs": 82.93104999999923,
+                "residualMs": 61.17175000000134,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  6
+                ],
+                "cacheMisses": [
+                  6
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          },
+          "current": {
+            "samples": [
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3005.6303,
+                    "astMs": 2769.7980000000007,
+                    "evidenceMs": 177.8775999999998,
+                    "residualMs": 57.95469999999932,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2791.393899999999,
+                    "astMs": 2664.0148,
+                    "evidenceMs": 71.85909999999967,
+                    "residualMs": 55.51999999999953,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 601608,
+                "maxRssBytes": 616046592
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 3003.3143,
+                    "astMs": 2776.3685000000005,
+                    "evidenceMs": 154.77450000000135,
+                    "residualMs": 72.17129999999815,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2906.6656999999996,
+                    "astMs": 2770.1564,
+                    "evidenceMs": 80.96889999999985,
+                    "residualMs": 55.54039999999986,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 594592,
+                "maxRssBytes": 608862208
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2939.2375,
+                    "astMs": 2683.6521999999995,
+                    "evidenceMs": 183.90830000000005,
+                    "residualMs": 71.67700000000059,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 3120.2821999999996,
+                    "astMs": 2963.7618,
+                    "evidenceMs": 85.994200000001,
+                    "residualMs": 70.52619999999843,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 615736,
+                "maxRssBytes": 630513664
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2934.8886,
+                    "astMs": 2750.9837000000007,
+                    "evidenceMs": 132.7412000000004,
+                    "residualMs": 51.16369999999915,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2332.2286000000004,
+                    "astMs": 2223.931700000001,
+                    "evidenceMs": 64.48910000000069,
+                    "residualMs": 43.80779999999868,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 615816,
+                "maxRssBytes": 630595584
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2404.4413000000004,
+                    "astMs": 2223.9123,
+                    "evidenceMs": 128.23219999999947,
+                    "residualMs": 52.296800000000985,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2360.8322000000007,
+                    "astMs": 2227.191099999999,
+                    "evidenceMs": 69.38789999999972,
+                    "residualMs": 64.25320000000193,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 614856,
+                "maxRssBytes": 629612544
+              },
+              {
+                "mode": 2,
+                "stages": [
+                  {
+                    "stage": 1,
+                    "wallMs": 2394.8149000000003,
+                    "astMs": 2214.9492,
+                    "evidenceMs": 126.47299999999996,
+                    "residualMs": 53.39270000000033,
+                    "files": 7,
+                    "queries": 7,
+                    "sourceChecks": 10,
+                    "cacheHits": 4,
+                    "cacheMisses": 3,
+                    "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                    "qualityDigest": "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                  },
+                  {
+                    "stage": 2,
+                    "wallMs": 2410.9209999999994,
+                    "astMs": 2291.3046000000004,
+                    "evidenceMs": 63.305099999999584,
+                    "residualMs": 56.31129999999939,
+                    "files": 12,
+                    "queries": 12,
+                    "sourceChecks": 7,
+                    "cacheHits": 6,
+                    "cacheMisses": 6,
+                    "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                    "qualityDigest": "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                  }
+                ],
+                "maxRssKiB": 594964,
+                "maxRssBytes": 609243136
+              }
+            ],
+            "summary": [
+              {
+                "stage": 1,
+                "wallMs": 2937.06305,
+                "astMs": 2717.31795,
+                "evidenceMs": 143.75785000000087,
+                "residualMs": 55.673699999999826,
+                "files": [
+                  7
+                ],
+                "queries": [
+                  7
+                ],
+                "sourceChecks": [
+                  10
+                ],
+                "cacheHits": [
+                  4
+                ],
+                "cacheMisses": [
+                  3
+                ],
+                "semanticDigests": [
+                  "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c"
+                ],
+                "qualityDigests": [
+                  "01806a43b1c177d1691ad2f182a2f743a4b35a4af135bbea8975446d9baf2b9c"
+                ]
+              },
+              {
+                "stage": 2,
+                "wallMs": 2601.1574499999992,
+                "astMs": 2477.6597,
+                "evidenceMs": 70.6234999999997,
+                "residualMs": 55.92584999999963,
+                "files": [
+                  12
+                ],
+                "queries": [
+                  12
+                ],
+                "sourceChecks": [
+                  7
+                ],
+                "cacheHits": [
+                  6
+                ],
+                "cacheMisses": [
+                  6
+                ],
+                "semanticDigests": [
+                  "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+                ],
+                "qualityDigests": [
+                  "faa95daa1da37b6accfa600db0c1f81eb1c94a67d51b5accdacf6951e4d49d62"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

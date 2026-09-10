@@ -7,7 +7,7 @@ const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
 const { analyzeFiles } = require("../../src/analysis/analysis.js");
-const { analyzeInWorkers, normalizeConcurrency } = require("../../src/analysis/parallel_analysis.js");
+const { analyzeInWorkers, defaultCreateWorker, normalizeConcurrency } = require("../../src/analysis/parallel_analysis.js");
 const { runStage1 } = require("../../../../steps/step-1/src/runner.js");
 const { runStage2 } = require("../../../../steps/step-2/src/runner.js");
 const { writeCanonicalTransition } = require("../../../dto/tests/test_helpers.js");
@@ -54,6 +54,48 @@ test("real workers preserve sequential AST semantics", async t => {
   assert.deepEqual(semantic(parallel), semantic(sequential));
 });
 
+test("cache routing uses the parent only when every current entry exists", async t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "ast-cache-routing-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const cache = path.join(root, "cache");
+  const files = [path.join(root, "a.js"), path.join(root, "b.js"), path.join(root, "c.js")];
+  files.forEach((file, index) => fs.writeFileSync(file, `class Type${index} {}\n`));
+  await analyzeFiles(files.slice(0, 2), { cache, concurrency: 1 });
+  let created = 0;
+  const dependencies = { createWorker() { created += 1; return defaultCreateWorker(); } };
+
+  const warm = await analyzeFiles(files.slice(0, 2), { cache, concurrency: 2 }, dependencies);
+  assert.equal(created, 0);
+  assert.equal(warm.stats.cacheHits, 2);
+  assert.equal(warm.identities.size, 2);
+
+  const mixed = await analyzeFiles(files, { cache, concurrency: 2 }, dependencies);
+  assert.equal(created, 2, "one miss keeps the complete batch on the existing worker pool");
+  assert.deepEqual(mixed.results.map(result => result.file), files.map(file => path.resolve(file)));
+  assert.deepEqual({ hits: mixed.stats.cacheHits, misses: mixed.stats.cacheMisses }, { hits: 2, misses: 1 });
+});
+
+test("cache routing follows content identity and leaves corruption to readEntry", async t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "ast-cache-routing-identity-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const cache = path.join(root, "cache"), first = path.join(root, "a.js"), second = path.join(root, "b.js");
+  fs.writeFileSync(first, "class Alpha {}\n"); fs.writeFileSync(second, "class Bravo {}\n");
+  await analyzeFiles([first, second], { cache, concurrency: 1 });
+  for (const name of fs.readdirSync(cache)) fs.writeFileSync(path.join(cache, name), "{");
+  let created = 0;
+  const dependencies = { createWorker() { created += 1; return defaultCreateWorker(); } };
+  const corrupt = await analyzeFiles([first, second], { cache, concurrency: 2 }, dependencies);
+  assert.equal(created, 0);
+  assert.ok(corrupt.results.every(result => result.warnings.length === 1));
+
+  const stat = fs.statSync(first);
+  fs.writeFileSync(first, "class Omega {}\n");
+  fs.utimesSync(first, stat.atime, stat.mtime);
+  const changed = await analyzeFiles([first, second], { cache, concurrency: 2 }, dependencies);
+  assert.equal(created, 2);
+  assert.ok(changed.results[0].symbols.some(symbol => symbol.name === "Omega"));
+});
+
 test("BDD: Stage 1 and Stage 2 preserve canonical semantics and phase order", async t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "parallel-stage-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
@@ -63,22 +105,29 @@ test("BDD: Stage 1 and Stage 2 preserve canonical semantics and phase order", as
   const initial = writeCanonicalTransition(root, 0, { facts: { repositoryScope: scope } });
   const run = async concurrency => {
     const phases = [];
+    let workers = 0;
     const dependencies = {
-      async runAstBatch(request) { phases.push("ast"); return await require("../../src/batch/batch.js").runAstBatch(request); },
+      async runAstBatch(request) {
+        phases.push("ast");
+        return await require("../../src/batch/batch.js").runAstBatch(request, { analyzeFiles: (selected, options) => analyzeFiles(selected, options, {
+          createWorker() { workers += 1; return defaultCreateWorker(); }
+        }) });
+      },
       runEvidenceChecks() { phases.push("evidence"); return { checks: [] }; },
       runGitNexusContext: () => ({ status: "candidate", requests: [] }),
     };
-    const ast = { concurrency, queries: [{ id: "symbols", command: "symbols", files }] };
+    const ast = { concurrency, cache: path.join(root, `cache-${concurrency}`), queries: [{ id: "symbols", command: "symbols", files }] };
     const first = await runStage1({ stage: 1, transitionArtifact: initial, repositoryScope: scope, ast, evidence: { checks: [] } }, dependencies);
     phases.push("canonicalization");
     const transition = path.join(root, `stage1-${concurrency}.json`);
     fs.writeFileSync(transition, JSON.stringify(createCanonicalStageResult({ facts: first, factsPrepared: true })));
     const second = await runStage2({ stage: 2, transitionArtifact: transition, repositoryScope: scope, ast, evidence: { checks: [] } }, dependencies);
-    return { phases, first, second };
+    return { phases, first, second, workers };
   };
   const sequential = await run(1), parallel = await run(2);
   assert.deepEqual(parallel.phases, ["ast", "evidence", "canonicalization", "ast", "evidence"]);
   assert.deepEqual(parallel.phases, sequential.phases);
+  assert.equal(parallel.workers, 2, "only cold Stage 1 creates workers; warm Stage 2 stays local");
   const semantic = value => JSON.parse(JSON.stringify(value, (key, item) => ["elapsedMs", "cacheHits", "cacheMisses", "output", "summary", "measurements"].includes(key) ? undefined : item));
   assert.deepEqual(semantic(parallel.first), semantic(sequential.first));
   assert.deepEqual(semantic(parallel.second), semantic(sequential.second));

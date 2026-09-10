@@ -8,6 +8,20 @@ const { createIdentity } = require("../cache/identity.js");
 const { readEntry, writeEntry } = require("../cache/storage.js");
 const path = require("path");
 const SCHEMA_VERSION = "1.0.0";
+function parserDescriptor(filename) {
+    return { name: "@swc/core", version: swcVersion, options: parserOptions(filename) };
+}
+function hasCurrentCacheEntry(filename, cache, dependencies = {}) {
+    const readFileSync = dependencies.readFileSync || fs.readFileSync;
+    const existsSync = dependencies.existsSync || fs.existsSync;
+    try {
+        const resolved = path.resolve(filename);
+        const identity = createIdentity(readFileSync(resolved), resolved, parserDescriptor(resolved));
+        return existsSync(path.join(path.resolve(cache), `${identity.key}.json`));
+    } catch {
+        return false;
+    }
+}
 function withIdentity(value, identityKey) {
     if (identityKey) Object.defineProperty(value, "identityKey", { value: identityKey, enumerable: false });
     return value;
@@ -49,7 +63,7 @@ function analyzeFile(filename, options = {}) {
         cache: "disabled"
     };
     const resolved = path.resolve(filename);
-    const parser = { name: "@swc/core", version: swcVersion, options: parserOptions(resolved) };
+    const parser = parserDescriptor(resolved);
     let content;
     try {
         content = fs.readFileSync(resolved);
@@ -82,7 +96,9 @@ async function analyzeFiles(files, options = {}, dependencies = {}) {
     ];
     const started = process.hrtime.bigint();
     const concurrency = require("./parallel_analysis.js").normalizeConcurrency(options.concurrency, uniqueFiles.length);
-    const analyzedFiles = concurrency === 1
+    const allEntriesPresent = concurrency > 1 && options.cache
+        && uniqueFiles.every(file => hasCurrentCacheEntry(file, options.cache, dependencies.cacheRouting));
+    const analyzedFiles = concurrency === 1 || allEntriesPresent
         ? uniqueFiles.map(file => analyzeFile(file, options))
         : await require("./parallel_analysis.js").analyzeInWorkers(uniqueFiles, { ...options, concurrency }, dependencies);
     const results = [];
@@ -116,5 +132,6 @@ async function analyzeFiles(files, options = {}, dependencies = {}) {
 module.exports = {
     SCHEMA_VERSION,
     analyzeFile,
-    analyzeFiles
+    analyzeFiles,
+    hasCurrentCacheEntry
 };
