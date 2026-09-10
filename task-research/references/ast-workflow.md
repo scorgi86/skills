@@ -6,7 +6,7 @@ Use this file only after candidate discovery indicates local AST is useful.
 
 - Run the analyzer with the Node.js available to the skill environment.
 - Resolve `@swc/core` only from the skill-local `node_modules`; install reproducibly with `npm install` in the skill root when dependencies are absent.
-- Use the automatic inventory artifact path unless the user supplies another destination. Cache and raw output remain opt-in.
+- Use the automatic inventory artifact path unless the user supplies another destination. Direct AST cache and raw output remain opt-in; the full-flow pipeline configures its own runtime cache for Stage 1–2.
 - Treat every AST result as candidate evidence with status `не проверено` until confirmed in source.
 - Do not use parse failures or empty AST results as proof of absence.
 
@@ -23,11 +23,14 @@ node scripts/cli/src/commands/prototype_ast.js doctor
 - Pass one file with `--file`, a narrow explicit directory with `--scope`, or a UTF-8 candidate list with `--files-from`.
 - A scope above 200 source files is blocked unless `--allow-wide-scope` is explicit and its reason, timeout, and fallback are recorded.
 - Cache is opt-in only: `--cache <directory>`.
+- File-analysis concurrency is opt-in through `--concurrency <positive-integer>` or `ast.concurrency` in a batch request. The default is `1`.
 - `--line-start/--line-end` bound returned evidence; a cache miss still parses the complete candidate file.
 
 ## File analysis cache
 
-`--cache <directory>` reuses file analysis (symbols, relations and candidate evidence), not AST trees or query results. Without this option there is no cache IO or hashing. Each enabled analysis reads the source once, hashes its raw bytes and checks the cache before parsing. A valid hit skips SWC and extraction; a miss parses the UTF-8 text decoded from the same bytes. Queries and source confirmation still run. This is consistency of one read, not an atomic filesystem snapshot.
+`--cache <directory>` reuses file analysis (symbols, relations and candidate evidence) and eligible batch query results, not AST trees. Without this option there is no cache IO or hashing. Each enabled analysis reads the source once, hashes its raw bytes and checks the cache before parsing. A valid hit skips SWC and extraction; a miss parses the UTF-8 text decoded from the same bytes. Source confirmation still runs. This is consistency of one read, not an atomic filesystem snapshot.
+
+Programmatic `analyzeFiles`, `runAstBatch`, `runStage1`, `runStage2`, and `prototype_ast.execute` return promises. With concurrency `1`, analysis uses the ordinary in-process loop and creates no workers. Higher values create a bounded `worker_threads` pool for unique files only; results are restored to deterministic input order before queries run. Read and parse diagnostics remain per-file results. Worker startup, protocol, error, or premature-exit failures reject the batch after all created workers are terminated.
 
 Identity includes the absolute file path, raw content hash, parser options and SWC version, plus private cache format and analyzer versions in `scripts/shared/ast/src/cache/identity.js`. Bump the analyzer version when symbol/relation/evidence extraction or affecting dependencies change; bump the format version when the stored contract changes. These versions are separate from the public output schema. Old keys are ignored without migration or deletion. No Git or size/mtime shortcut is used.
 
@@ -36,6 +39,10 @@ Entries are checked against the expected identity and nested result structure. V
 Successful misses publish through a unique temporary file and rename in the same directory. Write/rename failure returns the computed result with a cache warning, without repeating analysis or deleting another writer's entry. Cleanup of the call's own temporary file is best effort. There is no automatic cache cleanup.
 
 Legacy `stats.parsed` counts successful file results, including hits; batch `parseCounts` records planned file processing, not measured SWC calls. Per-result `elapsedMs` retains the original parser duration (including on a hit); aggregate `stats.elapsedMs` measures the current analysis call. Use external measurements to compare actual run times.
+
+For full-flow Stage 1–2, the automatic cache is stored at `<parent-of-outputRoot>/.runtime-cache/ast/<scopeDigest>`. Inventory directories under the same parent and with the same normalized repository scope therefore reuse file analysis and eligible batch queries. A different parent or scope is isolated. An explicit `request.ast.cache` remains authoritative. The shared cache still reads and hashes every candidate file before accepting a file-analysis hit; source confirmation always runs again. The runtime does not clean this disposable cache automatically.
+
+Eligible batch query results are stored below `<cache>/query-results`. Their identity contains the query-cache version, command, functional query options and the ordered identities of every scoped file analysis. Adding, removing, renaming or changing a file therefore invalidates dependent results, including `not-found`; unrelated queries remain reusable. The cache stores the complete item collection before grouping, detail selection and output budgeting, so those projections still run for every request. `maxResults` retains its existing batch behavior and does not split the cache key. `stats`, `chain`, unknown commands, parse failures and analyses without a content identity are never cached. Cache diagnostics remain internal and do not change serialized AST or canonical facts. Malformed or inaccessible entries fail open to a normal query execution.
 
 ## Commands
 
@@ -54,7 +61,7 @@ Common options:
 --terms, --kind, --symbol, --line-start, --line-end,
 --max-depth, --max-paths,
 --max-branches, --max-results, --min-confidence,
---cache, --format, --allow-wide-scope,
+--cache, --concurrency, --format, --allow-wide-scope,
 --output-mode, --max-output-bytes, --max-evidence-per-item,
 --max-snippet-chars, --max-groups, --group-offset, --details-for
 --group-owner, --group-field, --group-relation, --group-target

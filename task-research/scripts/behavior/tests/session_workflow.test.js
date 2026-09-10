@@ -43,7 +43,7 @@ test("a partial stage publishes while the state lock is held elsewhere", async t
   assert.equal(fs.readFileSync(`${fixture.stateFile}.lock`, "utf8"), "state-command");
 });
 
-test("BDD: Stage 1 AST is reused by Stage 2 and stale or corrupt entries never become hits", t => {
+test("BDD: Stage 1 AST is reused by Stage 2 and stale or corrupt entries never become hits", async t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-ast-cache-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const source = path.join(root, "feature.js");
@@ -59,7 +59,7 @@ test("BDD: Stage 1 AST is reused by Stage 2 and stale or corrupt entries never b
     const stage = Number(process.env.STAGE);
     const runner = require(process.env.RUNNER)[\`runStage\${stage}\`];
     const dependencies = stage === 1 ? { runGitNexusContext: () => ({ status: "candidate", requests: [] }) } : {};
-    process.stdout.write(JSON.stringify(runner(JSON.parse(process.env.REQUEST), dependencies).ast));
+    void runner(JSON.parse(process.env.REQUEST), dependencies).then(result => process.stdout.write(JSON.stringify(result.ast)));
   `], { encoding: "utf8", env: { ...process.env, STAGE: String(stage), RUNNER: path.join(__dirname, `../../steps/step-${stage}/src/runner.js`), REQUEST: JSON.stringify(request) } });
   const coldChild = child(1, stage1Request);
   assert.equal(coldChild.status, 0, coldChild.stderr);
@@ -68,20 +68,20 @@ test("BDD: Stage 1 AST is reused by Stage 2 and stale or corrupt entries never b
   assert.equal(warmChild.status, 0, warmChild.stderr);
   const warmAst = JSON.parse(warmChild.stdout);
   assert.equal(warmAst.stats.cacheHits, 1);
-  const uncached = runStage2({ ...base, stage: 2 });
+  const uncached = await runStage2({ ...base, stage: 2 });
   const semantic = value => JSON.parse(JSON.stringify(value, (key, item) => ["elapsedMs", "cacheHits", "cacheMisses", "bytes", "budgetRequired"].includes(key) ? undefined : item));
   assert.deepEqual(semantic(warmAst), semantic(uncached.ast));
 
   const original = fs.statSync(source);
   fs.writeFileSync(source, "class Bravo {}\n");
   fs.utimesSync(source, original.atime, original.mtime);
-  const changed = runStage2(stage2Request);
+  const changed = await runStage2(stage2Request);
   assert.equal(changed.ast.stats.cacheHits, 0);
   assert.equal(changed.ast.stats.cacheMisses, 1);
   assert.match(JSON.stringify(changed.ast), /Bravo/);
 
   for (const file of fs.readdirSync(stage2Request.ast.cache).filter(name => name.endsWith(".json"))) fs.writeFileSync(path.join(stage2Request.ast.cache, file), "broken");
-  const recovered = runStage2(stage2Request);
+  const recovered = await runStage2(stage2Request);
   assert.equal(recovered.ast.stats.cacheHits, 0);
-  assert.deepEqual(semantic(recovered.ast), semantic(runStage2({ ...base, stage: 2 }).ast));
+  assert.deepEqual(semantic(recovered.ast), semantic((await runStage2({ ...base, stage: 2 })).ast));
 });

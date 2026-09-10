@@ -80,8 +80,14 @@ function readRequest(directory, stage, transitionArtifact, repositoryScope) {
 function stage7ModelName(directory) {
   return ["stage-7-v4-report-model.json", "stage-7-report-model-v3.json", "stage-7-report-model-v2.json", "stage-7-report-model.json"].find(name => fs.existsSync(path.join(directory, name))) || "stage-7-v4-report-model.json";
 }
-function runSample(runtime, requests, repositoryScope) {
-  const sampleRoot = fs.mkdtempSync(path.join(os.tmpdir(), "stage-profile-"));
+function createSampleLayout() {
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), "stage-profile-"));
+  const outputRoot = path.join(parent, "inventory");
+  fs.mkdirSync(outputRoot);
+  return { parent, outputRoot };
+}
+async function runSample(runtime, requests, repositoryScope) {
+  const sample = createSampleLayout(), sampleRoot = sample.outputRoot;
   try {
     const transitionArtifact = transition(sampleRoot, repositoryScope, runtime);
     const stages = [];
@@ -96,7 +102,7 @@ function runSample(runtime, requests, repositoryScope) {
       const dependencies = {};
       if (stage <= 2) {
         const ast = require(path.join(runtime, "scripts/shared/ast/src/batch/batch.js")).runAstBatch;
-        dependencies.runAstBatch = input => { const start = performance.now(); const result = ast(input); operations.push({ kind: "ast", start, end: performance.now() }); return result; };
+        dependencies.runAstBatch = async input => { const start = performance.now(); const result = await ast(input); operations.push({ kind: "ast", start, end: performance.now() }); return result; };
       }
       if (stage <= 5) {
         const evidence = require(path.join(runtime, "scripts/shared/evidence/src/collection/source_evidence.js")).runEvidenceChecks;
@@ -112,7 +118,7 @@ function runSample(runtime, requests, repositoryScope) {
         dependencies.prepareFacts = measured("canonical-preparation", prepare);
       }
       const start = performance.now();
-      const result = runner(request, dependencies);
+      const result = await runner(request, dependencies);
       const end = performance.now();
       const projection = stageSemantic(runtime, result);
       stages.push({ stage, wallMs: end - start, operations: operations.map(item => ({ kind: item.kind, startMs: item.start - start, endMs: item.end - start })), semanticDigest: digest(JSON.stringify(projection)) });
@@ -124,7 +130,7 @@ function runSample(runtime, requests, repositoryScope) {
     const start = performance.now(), normalized = normalize(model), validation = validate(normalized), end = performance.now();
     stages.push({ stage: 7, wallMs: end - start, operations: [], semanticDigest: digest(JSON.stringify(semantic({ normalized, validation }))) });
     return stages;
-  } finally { fs.rmSync(sampleRoot, { recursive: true, force: true }); }
+  } finally { fs.rmSync(sample.parent, { recursive: true, force: true }); }
 }
 function unionDuration(intervals, wall) {
   const sorted = intervals.map(item => [Math.max(0, item.startMs), Math.min(wall, item.endMs)]).filter(([a, b]) => b >= a).sort((a, b) => a[0] - b[0]);
@@ -137,7 +143,7 @@ function unionDuration(intervals, wall) {
 function compareSignature(current, baseline) {
   for (const key of ["harnessDigest", "requestDigest", "environmentDigest", "targetRepositoriesDigest", "workloadDigest"]) if (current.signature[key] !== baseline.signature?.[key]) throw new Error(`Incomparable profile: ${key} differs`);
 }
-function main(argv = process.argv.slice(2)) {
+async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv), runtime = path.resolve(options.runtime), requests = path.resolve(options.requests), output = path.resolve(options.output);
   const requestNames = Array.from({ length: 6 }, (_, index) => `stage-${index + 1}-request.json`).concat(stage7ModelName(requests));
   const stage0 = JSON.parse(fs.readFileSync(path.join(requests, "stage-0-request.json"), "utf8"));
@@ -155,8 +161,9 @@ function main(argv = process.argv.slice(2)) {
     implementationDigest: filesDigest(runtime, ["scripts/flows/full-flow/src/stage_pipeline.js", "scripts/steps/step-1/src/runner.js", "scripts/steps/step-2/src/runner.js", "scripts/shared/artifacts/src/stage_artifact_v4.js", "scripts/shared/artifacts/src/canonical/result.js"])
   };
   const inputBefore = signature.requestDigest;
-  for (let i = 0; i < options.warmup; i += 1) runSample(runtime, requests, repositoryScope);
-  const samples = Array.from({ length: options.runs }, () => runSample(runtime, requests, repositoryScope));
+  for (let i = 0; i < options.warmup; i += 1) await runSample(runtime, requests, repositoryScope);
+  const samples = [];
+  for (let index = 0; index < options.runs; index += 1) samples.push(await runSample(runtime, requests, repositoryScope));
   if (filesDigest(requests, requestNames.concat("stage-0-request.json")) !== inputBefore) throw new Error("Benchmark modified its request pack");
   const stages = Array.from({ length: 7 }, (_, index) => { const stage = index + 1, values = samples.map(sample => sample.find(item => item.stage === stage)); return { stage, samplesMs: values.map(item => item.wallMs), medianMs: median(values.map(item => item.wallMs)), semanticDigests: [...new Set(values.map(item => item.semanticDigest))], operationMediansMs: stage === 2 ? operationMedians(values) : undefined, residualMedianMs: stage === 2 ? median(values.map(item => item.wallMs - unionDuration(item.operations, item.wallMs))) : undefined }; });
   const unstable = stages.filter(item => item.semanticDigests.length !== 1);
@@ -165,5 +172,5 @@ function main(argv = process.argv.slice(2)) {
   if (options.compare) { const baseline = JSON.parse(fs.readFileSync(path.resolve(options.compare), "utf8")); compareSignature(profile, baseline); for (const stage of stages) if (stage.semanticDigests[0] !== baseline.stages[stage.stage - 1]?.semanticDigests?.[0]) throw new Error(`Incomparable profile: stage ${stage.stage} semantic projection differs`); profile.comparison = { stage1And2GainPercent: (baseline.stage1And2MedianMs - profile.stage1And2MedianMs) / baseline.stage1And2MedianMs * 100, stage2ResidualGainPercent: (baseline.stages[1].residualMedianMs - profile.stages[1].residualMedianMs) / baseline.stages[1].residualMedianMs * 100 }; }
   fs.mkdirSync(path.dirname(output), { recursive: true }); fs.writeFileSync(output, `${JSON.stringify(profile, null, 2)}\n`); process.stdout.write(`${JSON.stringify(profile)}\n`);
 }
-if (require.main === module) main();
-module.exports = { compareSignature, digest, gitSignature, median, operationMedians, parseArgs, runSample, semantic, stage7ModelName, stageSemantic, unionDuration };
+if (require.main === module) void main();
+module.exports = { compareSignature, createSampleLayout, digest, gitSignature, median, operationMedians, parseArgs, runSample, semantic, stage7ModelName, stageSemantic, unionDuration };

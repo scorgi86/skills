@@ -20,6 +20,10 @@ stage-N/
 
 The next stage may read only `canonical/stage-result.json`. It must not use `raw/` or Markdown as a transition input.
 
+When new canonical facts reference evidence from an earlier stage, the pipeline resolves only those ids from the validated lineage, rechecks current source confirmation, and copies the selected records into the current evidence sidecar. Unknown, conflicting, stale, or out-of-scope proof cannot support a confirmed fact. Stage 7 continues to use its explicit bounded evidence selectors.
+
+Fact ids and query/check ids are separate namespaces. Evidence is attached to a fact only through an explicit `evidenceRefs` value; equality between a fact id and a query id does not imply ownership of every query result.
+
 ## Persistence
 
 Run the stage-specific runner to a temporary facts file, then canonicalize it:

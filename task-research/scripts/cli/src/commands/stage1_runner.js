@@ -29,11 +29,11 @@ function parseArgs(argv) {
     if (options.stdout === "summary" && !options.output) throw new Error("--stdout summary requires --output so full producer facts remain available");
     return options;
 }
-function main() {
+async function main() {
     try {
         const options = parseArgs(process.argv.slice(2));
         const request = resolveRequest(JSON.parse(fs.readFileSync(path.resolve(options.request), "utf8")));
-        const facts = runStage1(request);
+        const facts = await runStage1(request);
         const text = `${JSON.stringify(facts, null, options.pretty ? 2 : 0)}\n`;
         const artifact = options.output ? path.resolve(options.output) : null;
         if (artifact) fs.writeFileSync(artifact, text);
@@ -52,4 +52,4 @@ function main() {
     }
 }
 module.exports = main;
-if (require.main === module) main();
+if (require.main === module) void main();

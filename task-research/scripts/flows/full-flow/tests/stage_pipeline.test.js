@@ -12,8 +12,86 @@ const { main: runState } = require("../../../state/src/stage_state.js");
 const { normalizeReportModel } = require("../../../shared/report/src/model/normalization.js");
 const { validateReportModel } = require("../../../shared/report/src/model/validation.js");
 const { run: runStage8, unwrapModel } = require("../../../steps/step-8/src/runner.js");
+const { runAstBatch } = require("../../../shared/ast/src/batch/batch.js");
+const { SourceSnapshotStore } = require("../../../shared/evidence/src/source_snapshot.js");
+
+function astSemantic(value) {
+  const copy = JSON.parse(JSON.stringify(value));
+  delete copy.stats.elapsedMs; delete copy.stats.cacheHits; delete copy.stats.cacheMisses;
+  for (const result of copy.results || []) delete result.elapsedMs;
+  if (copy.output) { delete copy.output.bytes; delete copy.output.budgetRequired; }
+  return copy;
+}
+
+test("BDD: pipeline shares one source snapshot between evidence collection and deferred canonicalization", async t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pipeline-source-snapshot-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const file = path.join(root, "source.js");
+  const text = "const Feature = true;\n";
+  fs.writeFileSync(file, text);
+  const sourceHash = crypto.createHash("sha256").update(text).digest("hex");
+  const repositoryScope = { repositories: [{ id: "source", root, role: "source" }] };
+  let reads = 0;
+  const sourceSnapshots = new SourceSnapshotStore({ readFileSync(target) { reads += 1; return fs.readFileSync(target); } });
+  const outputRoot = path.join(root, "output");
+  let transitionArtifact = (await runStagePipeline({ outputRoot, request: { stage: 0, target: "Feature", coverageProfile: {}, repositoryScope },
+    runner: () => ({ stage: 0, status: "candidate" }) })).artifact;
+  transitionArtifact = (await runStagePipeline({ outputRoot, request: { stage: 1, target: "Feature", transitionArtifact, repositoryScope },
+    runner: () => ({ stage: 1, status: "candidate", transition: { fields: {
+      target: "Feature", scope: "source", stage: "1", status: "closed", "confirmed evidence": "source",
+      "candidate evidence": "none", "dictionary/graph/path state": "ready", "skipped/forbidden": "none",
+      "open checks": "stage 2", "next stage": "2"
+    } } }) })).artifact;
+  const result = await runStagePipeline({ outputRoot, dependencies: { sourceSnapshots, runAstBatch: async () => ({ status: "candidate", results: [], stats: { parseCounts: {} }, plan: { compiledBeforeParse: true, lateQueries: 0 } }) }, request: {
+    stage: 2, target: "Feature", transitionArtifact, repositoryScope, repository: "source", ast: { queries: [] },
+    evidence: { checks: [{ id: "feature", file, repository: "source", pattern: "Feature", confirmation: {
+      status: "source-confirmed", line: 1, endLine: 1, sourceFragment: text.trim(), sourceHash
+    } }] }
+  } });
+  assert.equal(reads, 1);
+  const canonical = JSON.parse(fs.readFileSync(result.artifact, "utf8"));
+  const evidence = JSON.parse(fs.readFileSync(result.evidence, "utf8")).evidence;
+  assert.ok(evidence.some(row => row.confirmation?.status === "source-confirmed"));
+  assert.doesNotMatch(JSON.stringify(canonical), /sourceSnapshots|SourceSnapshotStore|"type":"Buffer"/);
+});
 
 test("pipeline carries declared planning facts into canonicalization input", async () => { const result = carryPlanningFacts({ gaps: [{ id: "gap", expectedPath: "export" }] }, { stage: 6, status: "candidate", gaps: [{ id: "gap", status: "partial" }] }); assert.equal(result.gaps.length, 1); assert.equal(result.gaps[0].expectedPath, "export"); assert.equal(result.gaps[0].status, "partial"); });
+
+test("fact ids do not implicitly attach every result of a same-named query", () => {
+  const { prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
+  const facts = prepareFacts({ stage: 1, status: "candidate", ownership: { groups: [
+    { id: "owners", status: "confirmed", evidenceRefs: ["selected"] }
+  ] }, canonicalEvidence: [
+    { id: "selected", repository: "", file: "selected.js", line: 1, endLine: 1, usageKind: "source-text", provenance: { queryId: "owners" } },
+    { id: "other", repository: "", file: "other.js", line: 1, endLine: 1, usageKind: "source-text", provenance: { queryId: "owners" } }
+  ] });
+  assert.equal(facts.ownership.groups[0].evidenceRefs.length, 1);
+  const selected = facts.canonicalEvidence.find(row => row.aliases.includes("selected"));
+  assert.deepEqual(facts.ownership.groups[0].evidenceRefs, [selected.id]);
+});
+
+test("pipeline carries only referenced evidence from validated lineage", async t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pipeline-referenced-evidence-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const source = path.join(root, "source.js");
+  fs.writeFileSync(source, "const FeatureValue = true;\nconst UnusedValue = false;\n");
+  const sourceHash = crypto.createHash("sha256").update(fs.readFileSync(source)).digest("hex");
+  const repositoryScope = { repositories: [{ id: "source", root, role: "source" }] };
+  const state = path.join(root, "state.json"), outputRoot = path.join(root, "artifacts");
+  runState(["init", "--state", state]);
+  const first = await runStagePipeline({ request: { stage: 0, target: "FeatureValue", coverageProfile: {}, repositoryScope }, outputRoot, stateFile: state,
+    runner: () => ({ stage: 0, status: "candidate", canonicalEvidence: [
+      { id: "used", status: "source-confirmed", repository: "source", file: source, sourceHash, line: 1, endLine: 1, sourceFragment: "const FeatureValue = true;", evidenceRefs: ["used"] },
+      { id: "unused", status: "source-confirmed", repository: "source", file: source, sourceHash, line: 2, endLine: 2, sourceFragment: "const UnusedValue = false;", evidenceRefs: ["unused"] }
+    ] }) });
+  const second = await runStagePipeline({ request: { stage: 1, target: "FeatureValue", repositoryScope, transitionArtifact: first.artifact,
+    scenarios: [{ id: "scenario", status: "confirmed", evidenceRefs: ["used"] }] }, outputRoot, stateFile: state,
+    runner: () => ({ stage: 1, status: "candidate" }) });
+  const bundle = JSON.parse(fs.readFileSync(path.join(path.dirname(second.artifact), "evidence.json"), "utf8"));
+  assert.equal(bundle.evidence.length, 1);
+  assert.ok(bundle.evidence[0].aliases.includes("used"));
+  assert.ok(!bundle.evidence[0].aliases.includes("unused"));
+});
 
 function request(root, stage = 0) { return { stage, ...(stage === 0 ? { coverageProfile: {} } : {}), target: "FeatureValue", repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } }; }
 
@@ -67,6 +145,40 @@ test("pipeline routes one scoped runtime AST cache through Stage 1 and Stage 2",
   assert.notEqual(withRuntimeAstCache({ ...base, stage: 1, ast: {} }, root).ast.cache,
     withRuntimeAstCache({ ...base, stage: 1, repositoryScope: { repositories: [{ id: "other", root, role: "source" }] }, ast: {} }, root).ast.cache);
   assert.equal(withRuntimeAstCache({ ...base, stage: 3, ast: {} }, root).ast.cache, undefined);
+  const sibling = path.join(path.dirname(root), `${path.basename(root)}-sibling`);
+  assert.equal(withRuntimeAstCache({ ...base, stage: 1, ast: {} }, root).ast.cache,
+    withRuntimeAstCache({ ...base, stage: 1, ast: {} }, sibling).ast.cache);
+  const otherParent = path.join(root, "other-parent", "inventory");
+  assert.notEqual(withRuntimeAstCache({ ...base, stage: 1, ast: {} }, root).ast.cache,
+    withRuntimeAstCache({ ...base, stage: 1, ast: {} }, otherParent).ast.cache);
+});
+
+test("BDD: sibling inventories reuse AST analysis with the same semantics", async t => {
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), "pipeline-sibling-cache-"));
+  t.after(() => fs.rmSync(parent, { recursive: true, force: true }));
+  const repository = path.join(parent, "repository"); fs.mkdirSync(repository);
+  const source = path.join(repository, "feature.js"); fs.writeFileSync(source, "class FeatureValue {}\n");
+  const repositoryScope = { repositories: [{ id: "source", root: repository, role: "source" }] };
+  const execute = async (leaf, target) => {
+    const outputRoot = path.join(parent, leaf);
+    const first = await runStagePipeline({ request: { stage: 0, target, coverageProfile: {}, repositoryScope }, outputRoot,
+      runner: () => ({ stage: 0, status: "candidate" }) });
+    let ast;
+    await runStagePipeline({ request: { stage: 1, target, repositoryScope, transitionArtifact: first.artifact, ast: {} }, outputRoot,
+      runner(stageRequest) {
+        return runAstBatch({ ...stageRequest.ast, queries: [{ id: "feature", command: "symbols", file: source, includeDetails: true }] }).then(value => {
+          ast = value;
+          return { stage: 1, status: "candidate", ast };
+        });
+      } });
+    return ast;
+  };
+  const cold = await execute("inventory-a", "Feature A");
+  const warm = await execute("inventory-b", "Feature B");
+  assert.equal(cold.stats.cacheMisses, 1);
+  assert.equal(warm.stats.cacheHits, 1);
+  assert.equal(warm.stats.queries, 1);
+  assert.deepEqual(astSemantic(warm), astSemantic(cold));
 });
 
 test("public Stage 2 pipeline canonicalizes candidates once while direct runners stay prepared", async t => {
@@ -92,7 +204,7 @@ test("public Stage 2 pipeline canonicalizes candidates once while direct runners
   await runStagePipeline({ request: { ...base, stage: 2, transitionArtifact, ast: {}, evidence: { checks: [] } }, outputRoot: root, dependencies });
   assert.equal(calls, 1);
   calls = 0;
-  const direct = require("../../../steps/step-2/src/runner.js").runStage2({ ...base, stage: 2, transitionArtifact, ast: {}, evidence: { checks: [] } }, dependencies);
+  const direct = await require("../../../steps/step-2/src/runner.js").runStage2({ ...base, stage: 2, transitionArtifact, ast: {}, evidence: { checks: [] } }, dependencies);
   assert.ok(Array.isArray(direct.canonicalEvidence));
   assert.equal(calls, 1);
 });

@@ -1,0 +1,417 @@
+{
+  "schemaVersion": "canonicalization-profile/1.0.0",
+  "generatedAt": "2026-09-10T11:15:40.596Z",
+  "methodology": {
+    "workload": "C:\\work\\skills\\task-research\\references\\benchmarks\\internal-shadows-stage12-workload-20260909.json",
+    "workloadDigest": "db892aa9246b9432d5dcb561ab63e00fb986ae579612a51306d321d94e777199",
+    "warmup": 1,
+    "runs": 15,
+    "note": "Component measurements overlap; they are not additive. AST/evidence collection prepares fixed inputs and is outside samples."
+  },
+  "environment": {
+    "node": "v24.20.0",
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "AMD Ryzen 7 5800HS with Radeon Graphics         "
+  },
+  "stages": [
+    {
+      "stage": 1,
+      "candidateCount": 80,
+      "evidenceCount": 79,
+      "medians": {
+        "adapterMs": 0.13979999999992287,
+        "canonicalizeMs": 8.16399999999976,
+        "sourceReads": 0,
+        "sourceReadMs": 0,
+        "remapMs": 1.5468000000000757,
+        "prepareFactsMs": 11.279199999999946,
+        "serializeMs": 1.8141999999998006
+      },
+      "semanticDigests": [
+        "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+      ],
+      "samples": [
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.31750000000010914,
+          "canonicalizeMs": 13.931300000000192,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.8288000000002285,
+          "prepareFactsMs": 20.015300000000025,
+          "serializeMs": 2.1295999999993,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.3257000000003245,
+          "canonicalizeMs": 11.522299999999632,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.612699999999677,
+          "prepareFactsMs": 14.158400000000256,
+          "serializeMs": 2.0226000000002387,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.25820000000021537,
+          "canonicalizeMs": 11.850799999999253,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.0299999999997453,
+          "prepareFactsMs": 11.350899999999456,
+          "serializeMs": 1.5797999999995227,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.4260000000003856,
+          "canonicalizeMs": 10.231200000000172,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.4173000000000684,
+          "prepareFactsMs": 11.335700000000543,
+          "serializeMs": 2.2422999999998865,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.14400000000023283,
+          "canonicalizeMs": 7.4427999999998065,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 0.9549999999999272,
+          "prepareFactsMs": 7.305699999999888,
+          "serializeMs": 1.4427999999998065,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.07340000000021973,
+          "canonicalizeMs": 5.188300000000709,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 0.8950000000004366,
+          "prepareFactsMs": 6.472099999999955,
+          "serializeMs": 1.7075000000004366,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.10940000000027794,
+          "canonicalizeMs": 7.520300000000134,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.829000000000633,
+          "prepareFactsMs": 12.786000000000058,
+          "serializeMs": 1.3755000000001019,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.20029999999951542,
+          "canonicalizeMs": 10.958200000000033,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.5468000000000757,
+          "prepareFactsMs": 7.703500000000531,
+          "serializeMs": 1.935699999999997,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.11639999999988504,
+          "canonicalizeMs": 8.16399999999976,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.5821999999998297,
+          "prepareFactsMs": 11.279199999999946,
+          "serializeMs": 2.271700000000237,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.11290000000008149,
+          "canonicalizeMs": 7.556000000000495,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.2298999999993612,
+          "prepareFactsMs": 8.239999999999782,
+          "serializeMs": 1.8141999999998006,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.08379999999942811,
+          "canonicalizeMs": 10.008700000000317,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 2.148699999999735,
+          "prepareFactsMs": 10.353099999999358,
+          "serializeMs": 1.7820999999994456,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.10179999999945721,
+          "canonicalizeMs": 8.926699999999983,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.8616000000001804,
+          "prepareFactsMs": 14.457699999999932,
+          "serializeMs": 2.026999999999134,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.13979999999992287,
+          "canonicalizeMs": 7.8202000000001135,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 0.9822999999996682,
+          "prepareFactsMs": 7.6963000000005195,
+          "serializeMs": 2.0542999999997846,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.2581999999993059,
+          "canonicalizeMs": 7.485799999999472,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.7493999999996959,
+          "prepareFactsMs": 14.600400000000263,
+          "serializeMs": 1.5424000000002707,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        },
+        {
+          "candidateCount": 80,
+          "evidenceCount": 79,
+          "adapterMs": 0.08290000000033615,
+          "canonicalizeMs": 3.88169999999991,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 1.4955999999992855,
+          "prepareFactsMs": 6.183100000000195,
+          "serializeMs": 1.2211000000006607,
+          "semanticDigest": "9ca82f888d4084d7302beba2c2861bdf01760a9c188442eae4659c3387ecde2b"
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "candidateCount": 249,
+      "evidenceCount": 249,
+      "medians": {
+        "adapterMs": 0.25640000000021246,
+        "canonicalizeMs": 18.51389999999992,
+        "sourceReads": 0,
+        "sourceReadMs": 0,
+        "remapMs": 4.680799999998271,
+        "prepareFactsMs": 24.778299999999945,
+        "serializeMs": 4.630599999998594
+      },
+      "semanticDigests": [
+        "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+      ],
+      "samples": [
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.29179999999905704,
+          "canonicalizeMs": 26.903800000000047,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 4.680799999998271,
+          "prepareFactsMs": 26.186000000001513,
+          "serializeMs": 4.934100000000399,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.28909999999996217,
+          "canonicalizeMs": 15.942199999999502,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 3.6300000000010186,
+          "prepareFactsMs": 17.32850000000144,
+          "serializeMs": 3.8491999999987456,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.19900000000052387,
+          "canonicalizeMs": 15.305099999999584,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 3.032600000000457,
+          "prepareFactsMs": 21.348700000000463,
+          "serializeMs": 3.711200000001554,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.18320000000130676,
+          "canonicalizeMs": 14.227600000000166,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 3.3233000000000175,
+          "prepareFactsMs": 28.896300000000338,
+          "serializeMs": 3.0841999999993277,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.40089999999872816,
+          "canonicalizeMs": 16.106900000000678,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 6.085699999999633,
+          "prepareFactsMs": 26.087000000001353,
+          "serializeMs": 4.251000000000204,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.18909999999959837,
+          "canonicalizeMs": 14.19130000000041,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 3.0362999999997555,
+          "prepareFactsMs": 17.030799999998635,
+          "serializeMs": 3.2053000000014435,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.40940000000045984,
+          "canonicalizeMs": 18.67150000000038,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 3.0050999999984924,
+          "prepareFactsMs": 19.906199999999444,
+          "serializeMs": 5.383299999999508,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.1856999999999971,
+          "canonicalizeMs": 15.907400000000052,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 5.373400000000402,
+          "prepareFactsMs": 20.9408999999996,
+          "serializeMs": 4.630599999998594,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.20470000000022992,
+          "canonicalizeMs": 30.380699999999706,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 5.347799999999552,
+          "prepareFactsMs": 27.59740000000056,
+          "serializeMs": 4.764400000000023,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.2921999999998661,
+          "canonicalizeMs": 18.711199999999735,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 3.5860000000011496,
+          "prepareFactsMs": 17.817800000000716,
+          "serializeMs": 5.146600000000035,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.35019999999894935,
+          "canonicalizeMs": 13.597400000000562,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 5.665399999999863,
+          "prepareFactsMs": 28.6890999999996,
+          "serializeMs": 4.405699999999342,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.5784000000003289,
+          "canonicalizeMs": 25.16949999999997,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 7.64180000000124,
+          "prepareFactsMs": 32.156199999999444,
+          "serializeMs": 5.0010999999994965,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.20489999999881547,
+          "canonicalizeMs": 28.20340000000033,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 5.644000000000233,
+          "prepareFactsMs": 33.66779999999926,
+          "serializeMs": 4.296099999999569,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.1930000000011205,
+          "canonicalizeMs": 18.51389999999992,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 4.143600000001243,
+          "prepareFactsMs": 24.778299999999945,
+          "serializeMs": 4.95220000000154,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        },
+        {
+          "candidateCount": 249,
+          "evidenceCount": 249,
+          "adapterMs": 0.25640000000021246,
+          "canonicalizeMs": 19.534600000000864,
+          "sourceReads": 0,
+          "sourceReadMs": 0,
+          "remapMs": 5.887800000000425,
+          "prepareFactsMs": 24.39140000000043,
+          "serializeMs": 5.600300000000061,
+          "semanticDigest": "004a52771cb0ae0ec8687035bf87ed580dd17476a7dc94983ce0cefcc68fc531"
+        }
+      ]
+    }
+  ]
+}

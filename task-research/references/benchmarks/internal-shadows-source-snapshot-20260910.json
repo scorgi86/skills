@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.0.0",
+  "measuredAt": "2026-09-10T11:03:02.695Z",
+  "input": "C:\\work\\skills\\task-research\\references\\benchmarks\\internal-shadows-stage12-workload-20260909.json",
+  "inputDigest": "d80457fb80fdcb026b2d983283171be4bc5a2a30b7d3b628f222a274b5024fda",
+  "environment": {
+    "node": "v24.20.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "method": "2 warmups; 12 alternating samples per mode; isolated uses separate collection/canonicalization stores; shared uses one stage-scoped store",
+  "summary": {
+    "isolated": {
+      "medianWallMs": 252.56739999999968,
+      "medianReads": 12,
+      "semanticDigests": [
+        "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      ]
+    },
+    "shared": {
+      "medianWallMs": 247.4982,
+      "medianReads": 6,
+      "semanticDigests": [
+        "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      ]
+    }
+  },
+  "gainPercent": 2.007068212286973,
+  "semanticEqual": true,
+  "samples": {
+    "isolated": [
+      {
+        "wallMs": 270.6885,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 245.5284999999999,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 279.24789999999985,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 296.9838999999997,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 239.78989999999976,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 241.40710000000036,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 259.60629999999946,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 317.3616000000002,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 304.03799999999956,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 244.9988000000003,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 239.0532000000003,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 209.3876999999993,
+        "reads": 12,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      }
+    ],
+    "shared": [
+      {
+        "wallMs": 233.09759999999983,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 213.12670000000026,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 220.84050000000025,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 279.81150000000025,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 292.82339999999976,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 294.3035,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 269.59769999999935,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 247.72450000000026,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 275.1788999999999,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 239.36030000000028,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 230.5645000000004,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      },
+      {
+        "wallMs": 247.27189999999973,
+        "reads": 6,
+        "semanticDigest": "9228bdf0bfc6dc4acfd2b3209d2f0977046b8303c54df91abe9a15829704d896"
+      }
+    ]
+  }
+}

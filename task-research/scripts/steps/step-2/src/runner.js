@@ -22,6 +22,7 @@ const { evaluateStage2Coverage } = require("./coverage_gate.js");
 
 const { applySafeBudget } = require("../../../shared/output/src/measure_context.js");
 const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
+const { SourceSnapshotStore } = require("../../../shared/evidence/src/source_snapshot.js");
 
 const DEFAULT_STAGE2_BUDGET = 96 * 1024;
 
@@ -44,7 +45,7 @@ function advanceOwnershipGraph(prior, request = {}) {
   return buildOwnershipGraph({ ...base, maxOrder: request.ownershipGraphMaxOrder ?? base.maxOrder, nodes: [...nodes.values()], edges: [...edges.values()] });
 }
 
-function runStage2(request, dependencies = {}, context = null) {
+async function runStage2(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 2) throw new Error("stage2_runner accepts only stage: 2");
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
   const evaluateCoverage = dependencies.evaluateStage2Coverage || evaluateStage2Coverage;
@@ -55,10 +56,11 @@ function runStage2(request, dependencies = {}, context = null) {
   const transition = extractTransition(previous);
     const priorScope = previous.summary?.repositoryScope;
     const repositoryScope = request.repositoryScope || priorScope;
+  const sourceSnapshots = dependencies.sourceSnapshots || new SourceSnapshotStore();
   const boundaries = [...(previous.facts || []).filter((item) => item.kind === "boundary").map(({ kind, boundaryKind, ...item }) => ({ ...item, kind: boundaryKind })), ...(request.boundaryCandidates || [])];
   const ownershipGraph = advanceOwnershipGraph(readOwnershipGraphArtifact(request.ownershipGraphArtifact), request);
-  const ast = (dependencies.runAstBatch || runAstBatch)(request.ast || {});
-  const sourceEvidence = (dependencies.runEvidenceChecks || runEvidenceChecks)({ ...(request.evidence || { checks: [] }), retainAllMatches: true });
+  const ast = await (dependencies.runAstBatch || runAstBatch)(request.ast || {});
+  const sourceEvidence = (dependencies.runEvidenceChecks || runEvidenceChecks)({ ...(request.evidence || { checks: [] }), retainAllMatches: true }, { sourceSnapshots });
   const astResults = Array.isArray(ast.results) ? ast.results : [];
   const quality = {
       astFilesParsedOnce: Object.values(ast.stats.parseCounts || {}).every((count) => count === 1),
@@ -88,7 +90,7 @@ function runStage2(request, dependencies = {}, context = null) {
   facts.quality.coverageGate = evaluateCoverage(facts, { requirePlan: true });
   finalizeBudget(facts, budgets.factsBytes, DEFAULT_STAGE2_BUDGET, 8192);
   if (!facts.quality.coverageGate.ok) facts.status = "partial";
-  return dependencies.deferCanonicalization ? facts : prepareCanonicalFacts(facts);
+  return dependencies.deferCanonicalization ? facts : prepareCanonicalFacts(facts, { sourceSnapshots });
 }
 
 function buildStage2Summary(facts, artifact = null) {

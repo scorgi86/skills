@@ -15,6 +15,7 @@ const { DEFAULT_STAGE1_BUDGETS, buildStage1Summary } = require("./summary.js");
 const { runGitNexusContext } = require("./context/gitnexus.js");
 const { normalizeOwnership } = require("./context/ownership.js");
 const { transitionForRequest } = require("../../../state/src/session/inventory_session.js");
+const { SourceSnapshotStore } = require("../../../shared/evidence/src/source_snapshot.js");
 function resolveRequest(request) {
     if (!request || !request.extends) return request;
     const base = JSON.parse(fs.readFileSync(path.resolve(request.extends), "utf8"));
@@ -34,7 +35,7 @@ function resolveRequest(request) {
     delete result.extends;
     return result;
 }
-function runStage1(request, dependencies = {}, context = null) {
+async function runStage1(request, dependencies = {}, context = null) {
     if (Number(request && request.stage) !== 1) throw new Error("stage1_runner accepts only stage: 1");
     if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
     const budgets = normalizeBudgets(request, DEFAULT_STAGE1_BUDGETS);
@@ -42,13 +43,14 @@ function runStage1(request, dependencies = {}, context = null) {
     const transition = extractTransition(previous);
     const priorScope = previous.summary?.repositoryScope;
     const repositoryScope = request.repositoryScope || priorScope;
-    const ast = (dependencies.runAstBatch || runAstBatch)(request.ast || {});
+    const sourceSnapshots = dependencies.sourceSnapshots || new SourceSnapshotStore();
+    const ast = await (dependencies.runAstBatch || runAstBatch)(request.ast || {});
     const sourceEvidence = (dependencies.runEvidenceChecks || runEvidenceChecks)({
         ...request.evidence || {
             checks: []
         },
         retainAllMatches: true
-    });
+    }, { sourceSnapshots });
     const gitnexus = (dependencies.runGitNexusContext || runGitNexusContext)(request.gitnexus || {}, dependencies);
     const ownership = normalizeOwnership(request, sourceEvidence, new Map());
     const quality = {
@@ -93,7 +95,7 @@ function runStage1(request, dependencies = {}, context = null) {
     facts.quality.summary = buildStage1Summary(facts).output;
     facts.quality.coverageGate = evaluateStage1Coverage(facts);
     if (!facts.quality.coverageGate.ok) facts.status = "partial";
-    return dependencies.deferCanonicalization ? facts : require("../../../shared/artifacts/src/canonical/facts.js").prepareFacts(facts);
+    return dependencies.deferCanonicalization ? facts : require("../../../shared/artifacts/src/canonical/facts.js").prepareFacts(facts, { sourceSnapshots });
 }
 module.exports = {
     resolveRequest,

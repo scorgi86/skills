@@ -3,6 +3,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { attributeRepository, excluded, keyOf, rangeOf } = require("./candidate_identity.js");
 const { confirmationOf } = require("./source_confirmation.js");
+const { SourceSnapshotStore } = require("../source_snapshot.js");
 const RANK = { "ast-definition": 100, "field-write": 95, "field-read": 90, "call-graph": 90, "ast-reference": 85, "source-text": 60, comment: 20, fixture: 10, locale: 5 };
 const unique = values => [...new Set(values.filter(Boolean))].sort();
 function provenanceOf(item) {
@@ -14,7 +15,7 @@ function aliasesOf(item) {
     return unique([item.id, ...item.aliases || [], ...(!Array.isArray(provenance) && provenance && typeof provenance === "object" ? [provenance.checkId, provenance.queryId] : [])]);
 }
 function canonicalizeStage2Candidates(candidates = [], options = {}) {
-    const groups = new Map(), identities = new Map(), diagnostics = [];
+    const groups = new Map(), identities = new Map(), diagnostics = [], sourceSnapshots = options.sourceSnapshots || new SourceSnapshotStore();
     const metrics = { candidatesFound: candidates.length, candidatesRetained: 0, duplicatesRemoved: 0, noiseRemoved: 0 };
     for (const original of candidates) {
         if (!original || !(original.file || original.path)) continue;
@@ -29,7 +30,7 @@ function canonicalizeStage2Candidates(candidates = [], options = {}) {
             diagnostics.push({ code: "evidence-id-collision", id: item.id, message: "One evidence ID names different source identities" });
         }
         if (item.id) identities.set(item.id, key);
-        const confirmation = confirmationOf(item, { ...options, diagnostics, ...(attributed.diagnostic ? { repositoryScope: undefined } : {}) });
+        const confirmation = confirmationOf(item, { ...options, diagnostics, sourceSnapshots, ...(attributed.diagnostic ? { repositoryScope: undefined } : {}) });
         const current = groups.get(key), terms = [item.matchedTerm, ...item.matchedTerms || []].filter(Boolean), provenance = provenanceOf(item);
         if (current) {
             current.aliases.push(...aliases);

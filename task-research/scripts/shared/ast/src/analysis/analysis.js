@@ -8,6 +8,10 @@ const { createIdentity } = require("../cache/identity.js");
 const { readEntry, writeEntry } = require("../cache/storage.js");
 const path = require("path");
 const SCHEMA_VERSION = "1.0.0";
+function withIdentity(value, identityKey) {
+    if (identityKey) Object.defineProperty(value, "identityKey", { value: identityKey, enumerable: false });
+    return value;
+}
 function analyzeParsed(parsed) {
     if (!parsed.ok) {
         return {
@@ -59,24 +63,28 @@ function analyzeFile(filename, options = {}) {
     const directory = path.resolve(options.cache);
     const identity = createIdentity(content, resolved, parser);
     const entry = readEntry(directory, identity);
-    if (entry.status === "hit") return { result: entry.result, cache: "hit" };
+    if (entry.status === "hit") return withIdentity({ result: entry.result, cache: "hit" }, identity.key);
 
     const parsed = parseSource(content.toString("utf8"), resolved);
     // Analysis exceptions belong to the analyzer, not the optional cache.
     const result = analyzeParsed(parsed);
-    if (!parsed.ok) return { result, cache: "disabled" };
+    if (!parsed.ok) return withIdentity({ result, cache: "disabled" }, identity.key);
     const stored = entry.status === "failed" ? entry : writeEntry(directory, identity, result);
     if (stored.status === "failed") {
         result.warnings.push({ message: `Cache disabled for file: ${stored.error.message}` });
-        return { result, cache: "failed" };
+        return withIdentity({ result, cache: "failed" }, identity.key);
     }
-    return { result, cache: "miss" };
+    return withIdentity({ result, cache: "miss" }, identity.key);
 }
-function analyzeFiles(files, options = {}) {
+async function analyzeFiles(files, options = {}, dependencies = {}) {
     const uniqueFiles = [
         ...new Set(files.map((file)=>path.resolve(file)))
     ];
     const started = process.hrtime.bigint();
+    const concurrency = require("./parallel_analysis.js").normalizeConcurrency(options.concurrency, uniqueFiles.length);
+    const analyzedFiles = concurrency === 1
+        ? uniqueFiles.map(file => analyzeFile(file, options))
+        : await require("./parallel_analysis.js").analyzeInWorkers(uniqueFiles, { ...options, concurrency }, dependencies);
     const results = [];
     const stats = {
         filesMatched: uniqueFiles.length,
@@ -87,8 +95,7 @@ function analyzeFiles(files, options = {}) {
         cacheMisses: 0,
         elapsedMs: 0
     };
-    for (const file of uniqueFiles){
-        const analyzed = analyzeFile(file, options);
+    for (const analyzed of analyzedFiles){
         results.push(analyzed.result);
         if (analyzed.result.errors.length) stats.failed += 1;
         else stats.parsed += 1;
@@ -96,10 +103,15 @@ function analyzeFiles(files, options = {}) {
         if (analyzed.cache === "miss") stats.cacheMisses += 1;
     }
     stats.elapsedMs = Number(process.hrtime.bigint() - started) / 1e6;
-    return {
+    const output = {
         results,
         stats
     };
+    Object.defineProperty(output, "identities", {
+        value: new Map(analyzedFiles.filter(item => item.identityKey).map(item => [path.resolve(item.result.file), item.identityKey])),
+        enumerable: false
+    });
+    return output;
 }
 module.exports = {
     SCHEMA_VERSION,

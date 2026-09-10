@@ -119,14 +119,14 @@ function budgetMetrics(result, budgets = {}) {
         exceeded: warnings.length > 0
     };
 }
-function prepareFacts(facts) {
+function prepareFacts(facts, options = {}) {
     if (!facts || facts.modelType === "inventory-report-model") return facts;
     const stage2 = require("../../../evidence/index.js").stage2_canonicalize;
     const repository = facts.repository || "";
     const candidates = [...facts.canonicalEvidence || [], ...stage2.candidatesFromSourceEvidence(facts.sourceEvidence, repository)];
     if ([1,2].includes(Number(facts.stage))) candidates.push(...stage2.candidatesFromAst(facts.ast, repository), ...stage2.candidatesFromGitNexus(facts.gitnexus, repository), ...stage2.candidatesFromBoundaries(facts.boundaries, repository), ...stage2.candidatesFromOwnership(facts.ownership, repository), ...stage2.candidatesFromOwnership(facts.ownershipGraph, repository));
     if (!candidates.length) return facts;
-    const normalized = stage2.canonicalizeStage2Candidates(candidates, { exclusions: facts.exclusions, repositoryScope: facts.repositoryScope });
+    const normalized = stage2.canonicalizeStage2Candidates(candidates, { exclusions: facts.exclusions, repositoryScope: facts.repositoryScope, sourceSnapshots: options.sourceSnapshots });
     // Scope evidence (for example checked absence) has no source-file identity.
     for (const row of facts.canonicalEvidence || []) if (!row.file && !row.path) {
         const preserved = { ...row, aliases: unique([row.id, ...row.aliases || []]) };
@@ -135,7 +135,12 @@ function prepareFacts(facts) {
     }
     const { remapEvidenceReferences } = require("../../../evidence/src/canonicalization/canonicalize.js");
     const linked = { ...facts };
-    const attach = row => ({ ...row, evidenceRefs: unique([ ...row.evidenceRefs || [], ...normalized.evidenceIdMap[row.id] || [] ]) });
+    // Evidence belongs to a fact through explicit references. An inline confirmation
+    // is also explicit, while a same-named AST/source query is not.
+    const attach = row => ({ ...row, evidenceRefs: unique([
+        ...row.evidenceRefs || [],
+        ...(row.confirmation ? normalized.evidenceIdMap[row.id] || [] : [])
+    ]) });
     if (Array.isArray(facts.boundaries)) linked.boundaries = facts.boundaries.map(attach);
     if (Array.isArray(facts.ownership)) linked.ownership = facts.ownership.map(attach);
     else if (facts.ownership?.groups) linked.ownership = { ...facts.ownership, groups: facts.ownership.groups.map(attach) };

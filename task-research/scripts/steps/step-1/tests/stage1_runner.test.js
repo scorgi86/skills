@@ -57,9 +57,9 @@ function graph() {
   return { status: "candidate", requests: [{ seed: "FeatureValue", status: "candidate" }], context: { seed: "FeatureValue", candidateCount: 1, symbol: { name: "FeatureValue", filePath: "component.js", startLine: 1 } } };
 }
 
-test("stage 1 runner builds bounded facts and parses each file once", () => {
+test("stage 1 runner builds bounded facts and parses each file once", async () => {
   const set = fixtureSet();
-  const facts = runStage1(request(set), { runGitNexusContext: graph });
+  const facts = await runStage1(request(set), { runGitNexusContext: graph });
   assert.equal(facts.stage, 1);
   assert.equal(facts.quality.coverageGate.ok, true, facts.quality.coverageGate.errors.join("; "));
   assert.ok(Object.values(facts.ast.stats.parseCounts).every((count) => count === 1));
@@ -72,68 +72,68 @@ test("stage 1 runner builds bounded facts and parses each file once", () => {
   assert.equal(facts.coverageContract.categories.length, 6);
 });
 
-test("stage 1 retains declared generic boundary candidates for later stages", () => {
+test("stage 1 retains declared generic boundary candidates for later stages", async () => {
   const set = fixtureSet();
   const data = request(set);
   data.boundaries = [{ id: "fixture-bridge", producerRepo: "engine", kind: "setter", symbol: "setEffectPr", relation: "sets effect property", evidenceRefs: ["owners"], ownershipRefs: ["owner"], consumerRepos: ["client"], searchTerms: ["applyEffectPr"] }];
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(facts.boundaries.length, 1);
   assert.equal(facts.boundaries[0].status, "candidate");
   assert.equal(facts.quality.coverageGate.ok, true, facts.quality.coverageGate.errors.join("; "));
 });
 
-test("stage 1 gate rejects an unconfirmed promotion", () => {
+test("stage 1 gate rejects an unconfirmed promotion", async () => {
   const set = fixtureSet();
-  const facts = runStage1(request(set), { runGitNexusContext: graph });
+  const facts = await runStage1(request(set), { runGitNexusContext: graph });
   facts.ownership.groups[0].status = "confirmed";
   const gate = evaluateStage1Coverage(facts);
   assert.equal(gate.ok, false);
   assert.match(gate.errors.join("\n"), /confirmation record/);
 });
 
-test("stage 1 gate requires declared ownership branches", () => {
+test("stage 1 gate requires declared ownership branches", async () => {
   const set = fixtureSet();
   const data = request(set);
   data.ownership.expectedIds.push("additional-owner");
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(facts.quality.coverageGate.ok, false);
   assert.match(facts.quality.coverageGate.errors.join("\n"), /additional-owner: expected ownership group is missing/);
 });
 
-test("stage 1 gate requires an ownership expectation set", () => {
+test("stage 1 gate requires an ownership expectation set", async () => {
   const set = fixtureSet();
   const data = request(set);
   delete data.ownership.expectedIds;
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(facts.quality.coverageGate.ok, false);
   assert.match(facts.quality.coverageGate.errors.join("\n"), /must declare expected ownership ids/);
 });
 
-test("stage 1 gate enforces generic categories and baseline preservation", () => {
+test("stage 1 gate enforces generic categories and baseline preservation", async () => {
   const set = fixtureSet();
   const data = request(set);
   data.coverageContract.categories[0].groupIds = ["missing-model"];
   data.coverageContract.baseline.ownershipIds.push("removed-owner");
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(facts.quality.coverageGate.ok, false);
   assert.match(facts.quality.coverageGate.errors.join("\n"), /direct-model: declared group missing-model is missing/);
   assert.match(facts.quality.coverageGate.errors.join("\n"), /removed-owner: baseline ownership group is missing/);
 });
 
-test("stage 1 gate blocks an open category required before close", () => {
+test("stage 1 gate blocks an open category required before close", async () => {
   const set = fixtureSet();
   const data = request(set);
   const category = data.coverageContract.categories.find((item) => item.id === "history-copy");
   category.requiredBeforeClose = true;
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(facts.quality.coverageGate.ok, false);
   assert.match(facts.quality.coverageGate.errors.join("\n"), /history-copy: required-before-close coverage category remains open/);
   category.status = "not-applicable";
-  const closed = runStage1(data, { runGitNexusContext: graph });
+  const closed = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(closed.quality.coverageGate.ok, true, closed.quality.coverageGate.errors.join("; "));
 });
 
-test("stage 1 claim ledger requires declared groups and observations", () => {
+test("stage 1 claim ledger requires declared groups and observations", async () => {
   const set = fixtureSet();
   const data = request(set);
   data.observations = [{ id: "cross-repo", status: "candidate-negative", scope: "fixture", result: "no exact seed matches" }];
@@ -141,7 +141,7 @@ test("stage 1 claim ledger requires declared groups and observations", () => {
     { id: "model-claim", status: "confirmed", groupIds: ["model"] },
     { id: "cross-repo-claim", status: "candidate-negative", observationIds: ["cross-repo"] },
   ] };
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.equal(facts.quality.coverageGate.ok, true, facts.quality.coverageGate.errors.join("; "));
   facts.claimLedger.claims[0].groupIds = ["missing"];
   const gate = evaluateStage1Coverage(facts);
@@ -149,12 +149,12 @@ test("stage 1 claim ledger requires declared groups and observations", () => {
   assert.match(gate.errors.join("\n"), /model-claim: claimed ownership group missing is missing/);
 });
 
-test("confirmed ownership uses and enforces its confirmation anchor", () => {
+test("confirmed ownership uses and enforces its confirmation anchor", async () => {
   const set = fixtureSet();
   const data = request(set);
   data.ownership.groups[1].status = "confirmed";
   data.ownership.groups[1].confirmation = { method: "manual-read", file: "component.js", line: 2 };
-  const facts = runStage1(data, { runGitNexusContext: graph });
+  const facts = await runStage1(data, { runGitNexusContext: graph });
   assert.deepEqual(facts.ownership.groups[1].anchor, { file: "component.js", line: 2 });
   assert.match(facts.ownership.groups[1].confirmation.freshness.fragmentHash, /^[a-f0-9]{64}$/);
   assert.equal(facts.quality.coverageGate.ok, true, facts.quality.coverageGate.errors.join("; "));
@@ -164,7 +164,7 @@ test("confirmed ownership uses and enforces its confirmation anchor", () => {
   assert.match(gate.errors.join("\n"), /anchor must match confirmation/);
 });
 
-test("confirmation freshness reuses one source read for multiple anchors", () => {
+test("confirmation freshness reuses one source read for multiple anchors", async () => {
   const set = fixtureSet();
   const data = request(set);
   data.ownership.groups[0].status = "confirmed";
@@ -178,7 +178,7 @@ test("confirmation freshness reuses one source read for multiple anchors", () =>
     return original.apply(this, args);
   };
   try {
-    runStage1(data, { runGitNexusContext: graph });
+    await runStage1(data, { runGitNexusContext: graph });
     assert.equal(reads, 3, "one AST read, one source-evidence read, and one shared freshness read");
   } finally {
     fs.readFileSync = original;

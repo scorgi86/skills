@@ -2,6 +2,7 @@
 const path = require("node:path");
 const fs = require("node:fs");
 const { validateSourceAnchor } = require("./source_anchor.js");
+const { SourceSnapshotStore } = require("../source_snapshot.js");
 function declaredRepository(item, options = {}) {
     return (options.repositoryScope?.repositories || []).find((repository)=>repository && repository.id === item.repository && repository.root);
 }
@@ -21,18 +22,22 @@ function sourceFile(item, options = {}) {
         return null;
     }
 }
+function sourceSnapshot(item, options = {}) {
+    const resolved = sourceFile(item, options);
+    if (!resolved) return null;
+    const snapshots = options.sourceSnapshots || new SourceSnapshotStore();
+    return snapshots.get(resolved.file);
+}
 function confirmationOf(item, options = {}) {
     const confirmation = item.confirmation || (item.status === "source-confirmed" ? { ...item, evidenceRefs: item.evidenceRefs?.length ? item.evidenceRefs : [item.id].filter(Boolean) } : {}), evidenceRefs = [
         ...new Set(confirmation.evidenceRefs || item.evidenceRefs || [])
-    ].sort(), claimedHash = confirmation.sourceHash || item.sourceHash || null, resolved = sourceFile(item, options);
+    ].sort(), claimedHash = confirmation.sourceHash || item.sourceHash || null;
+    if (confirmation.status !== "source-confirmed") return { status: "candidate", evidenceRefs, sourceHash: null };
     const anchor = { sourceHash: claimedHash, line: item.line ?? confirmation.line, endLine: item.endLine ?? confirmation.endLine, sourceFragment: item.sourceFragment ?? confirmation.sourceFragment };
     let valid = false;
     let validation = {code: "repository-attribution", message: "Confirmation file must be inside its declared repository"};
-    if (resolved) {
-        try {
-            if (fs.statSync(resolved.file).isFile()) { validation = validateSourceAnchor(anchor, fs.readFileSync(resolved.file)); valid = validation.ok; }
-        } catch  {}
-    }
+    const snapshot = sourceSnapshot(item, options);
+    if (snapshot) { validation = validateSourceAnchor(anchor, snapshot); valid = validation.ok; }
     if (confirmation.status === "source-confirmed" && !valid) options.diagnostics?.push({ ...validation, file: item.file || item.path, repository: item.repository });
     const confirmed = confirmation.status === "source-confirmed" && evidenceRefs.length && valid;
     return {
@@ -45,5 +50,6 @@ function confirmationOf(item, options = {}) {
 module.exports = {
     confirmationOf,
     declaredRepository,
-    sourceFile
+    sourceFile,
+    sourceSnapshot
 };

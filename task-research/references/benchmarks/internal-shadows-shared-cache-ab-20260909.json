@@ -1,0 +1,2662 @@
+{
+  "schemaVersion": "shared-ast-cache-ab/1.0.0",
+  "generatedAt": "2026-09-09T16:55:04.129Z",
+  "provenance": {
+    "harnessDigest": "a0e30cea2aaeae4af038dce20ce275013f8244db5e1a0440aad6bead00e86835",
+    "requestDigest": "db892aa9246b9432d5dcb561ab63e00fb986ae579612a51306d321d94e777199",
+    "repositoryDigest": "d3a1631ac5e458a4d06197189559bb7dc2efa9d4bb78fd097c7effb37a1ae9c6",
+    "environmentDigest": "9d0ca34db423756ba043a96ebbc298b48641503654c0f75e764d88335bd1e620",
+    "workloadDigest": "ffc874d01560ef4d0d0b2f0bacfe44b850e92f2d6fe8ae1330d5883a5ad7d20a",
+    "baselineImplementationDigest": "6320baa63946c9a7a1be802ed29c110cf5b326073ce84d2e0bdc15c653dd7830",
+    "currentImplementationDigest": "9a4f90c023e3e3d2c10a130f27e0bcc97ac6582626a73c066b2f0a1d8d42e681"
+  },
+  "repositories": [
+    {
+      "root": "C:\\work\\r7\\projects\\sdkjs",
+      "head": "d61be341c627a6000159dbd3ad725a9b2d6ede00",
+      "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "root": "C:\\work\\r7\\projects\\web-apps",
+      "head": "b5596497daf5c123370021dd66e944ca8dbb892a",
+      "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "root": "C:\\work\\r7\\projects\\desktop-apps",
+      "head": "2d3925074215089cc41a8430cf6b8bdf3d08b300",
+      "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "environment": {
+    "node": "v24.20.0",
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "AMD Ryzen 7 5800HS with Radeon Graphics         ",
+    "swc": "1.15.43"
+  },
+  "validation": {
+    "baseline": {
+      "tests": 387,
+      "pass": 387,
+      "command": "node --test --test-isolation=process --test-concurrency=1 (excluding new shared-cache acceptance file)",
+      "note": "New cross-inventory acceptance tests were excluded because they define the changed behavior and are RED on baseline.",
+      "fail": 0
+    },
+    "current": {
+      "command": "npm test; npm run check; npm run validate; node --check harness",
+      "tests": 399,
+      "pass": 399,
+      "fail": 0,
+      "check": "pass",
+      "validate": "pass",
+      "harnessSyntax": "pass",
+      "note": "One preceding full run hit transient Windows EPERM on an atomic state-file rename; isolated rerun passed."
+    }
+  },
+  "series": [
+    {
+      "baseline": {
+        "samples": [
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5219.4902,
+                "astMs": 5117.135199999997,
+                "evidenceMs": 54.64419999999518,
+                "residualMs": 47.71080000000802,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4058.9133,
+                "astMs": 3947.154800000004,
+                "evidenceMs": 53.87169999999605,
+                "residualMs": 57.88680000000022,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5397.148199999996,
+                "astMs": 5292.733399999997,
+                "evidenceMs": 66.67729999999574,
+                "residualMs": 37.73750000000291,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4145.804199999999,
+                "astMs": 4055.8614000000016,
+                "evidenceMs": 42.36830000000191,
+                "residualMs": 47.57449999999517,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5196.825000000012,
+                "astMs": 5093.3413,
+                "evidenceMs": 66.8926999999967,
+                "residualMs": 36.5910000000149,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3875.934699999998,
+                "astMs": 3785.657300000006,
+                "evidenceMs": 42.121200000008685,
+                "residualMs": 48.15619999998307,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5775.231199999995,
+                "astMs": 5644.112699999998,
+                "evidenceMs": 84.69449999999779,
+                "residualMs": 46.42399999999907,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4221.759900000005,
+                "astMs": 4128.051500000001,
+                "evidenceMs": 44.76579999999376,
+                "residualMs": 48.942600000009406,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5625.298299999995,
+                "astMs": 5509.411699999997,
+                "evidenceMs": 79.41000000000349,
+                "residualMs": 36.476599999994505,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3837.2296999999962,
+                "astMs": 3734.3619999999937,
+                "evidenceMs": 45.41259999999602,
+                "residualMs": 57.455100000006496,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5044.358800000002,
+                "astMs": 4949.607000000004,
+                "evidenceMs": 57.75819999999658,
+                "residualMs": 36.99360000000161,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3859.424100000004,
+                "astMs": 3761.061400000006,
+                "evidenceMs": 48.74980000000505,
+                "residualMs": 49.612899999992806,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5105.240600000019,
+                "astMs": 5005.633200000011,
+                "evidenceMs": 59.41829999999027,
+                "residualMs": 40.18910000001779,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4440.118400000007,
+                "astMs": 4337.834700000007,
+                "evidenceMs": 44.46129999999539,
+                "residualMs": 57.82240000000456,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5303.89380000002,
+                "astMs": 5212.779500000004,
+                "evidenceMs": 53.140600000013364,
+                "residualMs": 37.97370000000228,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3837.15830000001,
+                "astMs": 3734.874199999991,
+                "evidenceMs": 43.74580000000424,
+                "residualMs": 58.538300000014715,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5019.752999999997,
+                "astMs": 4933.7696,
+                "evidenceMs": 51.57119999997667,
+                "residualMs": 34.412200000020675,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3855.6094999999914,
+                "astMs": 3749.6581000000006,
+                "evidenceMs": 52.88790000000154,
+                "residualMs": 53.06349999998929,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 4881.067099999986,
+                "astMs": 4801.173700000014,
+                "evidenceMs": 46.922600000019884,
+                "residualMs": 32.97079999995185,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4333.127100000012,
+                "astMs": 4235.652600000001,
+                "evidenceMs": 44.50199999997858,
+                "residualMs": 52.972500000032596,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5565.116399999999,
+                "astMs": 5461.924800000008,
+                "evidenceMs": 50.15669999999227,
+                "residualMs": 53.03489999999874,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4927.967700000008,
+                "astMs": 4817.597800000018,
+                "evidenceMs": 49.68520000000717,
+                "residualMs": 60.68469999998342,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5055.62460000001,
+                "astMs": 4977.396099999984,
+                "evidenceMs": 47.078999999997905,
+                "residualMs": 31.149500000028638,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3865.4930000000168,
+                "astMs": 3771.095900000015,
+                "evidenceMs": 45.01520000002347,
+                "residualMs": 49.38189999997849,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "cold": [
+            {
+              "stage": 1,
+              "wallMs": 5208.157600000006,
+              "astMs": 5105.2382499999985,
+              "evidenceMs": 57.031249999992724,
+              "residualMs": 38.390050000016345,
+              "cacheHits": 0,
+              "cacheMisses": 7,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 3967.423999999999,
+              "astMs": 3866.406050000005,
+              "evidenceMs": 47.548900000001595,
+              "residualMs": 57.63875000000553,
+              "cacheHits": 1,
+              "cacheMisses": 11,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ],
+          "warm": [
+            {
+              "stage": 1,
+              "wallMs": 5179.759200000015,
+              "astMs": 5095.087799999994,
+              "evidenceMs": 55.44940000000497,
+              "residualMs": 37.36555000000226,
+              "cacheHits": 0,
+              "cacheMisses": 7,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 4005.6486000000077,
+              "astMs": 3913.478650000008,
+              "evidenceMs": 44.63389999998617,
+              "residualMs": 49.497399999985646,
+              "cacheHits": 1,
+              "cacheMisses": 11,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ]
+        }
+      },
+      "current": {
+        "samples": [
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5328.976199999997,
+                "astMs": 5218.6031,
+                "evidenceMs": 60.4916000000012,
+                "residualMs": 49.88149999999587,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4006.4654999999984,
+                "astMs": 3901.7428,
+                "evidenceMs": 47.14560000000347,
+                "residualMs": 57.57709999999497,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 601.1089999999967,
+                "astMs": 507.277599999994,
+                "evidenceMs": 43.45089999999618,
+                "residualMs": 50.38050000000658,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1255.720100000006,
+                "astMs": 1165.6738999999943,
+                "evidenceMs": 44.05769999999029,
+                "residualMs": 45.988500000021304,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5275.1826,
+                "astMs": 5159.679900000003,
+                "evidenceMs": 70.91590000000724,
+                "residualMs": 44.586799999990035,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4090.5699999999924,
+                "astMs": 3982.7773000000016,
+                "evidenceMs": 47.498300000006566,
+                "residualMs": 60.29439999998431,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 620.8181999999942,
+                "astMs": 531.2024999999994,
+                "evidenceMs": 56.918799999999464,
+                "residualMs": 32.69689999999537,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1308.0630999999994,
+                "astMs": 1213.6564000000071,
+                "evidenceMs": 44.89130000000296,
+                "residualMs": 49.51539999998931,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5188.698499999999,
+                "astMs": 5097.405599999998,
+                "evidenceMs": 53.9433999999892,
+                "residualMs": 37.349500000011176,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3796.012600000002,
+                "astMs": 3700.990300000005,
+                "evidenceMs": 46.14879999999539,
+                "residualMs": 48.87350000000151,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 600.5692999999883,
+                "astMs": 513.5037000000011,
+                "evidenceMs": 52.554000000003725,
+                "residualMs": 34.511599999983446,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1234.4883999999875,
+                "astMs": 1139.9760999999999,
+                "evidenceMs": 46.67289999999048,
+                "residualMs": 47.83939999999711,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5009.058900000018,
+                "astMs": 4923.071599999996,
+                "evidenceMs": 48.58209999999963,
+                "residualMs": 37.40520000002289,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3840.0986000000266,
+                "astMs": 3711.3405000000203,
+                "evidenceMs": 71.06769999998505,
+                "residualMs": 57.69040000002133,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 614.5771999999997,
+                "astMs": 517.565499999997,
+                "evidenceMs": 62.095200000010664,
+                "residualMs": 34.916499999992084,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1246.9376000000047,
+                "astMs": 1156.1273999999976,
+                "evidenceMs": 42.258800000010524,
+                "residualMs": 48.55139999999665,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5128.338199999998,
+                "astMs": 5052.847000000009,
+                "evidenceMs": 43.309700000012526,
+                "residualMs": 32.18149999997695,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3811.172200000001,
+                "astMs": 3719.3956999999937,
+                "evidenceMs": 39.38460000001942,
+                "residualMs": 52.3918999999878,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 603.4693000000261,
+                "astMs": 527.2713000000222,
+                "evidenceMs": 44.3973999999871,
+                "residualMs": 31.800600000016857,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1212.965200000006,
+                "astMs": 1123.7225000000035,
+                "evidenceMs": 43.24439999999595,
+                "residualMs": 45.998300000006566,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 4961.829200000007,
+                "astMs": 4884.660899999988,
+                "evidenceMs": 44.26620000001276,
+                "residualMs": 32.90210000000661,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3755.8121999999858,
+                "astMs": 3662.640299999999,
+                "evidenceMs": 49.031500000011874,
+                "residualMs": 44.14039999997476,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 630.7986000000092,
+                "astMs": 527.688599999994,
+                "evidenceMs": 54.89729999998235,
+                "residualMs": 48.21270000003278,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1229.262699999992,
+                "astMs": 1143.6892000000225,
+                "evidenceMs": 41.085599999991246,
+                "residualMs": 44.487899999978254,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "cold": [
+            {
+              "stage": 1,
+              "wallMs": 5158.5183499999985,
+              "astMs": 5075.1263000000035,
+              "evidenceMs": 51.26274999999441,
+              "residualMs": 37.37735000001703,
+              "cacheHits": 0,
+              "cacheMisses": 7,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 3825.6354000000138,
+              "astMs": 3715.368100000007,
+              "evidenceMs": 47.32195000000502,
+              "residualMs": 54.984499999991385,
+              "cacheHits": 1,
+              "cacheMisses": 11,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ],
+          "warm": [
+            {
+              "stage": 1,
+              "wallMs": 609.0232500000129,
+              "astMs": 522.4184000000096,
+              "evidenceMs": 53.72564999999304,
+              "residualMs": 34.714049999987765,
+              "cacheHits": 7,
+              "cacheMisses": 0,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 1240.712999999996,
+              "astMs": 1149.90830000001,
+              "evidenceMs": 43.65104999999312,
+              "residualMs": 46.91885000000184,
+              "cacheHits": 12,
+              "cacheMisses": 0,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "baseline": {
+        "samples": [
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 6022.8315,
+                "astMs": 5901.65399999998,
+                "evidenceMs": 71.07509999995818,
+                "residualMs": 50.10240000006161,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4529.787899999996,
+                "astMs": 4399.4467000000295,
+                "evidenceMs": 61.85109999997076,
+                "residualMs": 68.49009999999544,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5917.331400000025,
+                "astMs": 5824.2276999999885,
+                "evidenceMs": 56.291999999957625,
+                "residualMs": 36.81170000007842,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4387.054000000004,
+                "astMs": 4296.09249999997,
+                "evidenceMs": 43.928300000028685,
+                "residualMs": 47.03320000000531,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5517.257799999963,
+                "astMs": 5415.86679999996,
+                "evidenceMs": 67.74230000004172,
+                "residualMs": 33.648699999961536,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4185.939799999993,
+                "astMs": 4096.383499999996,
+                "evidenceMs": 41.44760000001406,
+                "residualMs": 48.10869999998249,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5601.358499999973,
+                "astMs": 5512.645099999965,
+                "evidenceMs": 55.92320000001928,
+                "residualMs": 32.790199999988545,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4302.217799999984,
+                "astMs": 4213.701000000001,
+                "evidenceMs": 41.1423000000068,
+                "residualMs": 47.37449999997625,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5936.23119999998,
+                "astMs": 5843.164699999965,
+                "evidenceMs": 58.351000000024214,
+                "residualMs": 34.71549999999115,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4564.648600000015,
+                "astMs": 4472.367899999954,
+                "evidenceMs": 44.66850000002887,
+                "residualMs": 47.61220000003232,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5807.739799999981,
+                "astMs": 5683.7115999999805,
+                "evidenceMs": 71.30260000005364,
+                "residualMs": 52.72559999994701,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4470.294099999999,
+                "astMs": 4375.1711999999825,
+                "evidenceMs": 42.56400000001304,
+                "residualMs": 52.55890000000363,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5842.504799999995,
+                "astMs": 5762.204299999983,
+                "evidenceMs": 44.292099999962375,
+                "residualMs": 36.00840000004973,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4292.4902,
+                "astMs": 4199.083700000017,
+                "evidenceMs": 42.03080000000773,
+                "residualMs": 51.37569999997504,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 6287.011400000018,
+                "astMs": 6186.291199999978,
+                "evidenceMs": 59.77630000002682,
+                "residualMs": 40.943900000012945,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 5277.065100000007,
+                "astMs": 5162.077399999951,
+                "evidenceMs": 54.239900000044145,
+                "residualMs": 60.74780000001192,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 6082.981700000004,
+                "astMs": 5980.807900000014,
+                "evidenceMs": 56.23119999998016,
+                "residualMs": 45.942600000009406,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 5595.100600000005,
+                "astMs": 5471.703000000038,
+                "evidenceMs": 52.42190000001574,
+                "residualMs": 70.97569999995176,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5909.412499999977,
+                "astMs": 5795.403300000005,
+                "evidenceMs": 63.289500000013504,
+                "residualMs": 50.71969999995781,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4401.724400000006,
+                "astMs": 4307.944200000027,
+                "evidenceMs": 42.62809999997262,
+                "residualMs": 51.15210000000661,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5790.054899999988,
+                "astMs": 5684.770600000047,
+                "evidenceMs": 56.71340000000782,
+                "residualMs": 48.57089999993332,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4456.285199999984,
+                "astMs": 4343.90750000003,
+                "evidenceMs": 49.931500000006054,
+                "residualMs": 62.44619999994757,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 5909.415700000012,
+                "astMs": 5818.713900000032,
+                "evidenceMs": 50.45119999995222,
+                "residualMs": 40.2506000000285,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4425.157599999977,
+                "astMs": 4324.761799999978,
+                "evidenceMs": 47.12329999997746,
+                "residualMs": 53.272500000020955,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "cold": [
+            {
+              "stage": 1,
+              "wallMs": 5889.367999999988,
+              "astMs": 5802.684499999974,
+              "evidenceMs": 57.53220000001602,
+              "residualMs": 40.97550000002957,
+              "cacheHits": 0,
+              "cacheMisses": 7,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 4493.03654999999,
+              "astMs": 4371.67710000003,
+              "evidenceMs": 47.30000000001746,
+              "residualMs": 56.9109499999613,
+              "cacheHits": 1,
+              "cacheMisses": 11,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ],
+          "warm": [
+            {
+              "stage": 1,
+              "wallMs": 5909.4140999999945,
+              "astMs": 5807.0586000000185,
+              "evidenceMs": 58.03414999999222,
+              "residualMs": 40.59725000002072,
+              "cacheHits": 0,
+              "cacheMisses": 7,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 4413.440999999992,
+              "astMs": 4316.353000000003,
+              "evidenceMs": 43.27820000000065,
+              "residualMs": 51.85550000000512,
+              "cacheHits": 1,
+              "cacheMisses": 11,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ]
+        }
+      },
+      "current": {
+        "samples": [
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5487.984200000006,
+                "astMs": 5396.07759999999,
+                "evidenceMs": 50.39639999999781,
+                "residualMs": 41.51020000001881,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 3842.3755999999994,
+                "astMs": 3753.747799999983,
+                "evidenceMs": 41.320100000011735,
+                "residualMs": 47.30770000000484,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 605.2498000000196,
+                "astMs": 530.3176000000094,
+                "evidenceMs": 42.95840000000317,
+                "residualMs": 31.97380000000703,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1237.712599999999,
+                "astMs": 1145.592100000009,
+                "evidenceMs": 42.7269999999844,
+                "residualMs": 49.39350000000559,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5748.228999999992,
+                "astMs": 5627.83600000001,
+                "evidenceMs": 65.75850000005448,
+                "residualMs": 54.63449999992736,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4549.660299999989,
+                "astMs": 4457.003000000026,
+                "evidenceMs": 41.48459999996703,
+                "residualMs": 51.17269999999553,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 648.2159000000102,
+                "astMs": 563.9433999999892,
+                "evidenceMs": 49.15950000000885,
+                "residualMs": 35.11300000001211,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1402.679599999974,
+                "astMs": 1310.3934000000008,
+                "evidenceMs": 41.02950000000419,
+                "residualMs": 51.25669999996899,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5697.340199999977,
+                "astMs": 5580.622199999983,
+                "evidenceMs": 64.08039999997709,
+                "residualMs": 52.63760000001639,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4587.9609000000055,
+                "astMs": 4491.528899999976,
+                "evidenceMs": 41.90520000003744,
+                "residualMs": 54.52679999999236,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 646.9148000000278,
+                "astMs": 568.7938999999897,
+                "evidenceMs": 45.39110000000801,
+                "residualMs": 32.72980000003008,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1397.8593999999575,
+                "astMs": 1285.3006999999634,
+                "evidenceMs": 59.73729999997886,
+                "residualMs": 52.821400000015274,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 6580.850600000005,
+                "astMs": 6488.921900000016,
+                "evidenceMs": 46.727699999988545,
+                "residualMs": 45.20100000000093,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4379.420500000007,
+                "astMs": 4292.122700000007,
+                "evidenceMs": 41.724500000011176,
+                "residualMs": 45.5732999999891,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 622.2307000000146,
+                "astMs": 522.8600999999908,
+                "evidenceMs": 66.39429999998538,
+                "residualMs": 32.976300000038464,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1711.8299000000115,
+                "astMs": 1598.106299999985,
+                "evidenceMs": 54.85680000000866,
+                "residualMs": 58.866800000017975,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5834.243299999973,
+                "astMs": 5733.564199999964,
+                "evidenceMs": 57.24839999998221,
+                "residualMs": 43.43070000002626,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4702.386399999959,
+                "astMs": 4608.965099999972,
+                "evidenceMs": 46.186699999962,
+                "residualMs": 47.23460000002524,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 623.1503999999841,
+                "astMs": 534.9259999999776,
+                "evidenceMs": 52.70579999999609,
+                "residualMs": 35.51860000001034,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1477.0132999999914,
+                "astMs": 1346.422099999967,
+                "evidenceMs": 60.3181999999797,
+                "residualMs": 70.2730000000447,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          },
+          {
+            "cold": [
+              {
+                "stage": 1,
+                "wallMs": 5588.347000000009,
+                "astMs": 5505.870700000029,
+                "evidenceMs": 50.00280000001658,
+                "residualMs": 32.47349999996368,
+                "cacheHits": 0,
+                "cacheMisses": 7,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 4501.032899999991,
+                "astMs": 4412.323999999964,
+                "evidenceMs": 40.78149999998277,
+                "residualMs": 47.927400000044145,
+                "cacheHits": 1,
+                "cacheMisses": 11,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ],
+            "warm": [
+              {
+                "stage": 1,
+                "wallMs": 763.3560999999754,
+                "astMs": 668.3485999999684,
+                "evidenceMs": 49.17469999997411,
+                "residualMs": 45.832800000032876,
+                "cacheHits": 7,
+                "cacheMisses": 0,
+                "status": "partial",
+                "partialReasons": [
+                  "Stage 0 transition is invalid or missing"
+                ],
+                "files": 7,
+                "queries": 7,
+                "sourceChecks": 10,
+                "astDigest": "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3",
+                "evidenceDigest": "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594",
+                "ownershipDigest": "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7",
+                "qualityDigest": "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              },
+              {
+                "stage": 2,
+                "wallMs": 1530.8626999999979,
+                "astMs": 1434.6467999999877,
+                "evidenceMs": 46.01519999996526,
+                "residualMs": 50.20070000004489,
+                "cacheHits": 12,
+                "cacheMisses": 0,
+                "status": "candidate",
+                "partialReasons": [],
+                "files": 12,
+                "queries": 12,
+                "sourceChecks": 7,
+                "astDigest": "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6",
+                "evidenceDigest": "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37",
+                "ownershipDigest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+                "qualityDigest": "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              }
+            ]
+          }
+        ],
+        "summary": {
+          "cold": [
+            {
+              "stage": 1,
+              "wallMs": 5722.7845999999845,
+              "astMs": 5604.229099999997,
+              "evidenceMs": 53.82239999999001,
+              "residualMs": 44.3158500000136,
+              "cacheHits": 0,
+              "cacheMisses": 7,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 4525.34659999999,
+              "astMs": 4434.663499999995,
+              "evidenceMs": 41.6045499999891,
+              "residualMs": 47.617550000024494,
+              "cacheHits": 1,
+              "cacheMisses": 11,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ],
+          "warm": [
+            {
+              "stage": 1,
+              "wallMs": 635.0326000000059,
+              "astMs": 549.4346999999834,
+              "evidenceMs": 49.16709999999148,
+              "residualMs": 34.044650000025285,
+              "cacheHits": 7,
+              "cacheMisses": 0,
+              "files": [
+                7
+              ],
+              "queries": [
+                7
+              ],
+              "sourceChecks": [
+                10
+              ],
+              "statuses": [
+                "partial"
+              ],
+              "partialReasons": [
+                [
+                  "Stage 0 transition is invalid or missing"
+                ]
+              ],
+              "astDigests": [
+                "1624f8f65af5fa5888c8ef39faa5a398d40c4c56af6ba9631e06427fd8c792a3"
+              ],
+              "evidenceDigests": [
+                "b44ad3199f163d43453f3113b5611eaf2acd96cd4b60e8a001a68f7799159594"
+              ],
+              "ownershipDigests": [
+                "56a9ea6138b56b2e106d82fd0bcbd6c1950216397c3207bcf2bb4a6dc7bcc1c7"
+              ],
+              "qualityDigests": [
+                "71a08be96018fe3415ac12c164f842269e463b44ff07aff7b5d9bb7de3604012"
+              ]
+            },
+            {
+              "stage": 2,
+              "wallMs": 1439.8464499999827,
+              "astMs": 1328.407749999984,
+              "evidenceMs": 50.43599999998696,
+              "residualMs": 52.03904999999213,
+              "cacheHits": 12,
+              "cacheMisses": 0,
+              "files": [
+                12
+              ],
+              "queries": [
+                12
+              ],
+              "sourceChecks": [
+                7
+              ],
+              "statuses": [
+                "candidate"
+              ],
+              "partialReasons": [
+                []
+              ],
+              "astDigests": [
+                "00fe2a6d029cdb6c923dbd27f2ac478061e5d9409f1ef969eaaa2a0f219a2ef6"
+              ],
+              "evidenceDigests": [
+                "b4a11ea9b5a6b3bf207251782f44ba98d774aeeb77490aa0f091fba616468b37"
+              ],
+              "ownershipDigests": [
+                "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+              ],
+              "qualityDigests": [
+                "c2c251e0af102b745f1a437ccbe5b47da79ecd8eb89edaf32217e3abe5e47669"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

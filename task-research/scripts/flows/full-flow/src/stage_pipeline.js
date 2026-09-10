@@ -15,6 +15,7 @@ const { closureErrors, resolveChecks } = require("../../../shared/artifacts/src/
 const { validateCheckHistory } = require("../../../shared/artifacts/src/canonical/lineage.js");
 const { prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
 const { InventorySession } = require("../../../state/src/session/inventory_session.js");
+const { SourceSnapshotStore } = require("../../../shared/evidence/src/source_snapshot.js");
 
 function slug(value) {
   return String(value || "inventory").normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase() || "inventory";
@@ -29,7 +30,7 @@ function stable(value) {
 function scopeDigest(scope) { return crypto.createHash("sha256").update(JSON.stringify(stable(scope))).digest("hex").slice(0, 12); }
 
 function runtimeAstCachePath(outputRoot, repositoryScope) {
-  return path.join(path.resolve(outputRoot), ".runtime-cache", "ast", scopeDigest(normalizeRepositoryScope(repositoryScope, { requireExisting: false })));
+  return path.join(path.dirname(path.resolve(outputRoot)), ".runtime-cache", "ast", scopeDigest(normalizeRepositoryScope(repositoryScope, { requireExisting: false })));
 }
 
 function withRuntimeAstCache(request, outputRoot) {
@@ -102,21 +103,26 @@ async function runStagePipeline(options = {}) {
       const { lineage } = stageContext;
       const profile = stage === 0 ? initialProfile : require("./coverage_profile.js").coverageProfile(request, lineage);
       const runnerRequest = withRuntimeAstCache({ ...request, ...(transitionArtifact ? { transitionArtifact } : {}), ...(stage === 7 ? { expectedArtifact: active?.canonicalArtifact } : {}) }, outputRoot);
-      const runnerDependencies = { ...(options.dependencies || {}), deferCanonicalization: stage !== 7 };
+      const sourceSnapshots = [1, 2].includes(stage) ? options.dependencies?.sourceSnapshots || new SourceSnapshotStore() : null;
+      const runnerDependencies = { ...(options.dependencies || {}), ...(sourceSnapshots ? { sourceSnapshots } : {}), deferCanonicalization: stage !== 7 };
       const runnerResult = await (options.runner || runnerFor(stage))(runnerRequest, runnerDependencies, stageContext);
       let facts = runnerResult;
       if (stage !== 7) {
-        const produced = prepareFacts({ ...carryPlanningFacts(request, runnerResult), repositoryScope: request.repositoryScope });
+        const produced = prepareFacts({ ...carryPlanningFacts(request, runnerResult), repositoryScope: request.repositoryScope }, { sourceSnapshots });
         const { checkContext, aliasMap } = require("./check_context.js");
         const context = checkContext(previous, lineage);
         for (const [kind, collection] of [["gap", "gaps"], ["limitation", "limitations"]]) {
           const inherited = context.corrections.filter(row => row.kind === kind);
           if (inherited.length) produced[collection] = mergeRows([...inherited, ...(produced[collection] || [])]);
         }
-        const evidence = new Map(context.evidence.map(row => [row.id, row]));
+        const referenced = require("./referenced_evidence.js").referencedEvidence(produced, lineage, request.repositoryScope);
+        const evidence = new Map([...context.evidence, ...referenced].map(row => [row.id, row]));
         for (const row of produced.canonicalEvidence || []) evidence.set(row.id, row);
-        const receipts = require("../../../shared/evidence/src/canonicalization/canonicalize.js").remapEvidenceReferences(request.checkResolutions || produced.checkResolutions || [], aliasMap([...evidence.values()]));
-        const resolved = resolveChecks(context.canonical, { ...produced, ...(request.checkRequirements === undefined ? {} : { checkRequirements: request.checkRequirements }), openChecks: [...new Set([...(request.openChecks || []), ...(produced.openChecks || [])])] }, receipts, [...evidence.values()], request.repositoryScope);
+        const remapEvidenceReferences = require("../../../shared/evidence/src/canonicalization/canonicalize.js").remapEvidenceReferences;
+        const aliases = aliasMap([...evidence.values()]);
+        const remappedProduced = remapEvidenceReferences(produced, aliases);
+        const receipts = remapEvidenceReferences(request.checkResolutions || remappedProduced.checkResolutions || [], aliases);
+        const resolved = resolveChecks(context.canonical, { ...remappedProduced, ...(request.checkRequirements === undefined ? {} : { checkRequirements: request.checkRequirements }), openChecks: [...new Set([...(request.openChecks || []), ...(remappedProduced.openChecks || [])])] }, receipts, [...evidence.values()], request.repositoryScope);
         facts = { ...resolved, repositoryScope: request.repositoryScope, exclusions: execution ? execution.exclusions : request.exclusions || [],
           canonicalEvidence: [...evidence.values()], status: transactionStatus(resolved), runnerStatus: produced.status || "unknown",
           summary: { ...resolved.summary, ...(produced.evidenceDiagnostics?.length ? { evidenceDiagnostics: produced.evidenceDiagnostics } : {}), ...(profile === undefined ? {} : { coverageProfile: profile }), ...(execution ? { executionScope: execution.descriptor } : {}), runnerStatus: produced.status || "unknown", lineage, checkHistory: previous ? [...(previous.canonical.summary.checkHistory || []), { artifact: path.join(archived, "canonical/stage-result.json"), outputDigest: previous.canonical.outputDigest }] : [] } };

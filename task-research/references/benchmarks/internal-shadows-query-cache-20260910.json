@@ -1,0 +1,3882 @@
+{
+  "schemaVersion": "query-cache-benchmark/1.0.0",
+  "generatedAt": "2026-09-10T06:06:10.272Z",
+  "methodology": {
+    "concurrency": 2,
+    "modes": [
+      "baseline",
+      "current"
+    ],
+    "series": 2,
+    "warmup": 1,
+    "measuredRuns": 6,
+    "fileCache": "enabled and warmed by a seed sibling in both modes",
+    "sampleIsolation": "unique child process and parent directory per sample"
+  },
+  "provenance": {
+    "harnessDigest": "111148184ace0173172ca27e59632f3e37646371b1080df22f79b3957251226b",
+    "workloadDigest": "db892aa9246b9432d5dcb561ab63e00fb986ae579612a51306d321d94e777199",
+    "implementationDigest": "6472345fbddbd3d58983e186777331c73eb90aeade6d34b938bcc009d6327143",
+    "repositories": [
+      {
+        "root": "C:\\work\\r7\\projects\\sdkjs",
+        "head": "d61be341c627a6000159dbd3ad725a9b2d6ede00",
+        "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "root": "C:\\work\\r7\\projects\\web-apps",
+        "head": "b5596497daf5c123370021dd66e944ca8dbb892a",
+        "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "root": "C:\\work\\r7\\projects\\desktop-apps",
+        "head": "2d3925074215089cc41a8430cf6b8bdf3d08b300",
+        "worktreeDigest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "environment": {
+      "node": "v24.20.0",
+      "platform": "win32",
+      "arch": "x64",
+      "cpu": "AMD Ryzen 7 5800HS with Radeon Graphics         "
+    }
+  },
+  "series": [
+    {
+      "modes": {
+        "baseline": {
+          "samples": [
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1751.6045999999988,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2975.8598999999995,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.7871
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0669
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.5968
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 60.1484
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 8.4024
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.6585
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0626
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.3585
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.1848
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.433
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.3623
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 498.4639
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 337.5413
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5985
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 8.7337
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 19.9483
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 139.6918
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 135.6194
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 140.0999
+                }
+              ],
+              "pairWallMs": 4727.464499999998,
+              "runQueryCalls": 19,
+              "runQueryMs": 1370.7581,
+              "maxRssKiB": 567140,
+              "cacheBytes": 56262518
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1707.768900000001,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2707.298600000002,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.3238
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0518
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.822
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 49.3213
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.463
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.6979
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0637
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.0144
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3164
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.4508
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.1133
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 460.6431
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 318.52
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.8613
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.3664
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 19.8079
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 149.1228
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 144.9419
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 137.8795
+                }
+              ],
+              "pairWallMs": 4415.067500000003,
+              "runQueryCalls": 19,
+              "runQueryMs": 1314.7813,
+              "maxRssKiB": 588012,
+              "cacheBytes": 56262513
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1911.1792000000005,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2842.468500000001,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.7183
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0661
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.8223
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 53.4801
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.1076
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.2373
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0985
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.5549
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3122
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5737
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.9827
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 456.0765
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 325.1481
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.6219
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.8831
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 20.4212
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 150.5886
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 157.4273
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 140.8729
+                }
+              ],
+              "pairWallMs": 4753.647700000001,
+              "runQueryCalls": 19,
+              "runQueryMs": 1337.9933,
+              "maxRssKiB": 580488,
+              "cacheBytes": 56262513
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1408.9557000000004,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2044.1458999999995,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.9807
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0539
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9202
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 36.1927
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.5505
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.9818
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0765
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.4984
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3067
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5263
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.8538
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 350.7005
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 227.7325
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.8536
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.4389
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 12.3953
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 88.7785
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 105.6956
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 89.483
+                }
+              ],
+              "pairWallMs": 3453.1016,
+              "runQueryCalls": 19,
+              "runQueryMs": 940.0194000000001,
+              "maxRssKiB": 580076,
+              "cacheBytes": 56262512
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1423.3734000000004,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2151.826299999999,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.5062
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0319
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9181
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 34.617
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.2752
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.6142
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.064
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.015
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.1517
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.2641
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.1555
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 315.4824
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 216.8789
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5274
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.5743
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 13.3353
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 109.3619
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 139.3233
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 109.4683
+                }
+              ],
+              "pairWallMs": 3575.199699999999,
+              "runQueryCalls": 19,
+              "runQueryMs": 968.5646999999998,
+              "maxRssKiB": 611652,
+              "cacheBytes": 56262513
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1285.2408000000014,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1949.6453000000001,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.0353
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0562
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.8642
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 42.205
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.4016
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.6402
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0472
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.1349
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3807
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5375
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 2.421
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 297.7827
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 202.7728
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.4991
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.4801
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 11.5437
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 88.6209
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 100.8818
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 94.9621
+                }
+              ],
+              "pairWallMs": 3234.8861000000015,
+              "runQueryCalls": 19,
+              "runQueryMs": 867.2669999999998,
+              "maxRssKiB": 580012,
+              "cacheBytes": 56262513
+            }
+          ],
+          "summary": {
+            "pairMedianMs": 3995.133600000001,
+            "stage1MedianMs": 1565.5711500000007,
+            "stage2MedianMs": 2429.5624500000004,
+            "eventCounts": {
+              "hit": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "miss": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "failed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "ineligible": [
+                19,
+                19,
+                19,
+                19,
+                19,
+                19
+              ]
+            },
+            "runQueryCalls": [
+              19,
+              19,
+              19,
+              19,
+              19,
+              19
+            ],
+            "runQueryMedianMs": 1141.673,
+            "semanticDigests": [
+              "1:cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+              "2:809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+            ],
+            "maxRssKiB": 580282,
+            "cacheBytes": 56262513
+          }
+        },
+        "current": {
+          "samples": [
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1629.5113999999994,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1491.244300000002,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 3120.7557000000015,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 616036,
+              "cacheBytes": 56849552
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1748.2329000000009,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1622.3547999999992,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 3370.5877,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 580116,
+              "cacheBytes": 56849554
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1735.4356000000007,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 3957.7814,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 5693.217000000001,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 612716,
+              "cacheBytes": 56849550
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1380.2336999999989,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1457.5995000000003,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2837.833199999999,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 571840,
+              "cacheBytes": 56849552
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1413.846300000001,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1258.103799999999,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2671.9501,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 580556,
+              "cacheBytes": 56849552
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1438.738299999999,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1392.8774000000012,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2831.6157000000003,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 613396,
+              "cacheBytes": 56849551
+            }
+          ],
+          "summary": {
+            "pairMedianMs": 2979.2944500000003,
+            "stage1MedianMs": 1534.1248499999992,
+            "stage2MedianMs": 1474.4219000000012,
+            "eventCounts": {
+              "hit": [
+                19,
+                19,
+                19,
+                19,
+                19,
+                19
+              ],
+              "miss": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "failed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "ineligible": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "runQueryCalls": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "runQueryMedianMs": 0,
+            "semanticDigests": [
+              "1:cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+              "2:809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+            ],
+            "maxRssKiB": 596636,
+            "cacheBytes": 56849552
+          }
+        }
+      }
+    },
+    {
+      "modes": {
+        "baseline": {
+          "samples": [
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1381.2842,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2193.441200000001,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.9673
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0317
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9403
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 33.7381
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.2324
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 2.9623
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0284
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.3073
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.1758
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3386
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.5358
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 345.0565
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 206.702
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5076
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.2394
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 12.1503
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 144.3046
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 103.5617
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 109.7486
+                }
+              ],
+              "pairWallMs": 3574.725400000001,
+              "runQueryCalls": 19,
+              "runQueryMs": 979.5287,
+              "maxRssKiB": 612052,
+              "cacheBytes": 56262512
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1478.7929999999997,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2169.689700000001,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.8826
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.032
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9262
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 45.0572
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.967
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.7916
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.042
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 2.2928
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.2883
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5016
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.1702
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 340.0014
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 255.3909
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.6062
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.2416
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 13.1429
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 105.4585
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 86.1147
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 102.7216
+                }
+              ],
+              "pairWallMs": 3648.4827000000005,
+              "runQueryCalls": 19,
+              "runQueryMs": 978.6292999999998,
+              "maxRssKiB": 580004,
+              "cacheBytes": 56262510
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1416.8082999999988,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2292.151099999999,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.0011
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0338
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.1772
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 40.5754
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.8642
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.7619
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0531
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.678
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.2748
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.633
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 2.534
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 351.418
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 263.4811
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.4878
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.4123
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 22.4471
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 120.629
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 165.6197
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 119.8206
+                }
+              ],
+              "pairWallMs": 3708.959399999998,
+              "runQueryCalls": 19,
+              "runQueryMs": 1113.9020999999998,
+              "maxRssKiB": 618808,
+              "cacheBytes": 56262514
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1393.2606000000014,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2061.4245999999985,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.5303
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0347
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9736
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 33.8412
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 7.4819
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.429
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0488
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.4221
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.2083
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5057
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.6496
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 361.0411
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 205.9971
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.4858
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.1317
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 13.953
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 89.5247
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 95.0838
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 89.5429
+                }
+              ],
+              "pairWallMs": 3454.6852,
+              "runQueryCalls": 19,
+              "runQueryMs": 920.8852999999999,
+              "maxRssKiB": 580568,
+              "cacheBytes": 56262512
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1378.3632000000016,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2165.008600000001,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.1264
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0327
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9522
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 34.7257
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.8737
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 6.0425
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0483
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.6913
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3677
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.2763
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.5375
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 324.6363
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 227.3835
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.5294
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.0565
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 13.0123
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 114.462
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 134.76
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 85.765
+                }
+              ],
+              "pairWallMs": 3543.3718000000026,
+              "runQueryCalls": 19,
+              "runQueryMs": 964.2793,
+              "maxRssKiB": 580456,
+              "cacheBytes": 56262511
+            },
+            {
+              "mode": "baseline",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1407.3927000000003,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 2071.7090000000007,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.8605
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0295
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.9473
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 34.5875
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 5.7461
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 3.3556
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.0332
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 1.1059
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3629
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.3268
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.0193
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 328.057
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 222.8111
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 0.4948
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 4.2671
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 13.0617
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 89.7212
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 107.4483
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "ineligible",
+                  "ranQuery": true,
+                  "runQueryMs": 135.2883
+                }
+              ],
+              "pairWallMs": 3479.101700000001,
+              "runQueryCalls": 19,
+              "runQueryMs": 955.5241000000001,
+              "maxRssKiB": 611628,
+              "cacheBytes": 56262511
+            }
+          ],
+          "summary": {
+            "pairMedianMs": 3559.048600000002,
+            "stage1MedianMs": 1400.3266500000009,
+            "stage2MedianMs": 2167.349150000001,
+            "eventCounts": {
+              "hit": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "miss": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "failed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "ineligible": [
+                19,
+                19,
+                19,
+                19,
+                19,
+                19
+              ]
+            },
+            "runQueryCalls": [
+              19,
+              19,
+              19,
+              19,
+              19,
+              19
+            ],
+            "runQueryMedianMs": 971.4542999999999,
+            "semanticDigests": [
+              "1:cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+              "2:809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+            ],
+            "maxRssKiB": 596098,
+            "cacheBytes": 56262511.5
+          }
+        },
+        "current": {
+          "samples": [
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1378.4171999999999,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1264.3048,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2642.7219999999998,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 615256,
+              "cacheBytes": 56849554
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1521.0408000000007,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1192.2399999999998,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2713.2808000000005,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 615764,
+              "cacheBytes": 56849554
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1488.6060000000016,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1178.4863999999998,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2667.0924000000014,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 581664,
+              "cacheBytes": 56849554
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1325.9359999999997,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1298.5694000000003,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2624.5054,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 580184,
+              "cacheBytes": 56849552
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1491.1117999999988,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1261.4261999999999,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2752.5379999999986,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 580284,
+              "cacheBytes": 56849552
+            },
+            {
+              "mode": "current",
+              "stages": [
+                {
+                  "stage": 1,
+                  "wallMs": 1481.8437000000013,
+                  "semanticDigest": "cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+                  "fileCacheHits": 7,
+                  "fileCacheMisses": 0
+                },
+                {
+                  "stage": 2,
+                  "wallMs": 1201.3928000000014,
+                  "semanticDigest": "809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62",
+                  "fileCacheHits": 12,
+                  "fileCacheMisses": 0
+                }
+              ],
+              "events": [
+                {
+                  "queryId": "format-model-owners",
+                  "status": "hit",
+                  "key": "b3f03c81eb9e57d2f4331c75422142fc4c41e8577f8b9027fe637992529cbcd4",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "effect-type",
+                  "status": "hit",
+                  "key": "1c32be50d1ef8d87d666bca3b5fc33efea50951e527c4be3b945c992df8ab117",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-reader",
+                  "status": "hit",
+                  "key": "4950dc47c2caa144b2a1574113947d64fe5fc85e71ba0f5a6116535b183f8c3f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "format-writer",
+                  "status": "hit",
+                  "key": "8307cb0c6fe7230402088dba04e87f9bd2af62b5c22ec4a61a27f980fa723f0a",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "json-readwrite",
+                  "status": "hit",
+                  "key": "14d02c104438fe60964e04b7e4cd34bd0a07f1670e52b2eed5f5ea7dde9295b0",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "smartart-owners",
+                  "status": "hit",
+                  "key": "bcee2532d5d0048ca4a94b3b8e1bb9ba710b2f1a2b0ac75efd30a00de02368e1",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "theme-owner",
+                  "status": "hit",
+                  "key": "59f4c46f84caa4d02414038e9af120a8a54ec32fb9d64df2ba13ecac9a34e629",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "shape-owner",
+                  "status": "hit",
+                  "key": "b44e239ec255b6d21fe0beadb8f6b4da5efe0b0e606321ed45ebdd554b0aeb7f",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "image-owner",
+                  "status": "hit",
+                  "key": "4595ca9c77bf2a701af31207e6c5f146ac35146db8bffd5e28c71479bbd1b835",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "group-owner",
+                  "status": "hit",
+                  "key": "adcfc4e504b6ee06fa0217de77532f7a1cbbbdb709d44e762b29425ceb9cd75e",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shape-shadow",
+                  "status": "hit",
+                  "key": "8dbb5ffed712ab5b117421a8fe60a3b49da334e492689d3ce53e308ea2462ba2",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "public-shadow-type",
+                  "status": "hit",
+                  "key": "8e03a9af07e838994f1e31b0f894662d8f73418cc6ead99eb93d5e17076cdd86",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "controller-shadow",
+                  "status": "hit",
+                  "key": "258f4277f4ed317beb56e40a0c23a247463dfa310c757ec7c94d1585dbab6931",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "graphic-shadow-read",
+                  "status": "hit",
+                  "key": "b0b0df17810c33aae45f8b7352a16022faaa0eb1b45ea6e274e17ce6f1798f4c",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-settings",
+                  "status": "hit",
+                  "key": "7554c2579ed0378a3df06cc741cfb24e9596e50679d9b8fb26d47618d617e8e5",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "web-shadow-menu",
+                  "status": "hit",
+                  "key": "ebe379e8db0f8de0a35144c5ff391550e7cc9debdaae35beb4ef51832563a3ca",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "de-shape-settings",
+                  "status": "hit",
+                  "key": "8facecfab7c41553b7bb1bc065825ace8ca1f303fb15825a435c1b182773ef9b",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "pe-shape-settings",
+                  "status": "hit",
+                  "key": "39b5801acebccad1e62349041c16381cb207dd47bce2d7ce28cefbe9d53db8d8",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                },
+                {
+                  "queryId": "sse-shape-settings",
+                  "status": "hit",
+                  "key": "2b3b9058292c1c75c6393db64ded9b45a462d87982db2d1e4076df582ce79acd",
+                  "ranQuery": false,
+                  "runQueryMs": 0
+                }
+              ],
+              "pairWallMs": 2683.2365000000027,
+              "runQueryCalls": 0,
+              "runQueryMs": 0,
+              "maxRssKiB": 613264,
+              "cacheBytes": 56849551
+            }
+          ],
+          "summary": {
+            "pairMedianMs": 2675.164450000002,
+            "stage1MedianMs": 1485.2248500000014,
+            "stage2MedianMs": 1231.4095000000007,
+            "eventCounts": {
+              "hit": [
+                19,
+                19,
+                19,
+                19,
+                19,
+                19
+              ],
+              "miss": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "failed": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "ineligible": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "runQueryCalls": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "runQueryMedianMs": 0,
+            "semanticDigests": [
+              "1:cb623d71163412a80015da1f27f830af0f32e63a8b320ccb436a1b75d2a1f82c",
+              "2:809a924b61a89412c9195ca64afef2387aeb69db2911c1dd8f72848550161a62"
+            ],
+            "maxRssKiB": 597464,
+            "cacheBytes": 56849553
+          }
+        }
+      }
+    }
+  ],
+  "decision": {
+    "result": "retain",
+    "gainsPercent": [
+      25.426913132517033,
+      24.834843502839476
+    ],
+    "semanticEqual": true
+  }
+}

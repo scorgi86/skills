@@ -5,6 +5,7 @@ const { applyOutputPolicy, DEFAULT_OUTPUT_BUDGET } = require("./output/policy.js
 const path = require("path");
 
 const { SCHEMA_VERSION, analyzeFiles } = require("./analysis/analysis.js");
+const { normalizeConcurrency } = require("./analysis/parallel_analysis.js");
 const { filesFromList, listSourceFiles } = require("./analysis/source_files.js");
 const { legacyView, runQuery } = require("./query/queries.js");
 
@@ -12,7 +13,7 @@ const { swcVersion } = require("./parsing/parser.js");
 
 const COMMANDS = new Set(["index", "analyze", "find", "symbols", "fields", "methods", "reads", "writes", "assignments", "calls", "callers", "callees", "owners", "recipients", "collections", "chain", "summary", "stats", "doctor"]);
 
-const VALUE_OPTIONS = new Set(["file", "scope", "files-from", "type", "owner", "field", "terms", "kind", "symbol", "line-start", "line-end", "max-depth", "max-paths", "max-branches", "max-results", "max-lines", "min-confidence", "cache", "format", "value-type", "output-mode", "max-output-bytes", "max-evidence-per-item", "max-snippet-chars", "max-groups", "group-offset", "details-for", "group-owner", "group-field", "group-relation", "group-target"]);
+const VALUE_OPTIONS = new Set(["file", "scope", "files-from", "type", "owner", "field", "terms", "kind", "symbol", "line-start", "line-end", "max-depth", "max-paths", "max-branches", "max-results", "max-lines", "min-confidence", "cache", "concurrency", "format", "value-type", "output-mode", "max-output-bytes", "max-evidence-per-item", "max-snippet-chars", "max-groups", "group-offset", "details-for", "group-owner", "group-field", "group-relation", "group-target"]);
 
 function help() {
   return {
@@ -58,6 +59,11 @@ function parseArgs(argv) {
   options.maxSnippetChars = Number.isFinite(Number(options.maxSnippetChars)) ? Math.max(0, Number(options.maxSnippetChars)) : 160;
   options.maxGroups = Math.max(1, Number(options.maxGroups) || 100);
   options.groupOffset = Math.max(0, Number(options.groupOffset) || 0);
+  if (options.concurrency !== undefined) {
+    const concurrency = Number(options.concurrency);
+    if (!Number.isInteger(concurrency) || concurrency < 1) throw new Error("AST concurrency must be a positive integer");
+    options.concurrency = concurrency;
+  }
   if (!["auto", "summary", "detail"].includes(options.outputMode)) throw new Error(`Unsupported output mode: ${options.outputMode}`);
   if (options.lineStart) options.lineStart = Math.max(1, Number(options.lineStart) || 1);
   if (options.lineEnd) options.lineEnd = Math.max(options.lineStart || 1, Number(options.lineEnd) || options.lineStart || 1);
@@ -98,17 +104,18 @@ function doctor() {
   });
 }
 
-function execute(options) {
+async function execute(options) {
   if (options.help || !options.command) return { output: envelope("help", null, help()), exitCode: 0 };
   if (!COMMANDS.has(options.command)) return { output: envelope(options.command, null, null, [], [{ message: `Unknown command: ${options.command}` }]), exitCode: 2 };
   if (options.format !== "json" && options.format !== "pretty") return { output: envelope(options.command, null, null, [], [{ message: `Unsupported format: ${options.format}` }]), exitCode: 2 };
   if (options.command === "doctor") return { output: doctor(), exitCode: 0 };
+  try { normalizeConcurrency(options.concurrency, 1); } catch (error) { return { output: envelope(options.command, null, null, [], [{ message: error.message }]), exitCode: 2 }; }
 
   let files;
   try { files = selectFiles(options); } catch (error) { return { output: envelope(options.command, null, null, [], [{ message: error.message }]), exitCode: 2 }; }
   if (!files.length) return { output: envelope(options.command, { stats: { filesMatched: 0, parsed: 0, failed: 0, skipped: 0, elapsedMs: 0 } }, { items: [], returned: 0, total: 0, truncated: false }), exitCode: 0 };
 
-  const analysis = analyzeFiles(files, { cache: options.cache });
+  const analysis = await analyzeFiles(files, { cache: options.cache, concurrency: options.concurrency });
   const fileErrors = analysis.results.flatMap((result) => result.errors.map((error) => ({ ...error, file: result.file })));
   if (options.command === "analyze") {
     if (analysis.results.length !== 1) return { output: envelope("analyze", analysis, null, [], [{ message: "analyze requires exactly one candidate file" }]), exitCode: 2 };

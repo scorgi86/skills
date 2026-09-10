@@ -5,7 +5,16 @@ const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const test = require("node:test");
-const { compareSignature, gitSignature, median, operationMedians, parseArgs, unionDuration } = require("../stages1_7_profile.js");
+const { compareSignature, createSampleLayout, gitSignature, median, operationMedians, parseArgs, unionDuration } = require("../stages1_7_profile.js");
+
+test("stage profile isolates each sample cache under a disposable parent", t => {
+  const first = createSampleLayout();
+  const second = createSampleLayout();
+  t.after(() => { fs.rmSync(first.parent, { recursive: true, force: true }); fs.rmSync(second.parent, { recursive: true, force: true }); });
+  assert.equal(path.dirname(first.outputRoot), first.parent);
+  assert.notEqual(first.parent, second.parent);
+  assert.equal(path.dirname(first.parent), path.dirname(second.parent));
+});
 
 test("stage profile parses counts and rejects incomplete options", () => {
   assert.deepEqual(parseArgs(["--runtime", "r", "--requests", "q", "--output", "o", "--runs", "5", "--warmup", "0"]), { runtime: "r", requests: "q", output: "o", runs: 5, warmup: 0 });

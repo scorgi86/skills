@@ -26,9 +26,9 @@ const { compareStageRuns } = require("../../../shared/output/src/compare_stage_r
 
 const fixture = path.resolve(require("node:path").resolve(__dirname, "../../.."), "../fixtures/prototype/high-fanout.js");
 
-test("AST batch parses each unique file once for multiple queries", () => {
+test("AST batch parses each unique file once for multiple queries", async () => {
   let calls = 0;
-  const output = runAstBatch({ queries: [
+  const output = await runAstBatch({ queries: [
     { id: "symbols", command: "symbols", file: fixture },
     { id: "find", command: "find", file: fixture, options: { terms: "value" } },
   ] }, { analyzeFiles(files, options) { calls += 1; return analyzeFiles(files, options); } });
@@ -51,24 +51,24 @@ test("compiled AST query plan is stable and complete before parse", () => {
   assert.ok(first.projections.includes("first-anchor-per-group"));
 });
 
-test("semantic group filters retain full scan coverage", () => {
-  const output = runAstBatch({ queries: [{ id: "filtered", command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" } }] });
+test("semantic group filters retain full scan coverage", async () => {
+  const output = await runAstBatch({ queries: [{ id: "filtered", command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" } }] });
   const coverage = output.results[0].coverage;
   assert.ok(coverage.groupsScanned >= coverage.groupsMatched);
   assert.ok(coverage.groupsMatched > 0);
 });
 
-test("selected details report suppression explicitly", () => {
-  const output = runAstBatch({ maxEvidencePerItem: 100, queries: [{ id: "details", command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" }, includeDetails: true, maxDetails: 500 }] });
+test("selected details report suppression explicitly", async () => {
+  const output = await runAstBatch({ maxEvidencePerItem: 100, queries: [{ id: "details", command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" }, includeDetails: true, maxDetails: 500 }] });
   assert.equal(output.results[0].coverage.detailsRequested, output.results[0].coverage.detailsReturned);
   assert.equal(output.results[0].coverage.detailsSuppressed, 0);
   assert.equal(output.results[0].coverage.detailEvidenceSuppressed, 0);
 });
 
-test("safe budget preflight preserves the same result set without reparsing", () => {
+test("safe budget preflight preserves the same result set without reparsing", async () => {
   const request = { queries: [{ id: "details", command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" }, includeDetails: true, maxDetails: 500 }] };
-  const low = runAstBatch({ ...request, maxOutputBytes: 4096 });
-  const high = runAstBatch({ ...request, maxOutputBytes: 1024 * 1024 });
+  const low = await runAstBatch({ ...request, maxOutputBytes: 4096 });
+  const high = await runAstBatch({ ...request, maxOutputBytes: 1024 * 1024 });
   assert.deepEqual(low.results, high.results);
   assert.equal(low.stats.parseCounts[fixture], 1);
   assert.equal(low.output.autoRaised, true);
@@ -207,8 +207,8 @@ test("overlapping evidence patterns do not inflate legacy returned counters", ()
   assert.equal(new Set(check.matches.map((match) => `${match.file}:${match.line}`)).size, check.matches.length);
 });
 
-test("AST semantic projection covers every group by digest and emits first anchors", () => {
-  const ast = runAstBatch({ maxGroups: 1, queries: [{ id: "owners", command: "find", file: fixture, options: { terms: "value,rare" }, groupFilters: { owner: "*" } }] });
+test("AST semantic projection covers every group by digest and emits first anchors", async () => {
+  const ast = await runAstBatch({ maxGroups: 1, queries: [{ id: "owners", command: "find", file: fixture, options: { terms: "value,rare" }, groupFilters: { owner: "*" } }] });
   const projection = projectAst(ast, { maxGroupsPerQuery: 3 });
   const query = projection.queries[0];
   assert.equal(query.groupsAvailable, ast.results[0].coverage.groupsMatched);
@@ -472,10 +472,10 @@ test("transition extractor rejects Markdown compatibility input", () => {
   assert.throws(() => extractTransition("- target: feature"), /canonical JSON schema 4\.0\.0/);
 });
 
-test("stage 2 runner produces bounded facts-first artifact", () => {
+test("stage 2 runner produces bounded facts-first artifact", async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "stage2-"));
   const transitionArtifact = writeCanonicalTransition(directory, 1);
-  const output = runStage2({ stage: 2, transitionArtifact, ast: { queries: [{ command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" } }] }, evidence: { checks: [{ file: fixture, pattern: "value", maxMatches: 2 }] } });
+  const output = await runStage2({ stage: 2, transitionArtifact, ast: { queries: [{ command: "find", file: fixture, options: { terms: "value" }, groupFilters: { owner: "*" } }] }, evidence: { checks: [{ file: fixture, pattern: "value", maxMatches: 2 }] } });
   assert.equal(output.output.bounded, true);
   assert.equal(output.quality.astFilesParsedOnce, true);
   assert.equal(output.quality.coverageGate.ok, true);

@@ -6,6 +6,8 @@ const { applySafeBudget } = require("../../../output/src/measure_context.js");
 const { compactItem } = require("../output/projection.js");
 const { filterSemanticGroups, groupItems } = require("../output/groups.js");
 const { groupKey } = require("../output/identity.js");
+const { createQueryIdentity, isCacheableQuery } = require("../query-cache/identity.js");
+const { readQueryEntry, writeQueryEntry } = require("../query-cache/storage.js");
 
 const DEFAULT_BATCH_BUDGET = 64 * 1024;
 
@@ -58,19 +60,45 @@ function compileQueryPlan(request) {
   };
 }
 
-function runAstBatch(request, dependencies = {}) {
+async function runAstBatch(request, dependencies = {}) {
   const analyze = dependencies.analyzeFiles || analyzeFiles;
   const plan = compileQueryPlan(request);
   const resolved = plan.queries;
   const uniqueFiles = plan.uniqueFiles;
-  const analysis = analyze(uniqueFiles, { cache: request.cache });
+  const analysis = await analyze(uniqueFiles, { cache: request.cache, concurrency: request.concurrency });
+  const observe = typeof dependencies.queryCacheObserver === "function" ? dependencies.queryCacheObserver : () => {};
+  const queryCacheEnabled = Boolean(request.cache) && dependencies.queryCacheEnabled !== false;
+  const queryCacheDirectory = queryCacheEnabled ? path.join(path.resolve(request.cache), "query-results") : null;
   const parseCounts = Object.fromEntries(uniqueFiles.map((file) => [file, 1]));
   const results = resolved.map((query) => {
     const allowed = new Set(query.resolvedFiles);
     const scopedAnalysis = { results: analysis.results.filter((result) => allowed.has(path.resolve(result.file))), stats: analysis.stats };
     const options = { maxResults: Number.MAX_SAFE_INTEGER, ...(query.options || {}) };
-    const queried = runQuery(query.command, scopedAnalysis, options);
-    const allItems = queried._allItems || queried.items || [];
+    const analysisKeys = scopedAnalysis.results.map(result => analysis.identities?.get(path.resolve(result.file)));
+    const eligible = queryCacheEnabled && isCacheableQuery(query.command) && analysisKeys.length === scopedAnalysis.results.length
+      && analysisKeys.every(Boolean) && scopedAnalysis.results.every(result => !result.errors.length);
+    let allItems;
+    if (eligible) {
+      const identity = createQueryIdentity({ command: query.command, options, analysisKeys });
+      const entry = readQueryEntry(queryCacheDirectory, identity);
+      if (entry.status === "hit") {
+        allItems = entry.items;
+        observe({ queryId: query.id, status: "hit", key: identity.key, ranQuery: false, runQueryMs: 0 });
+      } else {
+        const queryStarted = process.hrtime.bigint();
+        const queried = runQuery(query.command, scopedAnalysis, options);
+        const runQueryMs = Number(process.hrtime.bigint() - queryStarted) / 1e6;
+        allItems = queried._allItems || queried.items || [];
+        const stored = entry.status === "miss" ? writeQueryEntry(queryCacheDirectory, identity, allItems) : entry;
+        observe({ queryId: query.id, status: stored.status === "failed" ? "failed" : "miss", key: identity.key, ranQuery: true, runQueryMs });
+      }
+    } else {
+      const queryStarted = process.hrtime.bigint();
+      const queried = runQuery(query.command, scopedAnalysis, options);
+      const runQueryMs = Number(process.hrtime.bigint() - queryStarted) / 1e6;
+      allItems = queried._allItems || queried.items || [];
+      observe({ queryId: query.id, status: "ineligible", ranQuery: true, runQueryMs });
+    }
     const groups = groupItems(allItems, query.maxSnippetChars || request.maxSnippetChars || 160);
     const matchedGroups = filterSemanticGroups(groups, normalizeGroupFilters(query.groupFilters));
     const maxGroups = Math.max(1, Number(query.maxGroups || request.maxGroups) || 100);

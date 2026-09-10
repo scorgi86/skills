@@ -1,14 +1,15 @@
 "use strict";
 const { listFiles } = require("./source_files.js");
 const { runSourceCheck } = require("./source_checks.js");
+const { SourceSnapshotStore } = require("../source_snapshot.js");
 function runEvidenceChecks(request, dependencies = {}) {
     if (!request || !Array.isArray(request.checks)) throw new Error("Evidence request requires checks array");
-    const contentCache = new Map();
+    const sourceSnapshots = dependencies.sourceSnapshots || new SourceSnapshotStore();
     const traversalCache = new Map();
     const enumerateFiles = dependencies.listFiles || listFiles;
     return {
         schemaVersion: "1.1.0",
-        checks: request.checks.map((check, index)=>runSourceCheck(check, index, request, contentCache, traversalCache, enumerateFiles))
+        checks: request.checks.map((check, index)=>runSourceCheck(check, index, request, sourceSnapshots, traversalCache, enumerateFiles))
     };
 }
 function parseArgs(argv) {

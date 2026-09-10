@@ -54,9 +54,10 @@ function request(file, cache, maxOutputBytes = 1e7) {
   ] };
 }
 
-test("batch warm reuse skips real SWC and indexing while every query reruns", (t) => {
+test("batch warm reuse skips file analysis and cacheable queries", async (t) => {
   const f = fixture(t);
   const child = spawnSync(process.execPath, ["-e", `
+    void (async () => {
     const path = require('node:path');
     const ast = process.env.SCENARIO_AST;
     const swc = require(require.resolve('@swc/core', { paths: [ast] }));
@@ -74,30 +75,31 @@ test("batch warm reuse skips real SWC and indexing while every query reruns", (t
     }
     const { runAstBatch } = require(path.join(ast, 'batch/batch.js'));
     const request = JSON.parse(process.env.SCENARIO_REQUEST);
-    const cold = runAstBatch(request);
+    const cold = await runAstBatch(request);
     const coldCounts = { ...counts };
     for (const key of Object.keys(counts)) counts[key] = 0;
-    const warm = runAstBatch(request);
+    const warm = await runAstBatch(request);
     process.stdout.write(JSON.stringify({ cold, warm, coldCounts, warmCounts: counts }));
+    })();
   `], { encoding: "utf8", env: { ...process.env, SCENARIO_AST: ast, SCENARIO_REQUEST: JSON.stringify(request(f.file, f.cache)) } });
   assert.equal(child.status, 0, child.stderr);
   const result = JSON.parse(child.stdout);
   assert.deepEqual(result.coldCounts, { swc: 1, index: 1, relations: 1, query: 4 });
-  assert.deepEqual(result.warmCounts, { swc: 0, index: 0, relations: 0, query: 4 });
+  assert.deepEqual(result.warmCounts, { swc: 0, index: 0, relations: 0, query: 0 });
   assert.equal(result.warm.stats.parsed, 1, "legacy parsed counts successful analyses, not SWC calls");
   assert.deepEqual(result.warm.stats.parseCounts, { [f.file]: 1 });
   assert.deepEqual(semantic(result.warm), semantic(result.cold));
 });
 
-test("collection preserves normalized first-seen order and mixed hit, miss and parse failure", (t) => {
+test("collection preserves normalized first-seen order and mixed hit, miss and parse failure", async (t) => {
   const f = fixture(t);
   const second = path.join(f.scope, "b.js");
   const broken = path.join(f.scope, "broken.js");
   fs.writeFileSync(second, "class Beta {}");
   fs.writeFileSync(broken, "class {");
-  analyzeFiles([f.file], { cache: f.cache });
+  await analyzeFiles([f.file], { cache: f.cache });
   const files = [second, f.file, path.join(f.scope, "..", "scope", "b.js"), broken, f.file];
-  const mixed = analyzeFiles(files, { cache: f.cache });
+  const mixed = await analyzeFiles(files, { cache: f.cache });
   assert.deepEqual(mixed.results.map((item) => item.file), [second, f.file, broken]);
   assert.deepEqual({ ...mixed.stats, elapsedMs: 0 }, {
     filesMatched: 3, parsed: 2, failed: 1, skipped: 0, cacheHits: 1, cacheMisses: 1, elapsedMs: 0,
@@ -105,14 +107,14 @@ test("collection preserves normalized first-seen order and mixed hit, miss and p
   assert.equal(mixed.results[2].status, "не проверено");
   assert.ok(mixed.results[2].errors.length);
   assert.deepEqual(mixed.results[2].warnings, []);
-  assert.deepEqual(semantic(mixed), semantic(analyzeFiles(files)));
+  assert.deepEqual(semantic(mixed), semantic(await analyzeFiles(files)));
 });
 
-test("batch generous-budget cached projections equal uncached, including negative query", (t) => {
+test("batch generous-budget cached projections equal uncached, including negative query", async (t) => {
   const f = fixture(t);
-  const uncached = runAstBatch(request(f.file));
-  const cold = runAstBatch(request(f.file, f.cache));
-  const warm = runAstBatch(request(f.file, f.cache));
+  const uncached = await runAstBatch(request(f.file));
+  const cold = await runAstBatch(request(f.file, f.cache));
+  const warm = await runAstBatch(request(f.file, f.cache));
   assert.deepEqual(semantic(cold), semantic(uncached));
   assert.deepEqual(semantic(warm), semantic(uncached));
   assert.equal(warm.results[1].status, "candidate");
@@ -121,11 +123,11 @@ test("batch generous-budget cached projections equal uncached, including negativ
   assert.equal(warm.output.autoRaised, false);
 });
 
-test("boundary budget preserves required batch evidence and accounts for actual bytes", (t) => {
+test("boundary budget preserves required batch evidence and accounts for actual bytes", async (t) => {
   const f = fixture(t);
-  const large = runAstBatch(request(f.file, f.cache));
+  const large = await runAstBatch(request(f.file, f.cache));
   for (const budget of [4096, large.output.bytes, large.output.bytes + 1]) {
-    const bounded = runAstBatch(request(f.file, f.cache, budget));
+    const bounded = await runAstBatch(request(f.file, f.cache, budget));
     assert.deepEqual(bounded.results, large.results);
     assert.equal(bounded.output.bytes, Buffer.byteLength(JSON.stringify(bounded)));
     assert.equal(bounded.output.bounded, true);

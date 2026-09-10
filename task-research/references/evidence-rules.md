@@ -17,7 +17,7 @@ Use this file whenever GitNexus, local AST, text search, file-name search, or ma
 ## Promotion Rules
 
 - A candidate becomes `подтвержденное использование` only when the file, symbol/property/method, role, and path are verified.
-- Every source-confirmed evidence row names one repository from the declared scope and a file inside that repository root. Runtime recomputes SHA-256 over the complete current file; supplied, partial, or stale hashes never promote a candidate.
+- Every source-confirmed evidence row names one repository from the declared scope and a file inside that repository root. Runtime verifies SHA-256 over the complete current file; collection and canonical confirmation use the same stage-scoped source snapshot, while a new stage execution reads the file again. Supplied, partial, or stale hashes never promote a candidate.
 - Confirmed usages, confirmed capabilities, and confirmed implementation entry points may reference only source-confirmed evidence.
 - Use `не проверено` for useful candidates that were not confirmed.
 - Use `шум`, `generated-only`, `vendor/noise`, or `bundle-only` for excluded or non-source matches until a source-of-truth file is found.

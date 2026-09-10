@@ -32,12 +32,12 @@ function hasEdge(relations, owner, field, target) {
   return relations.some((item) => item.ownerQualifiedName === owner && item.field === field && (item.targetQualifiedName === target || (item.candidateTypes || []).includes(target)));
 }
 
-test("SWC parses JS, JSX, TS and TSX fixtures", () => {
+test("SWC parses JS, JSX, TS and TSX fixtures", async () => {
   for (const name of ["constructors.js", "syntax.jsx", "syntax.ts", "syntax.tsx"]) assert.equal(parseFile(path.join(fixtures, name)).ok, true, name);
 });
 
-test("parse failures are isolated and marked unverified", () => {
-  const analysis = analyzeFiles([path.join(fixtures, "constructors.js"), path.join(fixtures, "malformed.js")]);
+test("parse failures are isolated and marked unverified", async () => {
+  const analysis = await analyzeFiles([path.join(fixtures, "constructors.js"), path.join(fixtures, "malformed.js")]);
   assert.equal(analysis.stats.parsed, 1);
   assert.equal(analysis.stats.failed, 1);
   assert.equal(analysis.results[1].status, "не проверено");
@@ -85,20 +85,20 @@ test("noise strings do not create FeatureValue ownership", () => {
   assert.equal(relations.some((item) => item.targetQualifiedName === "FeatureValue" || (item.candidateTypes || []).includes("FeatureValue")), false);
 });
 
-test("chains are bounded and report truncation", () => {
+test("chains are bounded and report truncation", async () => {
   const files = fs.readdirSync(fixtures).filter((name) => name.endsWith(".js") && name !== "malformed.js").map((name) => path.join(fixtures, name));
-  const analysis = analyzeFiles(files);
+  const analysis = await analyzeFiles(files);
   const chains = buildChains(analysis.results.flatMap((item) => item.relations), "FeatureValue", { maxDepth: 10, maxPaths: 2, maxBranches: 2 });
   assert.ok(chains.chains.length <= 2);
   assert.equal(chains.truncated, true);
 });
 
-test("cache is opt-in and content-addressed", () => {
+test("cache is opt-in and content-addressed", async () => {
   const cache = fs.mkdtempSync(path.join(os.tmpdir(), "feature-ast-cache-"));
   try {
     const file = path.join(fixtures, "setter-calls.js");
-    const first = analyzeFiles([file], { cache });
-    const second = analyzeFiles([file], { cache });
+    const first = await analyzeFiles([file], { cache });
+    const second = await analyzeFiles([file], { cache });
     assert.equal(first.stats.cacheMisses, 1);
     assert.equal(second.stats.cacheHits, 1);
   } finally {
@@ -120,8 +120,8 @@ test("files-from accepts relative and absolute UTF-8 paths", () => {
   }
 });
 
-test("query filters cover owners, terms, line ranges and constructor callers", () => {
-  const advanced = analyzeFiles([path.join(fixtures, "advanced-patterns.js")]);
+test("query filters cover owners, terms, line ranges and constructor callers", async () => {
+  const advanced = await analyzeFiles([path.join(fixtures, "advanced-patterns.js")]);
   const writes = runQuery("writes", advanced, { owner: "FeatureContainer", terms: "createValue", maxResults: 20 });
   assert.ok(writes.items.length > 0);
   assert.ok(writes.items.every((item) => item.ownerQualifiedName === "FeatureContainer"));
@@ -132,7 +132,7 @@ test("query filters cover owners, terms, line ranges and constructor callers", (
   const normalizedOwners = runQuery("owners", advanced, { type: "FeatureValue", maxResults: 20 });
   assert.ok(normalizedOwners.items.some((item) => item.targetQualifiedName === "FeatureValue" && item.matchMode === "exact"));
 
-  const setter = analyzeFiles([path.join(fixtures, "setter-calls.js")]);
+  const setter = await analyzeFiles([path.join(fixtures, "setter-calls.js")]);
   const ranged = runQuery("fields", setter, { owner: "FeatureContainer", lineStart: 11, lineEnd: 11, maxResults: 20 });
   assert.ok(ranged.items.length > 0);
   assert.ok(ranged.items.every((item) => item.evidence.some((evidence) => evidence.range.start.line === 11)));
@@ -146,16 +146,16 @@ test("local identifiers resolve within their function scope", () => {
   assert.equal(hasEdge(relations, "TypeB", "value", "ValueA"), false);
 });
 
-test("CLI returns JSON and standardized exit codes", () => {
-  const help = execute(parseArgs(["--help"]));
+test("CLI returns JSON and standardized exit codes", async () => {
+  const help = await execute(parseArgs(["--help"]));
   assert.equal(help.exitCode, 0);
   assert.equal(help.output.command, "help");
 
-  const unknown = execute(parseArgs(["unknown"]));
+  const unknown = await execute(parseArgs(["unknown"]));
   assert.equal(unknown.exitCode, 2);
   assert.equal(unknown.output.errors.length, 1);
 
-  const analyzed = execute(parseArgs(["analyze", path.join(fixtures, "setter-calls.js")]));
+  const analyzed = await execute(parseArgs(["analyze", path.join(fixtures, "setter-calls.js")]));
   const output = analyzed.output;
   assert.equal(analyzed.exitCode, 0);
   assert.equal(output.schemaVersion, "1.0.0");
@@ -164,8 +164,14 @@ test("CLI returns JSON and standardized exit codes", () => {
   assert.equal(JSON.stringify(output).split(/\r?\n/).length, 1);
 });
 
-test("adaptive output groups high fanout without losing coverage counters", () => {
-  const analysis = analyzeFiles([path.join(fixtures, "high-fanout.js")]);
+test("programmatic execute validates concurrency before reading a file list", async () => {
+  const result = await execute({ command: "symbols", format: "json", concurrency: 0, filesFrom: "definitely-missing-list.txt" });
+  assert.equal(result.exitCode, 2);
+  assert.match(result.output.errors[0].message, /positive integer/);
+});
+
+test("adaptive output groups high fanout without losing coverage counters", async () => {
+  const analysis = await analyzeFiles([path.join(fixtures, "high-fanout.js")]);
   const query = runQuery("fields", analysis, { owner: "HighFanoutContainer", maxResults: 100 });
   const output = {
     schemaVersion: "1.0.0",
@@ -187,8 +193,8 @@ test("adaptive output groups high fanout without losing coverage counters", () =
   assert.ok(byteLength(output) <= 4096);
 });
 
-test("group keys support exact detail follow-up including a rare final group", () => {
-  const analysis = analyzeFiles([path.join(fixtures, "high-fanout.js")]);
+test("group keys support exact detail follow-up including a rare final group", async () => {
+  const analysis = await analyzeFiles([path.join(fixtures, "high-fanout.js")]);
   const all = runQuery("fields", analysis, { owner: "HighFanoutContainer", maxResults: 100 });
   const rare = all.items.find((item) => item.field === "rare");
   assert.ok(rare);
@@ -197,8 +203,8 @@ test("group keys support exact detail follow-up including a rare final group", (
   assert.equal(details.items[0].field, "rare");
 });
 
-test("group pagination exposes every semantic group", () => {
-  const analysis = analyzeFiles([path.join(fixtures, "high-fanout.js")]);
+test("group pagination exposes every semantic group", async () => {
+  const analysis = await analyzeFiles([path.join(fixtures, "high-fanout.js")]);
   const query = runQuery("fields", analysis, { owner: "HighFanoutContainer", maxResults: 100 });
   const first = { schemaVersion: "1.0.0", command: "fields", data: query, stats: analysis.stats, warnings: [], errors: [] };
   applyOutputPolicy(first, { outputMode: "summary", maxOutputBytes: 4096, maxGroups: 1, groupOffset: 0 });

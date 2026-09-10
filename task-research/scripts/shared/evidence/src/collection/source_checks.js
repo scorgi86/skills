@@ -1,7 +1,5 @@
 "use strict";
 const path = require("path");
-const crypto = require("node:crypto");
-const fs = require("fs");
 const { stableHash } = require("../../../output/src/fact_projection.js");
 const { compareText, DEFAULT_EXTENSIONS, createTraversalOptions, traversalKey } = require("./source_files.js");
 const { evidenceGroupIdentity } = require("./groups.js");
@@ -15,7 +13,7 @@ function compilePattern(pattern) {
     const escaped = value.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     return new RegExp(escaped, value.caseSensitive ? "g" : "gi");
 }
-function runSourceCheck(check, index, request, contentCache, traversalCache, enumerateFiles) {
+function runSourceCheck(check, index, request, sourceSnapshots, traversalCache, enumerateFiles) {
     const entries = (check.files || (check.file ? [
         check.file
     ] : check.scope ? [
@@ -51,18 +49,11 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
     const fullMatches = [];
     let totalMatches = 0;
     for (const file of files){
-        const cached = check.mode === "file-name" ? null : contentCache.get(file) || (()=>{
-            const bytes = fs.readFileSync(file);
-            const content = bytes.toString("utf8");
-            const value = {
-                content,
-                bytes,
-                sourceHash: crypto.createHash("sha256").update(bytes).digest("hex"),
-                lines: content.split(/\r?\n/)
-            };
-            contentCache.set(file, value);
-            return value;
-        })();
+        const cached = check.mode === "file-name" ? null : sourceSnapshots.get(file);
+        if (check.mode !== "file-name" && !cached) {
+            diagnostics.push({ code: "source-read", file, message: "Source file could not be read" });
+            continue;
+        }
         const lines = check.mode === "file-name" ? [
             file
         ] : cached.lines;
@@ -77,7 +68,7 @@ function runSourceCheck(check, index, request, contentCache, traversalCache, enu
             const explicit = [...check.confirmations || [], ...check.confirmation ? [check.confirmation] : []].find(value =>
                 value.line === lineIndex + 1 && (!value.file || path.resolve(value.file) === file));
             if (explicit?.status === "source-confirmed") {
-                const validation = require("../canonicalization/source_anchor.js").validateSourceAnchor(explicit, cached.bytes);
+                const validation = require("../canonicalization/source_anchor.js").validateSourceAnchor(explicit, cached);
                 if (!validation.ok) throw new Error(`Check ${check.id || index + 1}: ${validation.code}: ${validation.message}`);
             }
             const anchor = check.mode === "file-name" ? {} : { endLine: lineIndex + 1, sourceFragment: line, sourceHash: cached.sourceHash, repository: check.repository, ...(explicit ? { endLine: explicit.endLine, sourceFragment: explicit.sourceFragment, confirmation: { ...explicit, evidenceRefs: explicit.evidenceRefs?.length ? explicit.evidenceRefs : [check.id || `check-${index + 1}`] } } : {}) };

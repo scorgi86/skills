@@ -46,6 +46,6 @@ Stage 0 pipeline performs scope preflight before transaction recovery and valida
 
 ## Runtime AST cache
 
-The full-flow pipeline gives Stage 1 and Stage 2 the same disk-backed AST cache when `request.ast.cache` is absent. Its location is derived from the declared repository scope and stored under `<outputRoot>/.runtime-cache/ast/`. Different scopes therefore do not share entries accidentally. An explicit `request.ast.cache` remains authoritative, and direct runner calls remain opt-in.
+The full-flow pipeline gives Stage 1 and Stage 2 the same disk-backed AST cache when `request.ast.cache` is absent. Its location is derived from the declared repository scope and stored under `<parent-of-outputRoot>/.runtime-cache/ast/<scopeDigest>`. Sibling inventory directories with the same scope reuse analysis; different parents or scopes remain isolated. An explicit `request.ast.cache` remains authoritative, and direct runner calls remain opt-in.
 
 The cache is disposable runtime data. It is not canonical evidence and is not included in lineage. A hit is accepted only after the existing content, parser, analyzer, options, and file-identity checks pass; stale or corrupt entries are recomputed. Stage 3 and later stages do not receive an AST cache setting from the pipeline.

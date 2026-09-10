@@ -11,7 +11,12 @@
     "validate": "node scripts/index.js quick_validate . && node scripts/index.js validate_skill .",
     "test": "node --test --test-isolation=process --test-concurrency=1",
     "benchmark:stage0": "node scripts/benchmarks/stage0_parallel.js",
-    "benchmark:stages": "node scripts/benchmarks/stages1_7_profile.js"
+    "benchmark:stages": "node scripts/benchmarks/stages1_7_profile.js",
+    "benchmark:parallel-ast": "node scripts/benchmarks/parallel_ast.js",
+    "benchmark:query-cache": "node scripts/benchmarks/query_cache.js",
+    "benchmark:source-snapshot": "node scripts/benchmarks/source_snapshot.js",
+    "benchmark:canonicalization": "node scripts/benchmarks/canonicalization_profile.js",
+    "benchmark:ast-cache-hit": "node scripts/benchmarks/ast_cache_hit_profile.js"
   },
   "dependencies": {
     "@swc/core": "1.15.43"

@@ -5,6 +5,34 @@ test("stage 2 canonicalization applies only caller-declared exclusions", () => {
 test("different usage kinds at one range remain distinct", () => { const base = { file: "src/component.js", symbol: "FeatureContainer", line: 10 }; assert.equal(canonicalizeStage2Candidates([{ ...base, usageKind: "field-read" }, { ...base, usageKind: "field-write" }]).evidence.length, 2); });
 test("high-fanout duplicate corpus shrinks by at least 80 percent without merging usage kinds", () => { const candidates = []; for (let index = 0; index < 10000; index += 1) candidates.push({ repository: "repository-a", file: `source/file-${index % 100}.js`, symbol: "FeatureContainer", line: index % 100, usageKind: index % 2 ? "field-read" : "field-write", matchedTerm: `term-${index % 7}` }); for (let index = 0; index < 773; index += 1) candidates.push({ file: `ignored/file-${index}.js`, symbol: "FeatureContainer", line: index, usageKind: "source-text" }); const result = canonicalizeStage2Candidates(candidates, { exclusions: ["ignored"] }); assert.ok(result.evidence.length <= candidates.length * 0.2); assert.equal(result.metrics.candidatesFound, 10773); assert.equal(result.metrics.noiseRemoved, 773); assert.ok(result.evidence.some((item) => item.usageKind === "field-read")); assert.ok(result.evidence.some((item) => item.usageKind === "field-write")); });
 test("candidate promotion recomputes full-file sha256 inside the exact declared repository", () => { const repo = repository(); const base = { repository: "repository-a", file: "source/component.js", line: 1, endLine: 1, sourceFragment: "const feature = true;", usageKind: "field-read" }; const confirmed = canonicalizeStage2Candidates([{ ...base, confirmation: { status: "source-confirmed", evidenceRefs: ["source-1"], sourceHash: repo.hash } }], { repositoryScope: repo.scope }).evidence[0]; assert.equal(confirmed.confirmation.status, "source-confirmed"); assert.equal(confirmed.confirmation.sourceHash, repo.hash); });
+test("candidate evidence does not read source files for confirmation", t => {
+  const repo = repository(); t.after(() => fs.rmSync(repo.root, { recursive: true, force: true }));
+  const original = fs.readFileSync; let reads = 0;
+  fs.readFileSync = function(file, ...args) { if (path.resolve(file) === repo.file) reads += 1; return original.call(this, file, ...args); };
+  try {
+    const result = canonicalizeStage2Candidates([{ repository: "repository-a", file: "source/component.js", line: 1, usageKind: "field-read" }], { repositoryScope: repo.scope });
+    assert.equal(result.evidence[0].confirmation.status, "candidate");
+    assert.equal(reads, 0);
+  } finally { fs.readFileSync = original; }
+});
+test("confirmed anchors for one repository path share one source snapshot", t => {
+  const repo = repository(); t.after(() => fs.rmSync(repo.root, { recursive: true, force: true }));
+  fs.writeFileSync(repo.file, "const first = true;\nconst second = true;\n");
+  const hash = crypto.createHash("sha256").update(fs.readFileSync(repo.file)).digest("hex");
+  const original = fs.readFileSync; let reads = 0;
+  fs.readFileSync = function(file, ...args) { if (path.resolve(file) === repo.file) reads += 1; return original.call(this, file, ...args); };
+  try {
+    const confirmation = { status: "source-confirmed", evidenceRefs: ["manual"], sourceHash: hash };
+    const result = canonicalizeStage2Candidates([
+      { id: "first", repository: "repository-a", file: "source/component.js", line: 1, endLine: 1, sourceFragment: "const first = true;", confirmation },
+      { id: "second", repository: "repository-a", file: "source/component.js", line: 2, endLine: 2, sourceFragment: "const second = true;", confirmation }
+    ], { repositoryScope: repo.scope });
+    assert.ok(result.evidence.every(row => row.confirmation.status === "source-confirmed"));
+    assert.equal(reads, 1);
+    canonicalizeStage2Candidates([{ id: "again", repository: "repository-a", file: "source/component.js", line: 1, endLine: 1, sourceFragment: "const first = true;", confirmation }], { repositoryScope: repo.scope });
+    assert.equal(reads, 2, "a later canonicalization must read a fresh snapshot");
+  } finally { fs.readFileSync = original; }
+});
 test("candidate promotion rejects stale hashes, undeclared repositories, and files outside root", () => { const repo = repository(); const confirmation = { status: "source-confirmed", evidenceRefs: ["source-1"], sourceHash: "a".repeat(64) }; const stale = canonicalizeStage2Candidates([{ repository: "repository-a", file: "source/component.js", confirmation }], { repositoryScope: repo.scope }).evidence[0]; const undeclared = canonicalizeStage2Candidates([{ repository: "repository-b", file: "source/component.js", confirmation: { ...confirmation, sourceHash: repo.hash } }], { repositoryScope: repo.scope }).evidence[0]; const outside = canonicalizeStage2Candidates([{ repository: "repository-a", file: path.join(repo.root, "..", "outside.js"), confirmation: { ...confirmation, sourceHash: repo.hash } }], { repositoryScope: repo.scope }).evidence[0]; assert.equal(stale.confirmation.status, "candidate"); assert.equal(undeclared.confirmation.status, "candidate"); assert.equal(outside.confirmation.status, "candidate"); });
 test("candidate promotion rejects a physical escape through a junction", () => { const repo = repository(); const outside = fs.mkdtempSync(path.join(os.tmpdir(), "stage2-outside-")); const file = path.join(outside, "a.js"); fs.writeFileSync(file, "const escaped = true;\n"); const link = path.join(repo.root, "linked"); fs.symlinkSync(outside, link, "junction"); const sourceHash = crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex"); const row = canonicalizeStage2Candidates([{ repository: "repository-a", file: "linked/a.js", confirmation: { status: "source-confirmed", evidenceRefs: ["source-1"], sourceHash } }], { repositoryScope: repo.scope }).evidence[0]; assert.equal(row.confirmation.status, "candidate"); });
 test("legacy confirmation cannot acquire a fragment from a snippet or current source", () => {
