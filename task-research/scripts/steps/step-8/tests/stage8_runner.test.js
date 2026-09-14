@@ -74,6 +74,14 @@ test("empty N/A coverage is explained rather than indistinguishable from a missi
  assert.match(require("../src/rendering/implementation.js").renderImplementation(value),/dictionary.*Неприменимо.*Names remain unchanged/);
 });
 
+test("structured N/A coverage renders its explanation and reason code",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership"],requiredCollections:["dictionary"],notApplicable:{dictionary:{reasonCode:"task-scope",explanation:"Names are outside the requested behavior"}}}};value.capabilities=[{id:"ownership",status:"not-applicable",requiredForFinalReport:true,reasonCode:"architecture",explanation:"The architecture has no ownership layer"}];
+ const closed=normalizeReportModel(value),implementation=require("../src/rendering/implementation.js").renderImplementation(closed),decision=require("../src/rendering/decision.js").renderDecision(closed);
+ assert.match(implementation,/dictionary.*Неприменимо: Names are outside the requested behavior \(task-scope\)/);
+ assert.match(decision,/ownership.*not-applicable.*The architecture has no ownership layer \(architecture\)/);
+ assert.ok(!implementation.includes("[object Object]"));
+});
+
 test("implementation report retains receiver labels and reference path roles",()=>{
  const value=model();
  value.recipientFamilies=[{id:"native-recipient",receiver:"Native persistence",status:"candidate"}];

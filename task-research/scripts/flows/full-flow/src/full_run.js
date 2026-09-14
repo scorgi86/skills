@@ -14,6 +14,7 @@ const { InventorySession } = require("../../../state/src/session/inventory_sessi
 const transitions = require("../../../state/src/model/transitions.js");
 const { validateStage8Manifest } = require("../../../state/src/artifacts/stage8_validation.js");
 const { run: runStage8, unwrapModel } = require("../../../steps/step-8/src/runner.js");
+const { normalizeCoverageProfile, normalizeNewCoverageProfile } = require("../../../shared/report/src/model/coverage.js");
 
 const SCHEMA = "research-package/1.0.0";
 const FORBIDDEN = new Set(["target", "repositoryScope", "transitionArtifact", "priorArtifacts", "expectedArtifact", "artifactBase", "outputRoot", "output-root", "state", "stateFile"]);
@@ -42,11 +43,15 @@ function loadResearchPackage(source) {
     for (const field of Object.keys(template)) if (FORBIDDEN.has(field)) throw new Error(`Stage ${key} template must not contain runtime field ${field}`);
   }
   if (value.stages["0"].coverageProfile === undefined) throw new Error("Stage 0 template requires coverageProfile");
+  const coverageProfile = normalizeCoverageProfile(value.stages["0"].coverageProfile);
+  if (!coverageProfile.requiredCapabilities?.length) throw new Error("Stage 0 coverageProfile requires at least one requiredCapabilities id");
+  if (!Array.isArray(value.stages["0"].seeds?.direct) || !value.stages["0"].seeds.direct.length || value.stages["0"].seeds.direct.some(seed => typeof seed !== "string" || !seed.trim())) throw new Error("Stage 0 template requires non-empty string seeds.direct");
   for (const selector of value.stages["7"].evidenceSelectors || []) {
     if (!Number.isInteger(Number(selector.stage)) || Number(selector.stage) < 0 || Number(selector.stage) > 6 || selector.artifact) {
       throw new Error("Stage 7 evidence selectors require stage 0..6 and must not contain artifact paths");
     }
   }
+  value.stages["0"].coverageProfile = coverageProfile;
   return deepFreeze({ schemaVersion: SCHEMA, target: value.target.normalize("NFC"), repositoryScope, stages: value.stages });
 }
 
@@ -102,16 +107,23 @@ function partialStatus(outputRoot, stage) {
   try { return readCanonicalStageResult(file).status; } catch { return null; }
 }
 
-function assertPersistedContract(pkg, state, outputRoot) {
-  if (!state) return;
+function continuationPackage(pkg, state, outputRoot) {
+  if (!state) return pkg;
   const partial = path.join(outputRoot, "stage-0", "canonical", "stage-result.json");
   const stage0 = state.lastCompletedStage >= 0 ? activeArtifacts(state, 0)[0] : fs.existsSync(partial) ? partial : null;
-  if (!stage0) return;
+  if (!stage0) return pkg;
   const canonical = readCanonicalStageResult(stage0);
   if (String(canonical.summary.target || "").normalize("NFC") !== pkg.target) throw new Error("Research package target conflicts with the active run; use a new state and output root");
-  if (scopeDigest(canonical.summary.repositoryScope) !== scopeDigest(pkg.repositoryScope)) throw new Error("Research package repositoryScope conflicts with the active run; use a new state and output root");
-  const expected = require("./coverage_profile.js").coverageProfile({ stage: 0, coverageProfile: pkg.stages["0"].coverageProfile });
+  const savedScope = canonical.summary.repositoryScope;
+  if (scopeDigest(normalizeRepositoryScope(savedScope, { requireExisting: false })) !== scopeDigest(normalizeRepositoryScope(pkg.repositoryScope, { requireExisting: false }))) throw new Error("Research package repositoryScope conflicts with the active run; use a new state and output root");
+  const expected = normalizeCoverageProfile(pkg.stages["0"].coverageProfile);
   if (scopeDigest(canonical.summary.coverageProfile) !== scopeDigest(expected)) throw new Error("Research package coverageProfile conflicts with the active run; use a new state and output root");
+  // Lineage, check history and pending input digests retain the originating representation.
+  return { ...pkg, repositoryScope: structuredClone(savedScope) };
+}
+
+function assertPersistedContract(pkg, state, outputRoot) {
+  continuationPackage(pkg, state, outputRoot);
 }
 
 function writeMetrics(file, value) {
@@ -134,9 +146,10 @@ async function runFullResearch(options) {
   const stateFile = path.resolve(options.stateFile);
   const outputRoot = path.resolve(options.outputRoot);
   const metricsFile = path.resolve(options.metricsFile || path.join(outputRoot, "full-run-metrics.json"));
-  if (!fs.existsSync(stateFile)) new StateStore(stateFile).create(initialState("continuous"));
   let state = readState(stateFile);
-  assertPersistedContract(pkg, state, outputRoot);
+  if (!state || (state.currentStage === 0 && !state.activeArtifacts?.some(row => Number(row.stage) === 0))) normalizeNewCoverageProfile(pkg.stages["0"].coverageProfile);
+  if (!state) { new StateStore(stateFile).create(initialState("continuous")); state = readState(stateFile); }
+  const stagePackage = continuationPackage(pkg, state, outputRoot);
   const started = performance.now();
   const metrics = existingMetrics(metricsFile, pkg.target) || { schemaVersion: "full-run-metrics/1.0.0", target: pkg.target, startedAt: new Date().toISOString(), stages: [], wallMs: 0 };
   const priorWallMs = metrics.wallMs || 0;
@@ -147,7 +160,7 @@ async function runFullResearch(options) {
     const stageStarted = performance.now();
     try {
       if (action.kind === "run-stage" || action.kind === "retry-partial") {
-        const result = await (options.runStagePipeline || runStagePipeline)({ request: materializeStageRequest(pkg, action.stage, state), stateFile, outputRoot });
+        const result = await (options.runStagePipeline || runStagePipeline)({ request: materializeStageRequest(stagePackage, action.stage, state), stateFile, outputRoot });
         metrics.stages.push({ stage: action.stage, action: action.kind, status: result.status, wallMs: performance.now() - stageStarted });
         state = readState(stateFile);
         metrics.wallMs = priorWallMs + performance.now() - started; writeMetrics(metricsFile, metrics);
@@ -160,7 +173,6 @@ async function runFullResearch(options) {
         const session = InventorySession.open({ stateFile });
         session.advanceStage(8, manifest);
         state = readState(stateFile);
-        validateStage8Manifest(state, state.canonicalArtifact);
         metrics.stages.push({ stage: 8, action: action.kind, status: "closed", wallMs: performance.now() - stageStarted });
         metrics.wallMs = priorWallMs + performance.now() - started; writeMetrics(metricsFile, metrics);
       } else if (action.kind === "complete-run") {

@@ -1,8 +1,10 @@
 "use strict";
-const { REQUIRED_FIELDS, TOP_LEVEL_FIELDS, MODEL_TYPE, SCHEMA_VERSION, asArray, COLLECTIONS, STATUSES, cleanText, normalizeRefs } = require("./rows.js");
+const { REQUIRED_FIELDS, TOP_LEVEL_FIELDS, MODEL_TYPE, SCHEMA_VERSION, asArray, COLLECTIONS, STATUSES, cleanText, hasMeaningfulText, normalizeRefs } = require("./rows.js");
 const { repositoryMap, evidenceState } = require("./source_validation.js");
 const { absenceClaims } = require("./projection.js");
 const { digest, withoutIntegrity } = require("./serialization.js");
+const { SourceSnapshotStore } = require("../../../evidence/src/source_snapshot.js");
+const { validNotApplicableReason } = require("./coverage.js");
 function validateReportModel(model) {
     const errors = [], add = (code, path, message)=>errors.push({
             code,
@@ -67,6 +69,10 @@ function validateReportModel(model) {
         "checked-no-usage",
         "not-applicable"
     ].includes(capability.status)) add("capability-open", `capabilities[${index}].status`, "Required capability must be confirmed, checked-no-usage, or not-applicable before Stage 7 closes");
+    else if (capability.requiredForFinalReport !== false && capability.status === "not-applicable") {
+        const structured = model.coverage?.profile && Object.prototype.hasOwnProperty.call(model.coverage.profile, "requiredCapabilities");
+        if (structured ? !validNotApplicableReason(capability) : !hasMeaningfulText(capability.reason) && !validNotApplicableReason(capability)) add("capability-not-applicable", `capabilities[${index}]`, "Required not-applicable capability needs a structured reasonCode and explanation");
+    }
     if (!asArray(model.capabilities).some((capability)=>capability.requiredForFinalReport === true)) add("capability-terminal", "capabilities", "At least one capability must be explicitly required for the final report");
     if (!asArray(model.scope?.repositories).length) add("scope", "scope.repositories", "At least one repository is required");
     for (const [index, repository] of asArray(model.scope?.repositories).entries()){
@@ -181,9 +187,12 @@ function validateReportModel(model) {
             row.id,
             row
         ]));
+    const sourceContext = {
+        sourceSnapshots: new SourceSnapshotStore()
+    };
     const sourceStates = new Map();
     for (const [index, row] of asArray(model.evidenceIndex).entries())if (row.status === "source-confirmed") {
-        if (!sourceStates.has(row.id)) sourceStates.set(row.id, evidenceState(row, repositories));
+        if (!sourceStates.has(row.id)) sourceStates.set(row.id, evidenceState(row, repositories, sourceContext));
         const state = sourceStates.get(row.id);
         if (!state.ok) add(state.code, `evidenceIndex[${index}]`, `${state.message}: ${row.id}`);
     }

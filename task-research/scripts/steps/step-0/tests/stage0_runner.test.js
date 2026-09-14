@@ -28,6 +28,7 @@ function childFor(result) {
 function request(directory, scanSeeds) {
   return {
     stage: 0,
+    coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] },
     target: "fixture feature",
     scope: "fixture source/tests",
     scanSeeds,
@@ -53,6 +54,18 @@ test("strict Stage 0 records a plan without usage discovery", async () => {
   assert.match(report, /search plan; file-level usage discovery is deferred to Stage 1/);
   assert.match(report, /diagnostics, repository\/tool state and search plan/);
   assert.match(report, /usage discovery, AST\/ownership\/serializer analysis -> intentionally deferred to stage 1/);
+});
+
+test("direct Stage 0 requires declared capabilities before scanning", async () => {
+  const input = request(os.tmpdir(), false);
+  delete input.coverageProfile;
+  await assert.rejects(runStage0(input, { spawn: () => assert.fail("invalid request scanned") }), /coverageProfile/);
+});
+
+test("direct Stage 0 rejects blank seeds before scanning", async () => {
+  const input = request(os.tmpdir(), false);
+  input.seeds.direct = ["   "];
+  await assert.rejects(runStage0(input, { spawn: () => assert.fail("invalid request scanned") }), /seeds\.direct/);
 });
 
 test("scope validation rejects conflicts before scanning, including strict mode", async () => {
@@ -123,7 +136,7 @@ test("real rg applies root-relative exclusions independently with absolute sorte
     }
     return { id, root, role: "source", exclusions: id === "first" ? ["excluded/**"] : [] };
   });
-  const facts = await runStage0({ stage: 0, target: "fixture", repositoryScope: { repositories }, seeds: { direct: ["-CFixture"] } });
+  const facts = await runStage0({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "fixture", repositoryScope: { repositories }, seeds: { direct: ["-CFixture"] } });
   assert.deepEqual(facts.scans.map((scan) => scan.files), [
     [path.join(repositories[0].root, "kept", "hit.js")],
     [path.join(repositories[1].root, "excluded", "hit.js"), path.join(repositories[1].root, "kept", "hit.js")].sort(),
@@ -137,7 +150,7 @@ test("direct CLI resolves relative roots from foreign cwd and provides migration
   fs.writeFileSync(path.join(directory, "repo", "hit.js"), "CFixture");
   const input = path.join(directory, "request.json");
   const cli = path.resolve(__dirname, "../../../cli/src/commands/stage0_runner.js");
-  const base = { stage: 0, target: "fixture", repositoryScope: { repositories: [{ id: "fixture", root: "repo", role: "source", exclusions: [] }] }, seeds: { direct: ["CFixture"] } };
+  const base = { stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "fixture", repositoryScope: { repositories: [{ id: "fixture", root: "repo", role: "source", exclusions: [] }] }, seeds: { direct: ["CFixture"] } };
   fs.writeFileSync(input, JSON.stringify(base));
   let result = spawnSync(process.execPath, [cli, "--request", input, "--stdout", "full"], { cwd: directory, encoding: "utf8" });
   assert.equal(result.status, 0, result.stdout + result.stderr);
@@ -172,7 +185,7 @@ test("Stage 0 executes repositoryScope roots and local exclusions", async () => 
   });
   const calls = [];
   const scope = { repositories: roots };
-  const facts = await runStage0({ stage: 0, target: "fixture", repositoryScope: scope, seeds: { direct: ["CFixture"] } }, {
+  const facts = await runStage0({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "fixture", repositoryScope: scope, seeds: { direct: ["CFixture"] } }, {
     spawn: (command, args, options) => { calls.push({ command, args, options }); return childFor({ status: 1, stdout: "" }); },
   });
   assert.equal(facts.repositoryScope, scope);
@@ -217,7 +230,7 @@ test("multi-repository Stage 0 bounds parallel work and preserves scope order", 
   const delays = { slow: 30, fast: 2, middle: 10 };
   let active = 0;
   let maximum = 0;
-  const facts = await runStage0({ stage: 0, target: "fixture", searchConcurrency: 2, repositoryScope: { repositories }, seeds: { direct: ["x"] } }, {
+  const facts = await runStage0({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "fixture", searchConcurrency: 2, repositoryScope: { repositories }, seeds: { direct: ["x"] } }, {
     spawn: (_command, _args, options) => {
       const id = path.basename(options.cwd);
       const child = new EventEmitter(); child.stdout = new PassThrough(); child.stderr = new PassThrough(); child.kill = () => {};
@@ -234,7 +247,7 @@ test("multi-repository Stage 0 bounds parallel work and preserves scope order", 
 test("one repository failure stays local while other scans complete", async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "stage0-local-error-"));
   const repositories = ["good", "bad"].map((id) => { const root = path.join(directory, id); fs.mkdirSync(root); return { id, root, role: "source" }; });
-  const facts = await runStage0({ stage: 0, target: "fixture", repositoryScope: { repositories }, seeds: { direct: ["x"] } }, {
+  const facts = await runStage0({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "fixture", repositoryScope: { repositories }, seeds: { direct: ["x"] } }, {
     spawn: (_command, _args, options) => path.basename(options.cwd) === "bad"
       ? childFor({ error: Object.assign(new Error("denied"), { code: "EACCES" }) })
       : childFor({ status: 0, stdout: "hit.js\n" })

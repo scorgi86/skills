@@ -55,6 +55,9 @@ function asArray(value) {
 function cleanText(value) {
     return String(value ?? "").trim();
 }
+function hasMeaningfulText(value) {
+    return typeof value === "string" && Boolean(value.trim());
+}
 function normalizeRefs(value) {
     return [
         ...new Set(asArray(value).map(cleanText).filter(Boolean))
@@ -96,6 +99,7 @@ module.exports = {
     MODEL_TYPE,
     SCHEMA_VERSION,
     cleanText,
+    hasMeaningfulText,
     asArray,
     normalizeRefs,
     normalizeRows,

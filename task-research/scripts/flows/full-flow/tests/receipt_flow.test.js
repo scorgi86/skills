@@ -9,7 +9,7 @@ function fixture(t) {
     const stateFile = path.join(root, "state.json"), outputRoot = path.join(root, "artifacts"), file = path.join(root, "owner.js");
     fs.writeFileSync(file, "owner();\n"); state(["init", "--state", stateFile]);
     const requirement = { check: "confirm owner", type: "source-confirmation", repository: "source", file: "owner.js" };
-    const request = { stage: 0, target: "Owner", coverageProfile: {}, repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } };
+    const request = { stage: 0, target: "Owner", coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } };
     const proof = { id: "proof", repository: "source", file, line: 1, endLine: 1, sourceFragment: "owner();", status: "source-confirmed", sourceHash: crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex") };
     return { root, stateFile, outputRoot, file, requirement, request, proof };
 }

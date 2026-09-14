@@ -50,7 +50,8 @@ function runStage4(request, dependencies = {}, context = null) {
       id: family.id,
       receiver: family.receiver,
       relation: family.relation,
-      status: familyChecks.some(check => check.resultComplete === false) ? "partial" : matched ? "candidate" : "candidate-empty",
+      status: ["confirmed", "source-confirmed"].includes(family.status) ? family.status
+        : familyChecks.some(check => check.resultComplete === false) ? "partial" : matched ? "candidate" : "candidate-empty",
       searchedScope: familyChecks.map(check => check.spec),
       absenceClaim: false,
       checkIds: familyChecks.map((check) => check.id),

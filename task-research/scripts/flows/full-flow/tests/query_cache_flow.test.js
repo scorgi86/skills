@@ -17,7 +17,7 @@ function semantic(value) {
 
 async function inventory(parent, leaf, repositoryScope, queries, options = {}) {
   const outputRoot = path.join(parent, leaf), target = "query cache flow";
-  const stage0 = await runStagePipeline({ request: { stage: 0, target, coverageProfile: {}, repositoryScope }, outputRoot,
+  const stage0 = await runStagePipeline({ request: { stage: 0, target, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, repositoryScope }, outputRoot,
     runner: () => ({ stage: 0, status: "candidate" }) });
   const events = [];
   let ast;
@@ -104,4 +104,3 @@ test("BDD: sibling inventories reuse, selectively invalidate and recover query r
     assert.deepEqual(fs.readFileSync(seed.stage1.artifact), seed.stage1Bytes);
   });
 });
-

@@ -61,6 +61,61 @@ test("declared coverage blocks RRZA-shaped incomplete lifecycle despite confirme
  const value=model(); value.coverage={status:"partial",profile:{requiredCollections:["dictionary","criticalPaths"],requiredCriticalPaths:["open","save","cancel"],notApplicable:{},notApplicableCriticalPaths:{}}};
  const result=validateReportModel(normalizeReportModel(value)); assert.ok(result.errors.some(x=>x.code==="research-incomplete"));assert.ok(result.errors.some(x=>x.code==="coverage-required"));assert.ok(result.errors.some(x=>x.code==="critical-path-required"));
 });
+
+test("model validation snapshots each source file once per call", t => {
+    const value = model(), template = value.evidenceIndex[0];
+    value.evidenceIndex = Array.from({length: 12}, (_, index) => ({...template, id: `ev-${index + 1}`}));
+    value.capabilities[0].evidenceRefs = value.evidenceIndex.map(row => row.id);
+    value.confirmedUsages[0].evidenceRefs = value.evidenceIndex.map(row => row.id);
+    value.integrity.canonicalDigest = require("../../src/model/serialization.js").digest(require("../../src/model/serialization.js").withoutIntegrity(value));
+    let activeCalls;
+    const originalCreateHash = crypto.createHash;
+    const originalRealpath = fs.realpathSync, originalStat = fs.statSync, originalRead = fs.readFileSync;
+    t.mock.method(crypto, "createHash", (...args) => {
+        const hash = originalCreateHash(...args), originalUpdate = hash.update;
+        hash.update = function (value, ...rest) { if (Buffer.isBuffer(value)) activeCalls.hash += 1; return originalUpdate.call(this, value, ...rest); };
+        return hash;
+    });
+    t.mock.method(fs, "realpathSync", file => { activeCalls.realpath += 1; return originalRealpath(file); });
+    t.mock.method(fs, "statSync", file => { activeCalls.stat += 1; return originalStat(file); });
+    t.mock.method(fs, "readFileSync", file => { activeCalls.read += 1; return originalRead(file); });
+    for (let run = 0; run < 2; run += 1) {
+        const calls = {realpath: 0, stat: 0, read: 0, hash: 0};
+        activeCalls = calls;
+        const result = validateReportModel(value);
+        assert.deepEqual(result.errors, []);
+        assert.deepEqual(calls, {realpath: 25, stat: 1, read: 1, hash: 1});
+    }
+});
+
+test("separate model validations observe source mutations", () => {
+    const value = model();
+    assert.equal(validateReportModel(value).ok, true);
+    fs.writeFileSync(path.join(value.scope.repositories[0].root, "a.js"), "const x = false;\n");
+    assert.ok(validateReportModel(value).errors.some(error => error.code === "stale-evidence"));
+});
+
+test("model validation rechecks physical containment for every evidence row", t => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "report-race-root-"));
+    const inside = fs.mkdtempSync(path.join(os.tmpdir(), "report-race-inside-"));
+    const outside = fs.mkdtempSync(path.join(os.tmpdir(), "report-race-outside-"));
+    t.after(() => { for (const item of [root, inside, outside]) fs.rmSync(item, {recursive: true, force: true}); });
+    const text = "const x = true;\n", link = path.join(root, "linked");
+    fs.writeFileSync(path.join(inside, "a.js"), text);
+    fs.writeFileSync(path.join(outside, "a.js"), text);
+    fs.symlinkSync(inside, link, "junction");
+    const sourceHash = crypto.createHash("sha256").update(text).digest("hex");
+    const value = normalizeReportModel({target: "X", scope: {repositories: [{id: "repository-a", root, role: "source"}]}, capabilities: [{id: "ownership", status: "confirmed", evidenceRefs: ["ev-1", "ev-2"]}], evidenceIndex: [1, 2].map(index => ({id: `ev-${index}`, status: "source-confirmed", repository: "repository-a", file: "linked/a.js", line: 1, endLine: 1, sourceFragment: text.trim(), sourceHash})), confirmedUsages: [{id: "use-1", evidenceRefs: ["ev-1", "ev-2"]}], transition: {"next stage": "8"}});
+    let switched = false;
+    const originalRead = fs.readFileSync;
+    t.mock.method(fs, "readFileSync", function (file, ...args) {
+        const bytes = originalRead.call(this, file, ...args);
+        if (!switched) { fs.rmSync(link, {recursive: true, force: true}); fs.symlinkSync(outside, link, "junction"); switched = true; }
+        return bytes;
+    });
+    const result = validateReportModel(value);
+    assert.ok(result.errors.some(error => error.code === "evidence-scope" && error.message.endsWith("ev-2")));
+});
 test("complete research permits a proven product gap and justified nonapplicability", () => {
  const value=model();value.coverage={status:"complete",profile:{requiredCollections:["dictionary","criticalPaths"],notApplicable:{dictionary:"No name transitions in this task"},requiredCriticalPaths:["save","cancel"],notApplicableCriticalPaths:{cancel:"Operation cannot be cancelled"}}};
  value.criticalPaths=[{id:"save-path",coverageKey:"save",status:"confirmed",steps:["write data"],evidenceRefs:["ev-1"]}];value.gaps=[{id:"gap",category:"product-gap",status:"confirmed",expectedPath:"missing setter",evidenceRefs:["ev-1"]}];
@@ -74,9 +129,65 @@ test("direct report rows normalize known intermediate categories without promoti
  assert.throws(()=>normalizeReportModel({...value,scenarios:[{id:"bad",status:"typo"}]}),/Unsupported.*status/);
 });
 test("coverage profile validates requirement names and N/A reasons",()=>{
- const {validateCoverageProfile}=require("../../src/model/coverage.js");
- assert.equal(validateCoverageProfile({requiredCollections:[],notApplicable:{}}).ok,true);
- for(const value of [{requiredCollections:["bogus"]},{requiredCollections:["dictionary"],notApplicable:{dictionary:" "}},{requiredCriticalPaths:["save"],notApplicableCriticalPaths:{open:"irrelevant"}},{requiredCollections:"dictionary"}])assert.equal(validateCoverageProfile(value).ok,false);
+ const {validateCoverageProfile,normalizeCoverageProfile}=require("../../src/model/coverage.js");
+ assert.equal(validateCoverageProfile({requiredCapabilities:["render-output","ownership"],requiredCollections:["dictionary"],notApplicable:{dictionary:{reasonCode:"task-scope",explanation:"The task does not require a naming inventory"}}}).ok,true);
+ assert.deepEqual(normalizeCoverageProfile({requiredCapabilities:["render-output","ownership"]}).requiredCapabilities,["render-output","ownership"]);
+ assert.equal(Object.hasOwn(normalizeCoverageProfile({}),"requiredCapabilities"),false);
+ for(const value of [{requiredCapabilities:["ownership","ownership"]},{requiredCapabilities:[" "]},{requiredCapabilities:["render"]},{requiredCapabilities:[" ownership "]},{requiredCollections:["bogus"]},{requiredCapabilities:["ownership"],requiredCollections:["dictionary"],notApplicable:{dictionary:"legacy text"}},{requiredCapabilities:["ownership"],requiredCollections:["dictionary"],notApplicable:{dictionary:{reasonCode:"unknown",explanation:"Not required"}}},{requiredCapabilities:["ownership"],requiredCriticalPaths:["save"],notApplicableCriticalPaths:{save:{reasonCode:"task-scope",explanation:" "}}},{requiredCriticalPaths:["save"],notApplicableCriticalPaths:{open:"irrelevant"}},{requiredCollections:"dictionary"}])assert.equal(validateCoverageProfile(value).ok,false);
+});
+
+test("declared capabilities are required and cannot be weakened",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership","render-output"]}};value.capabilities[0].requiredForFinalReport=false;value.capabilities.push({id:"reference",status:"confirmed",requiredForFinalReport:true,evidenceRefs:["ev-1"]});value.integrity=normalizeReportModel(value).integrity;
+ const errors=validateReportModel(value).errors;
+ assert.ok(errors.some(x=>x.code==="capability-required"&&x.path==="capabilities[render-output]"));
+ assert.ok(errors.some(x=>x.code==="capability-required"&&x.path==="capabilities[ownership].requiredForFinalReport"));
+});
+
+test("profile-required capability cannot remain reference-only when another capability is terminal",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership"]}};value.capabilities=[{id:"ownership",status:"reference-only",requiredForFinalReport:false},{id:"reference",status:"confirmed",requiredForFinalReport:true,evidenceRefs:["ev-1"]}];value.integrity=normalizeReportModel(value).integrity;
+ const errors=validateReportModel(value).errors;
+ assert.ok(errors.some(x=>x.code==="capability-required"&&x.path==="capabilities[ownership].requiredForFinalReport"));
+ assert.ok(errors.some(x=>x.code==="capability-open"&&x.path==="capabilities[ownership].status"));
+});
+
+test("required not-applicable capability needs a justification",()=>{
+ for(const row of [{},{reason:"Legacy text"},{reasonCode:"unknown",explanation:"Not required"},{reasonCode:"task-scope",explanation:" "}]){const value=model();value.coverage={profile:{requiredCapabilities:["ownership"]}};value.capabilities=[{id:"ownership",status:"not-applicable",requiredForFinalReport:true,...row}];value.integrity=normalizeReportModel(value).integrity;assert.ok(validateReportModel(value).errors.some(x=>x.code==="capability-not-applicable"&&x.path==="capabilities[0]"));}
+ const justified=model();justified.coverage={profile:{requiredCapabilities:["ownership"]}};justified.capabilities=[{id:"ownership",status:"not-applicable",requiredForFinalReport:true,reasonCode:"architecture",explanation:"The architecture has no ownership layer"}];justified.integrity=normalizeReportModel(justified).integrity;assert.equal(validateReportModel(justified).errors.some(x=>x.code==="capability-not-applicable"),false);
+});
+
+test("structured N/A is meaningful content for a required planning row",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership"],requiredCollections:["scenarios"]}};value.scenarios=[{id:"scenario-na",status:"not-applicable",reasonCode:"task-scope",explanation:"The scenario is outside the requested task"}];value.integrity=normalizeReportModel(value).integrity;
+ assert.equal(validateReportModel(value).errors.some(x=>x.code==="coverage-content"),false);
+});
+
+test("required planning rows need meaningful content",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership"],requiredCollections:["scenarios","criticalPaths","gaps","implementationEntryPoints"]}};
+ value.scenarios=[{id:"scenario-empty",status:"confirmed",evidenceRefs:["ev-1"]}];
+ value.criticalPaths=[{id:"path-empty",status:"confirmed",evidenceRefs:["ev-1"]}];
+ value.gaps=[{id:"gap-empty",category:"implementation-gap",status:"confirmed",expectedPath:"setX",evidenceRefs:["ev-1"]}];
+ value.implementationEntryPoints=[{id:"entry-empty",status:"confirmed",evidenceRefs:["ev-1"],capabilityRefs:["ownership"]}];
+ value.integrity=normalizeReportModel(value).integrity;
+ const errors=validateReportModel(value).errors.filter(x=>x.code==="coverage-content");
+ assert.deepEqual(errors.map(x=>x.path).sort(),["scenarios[scenario-empty]","criticalPaths[path-empty]","gaps[gap-empty]","implementationEntryPoints[entry-empty]"].sort());
+});
+
+test("blank required rows and separately required critical paths are not meaningful",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership"],requiredCollections:["scenarios"],requiredCriticalPaths:["save"]}};
+ value.scenarios=[{id:"scenario-placeholder",status:"confirmed",description:" ",evidenceRefs:["ev-1"]}];
+ value.criticalPaths=[{id:"save-path",coverageKey:"save",status:"confirmed",steps:[""],evidenceRefs:["ev-1"]}];
+ value.integrity=normalizeReportModel(value).integrity;
+ const paths=validateReportModel(value).errors.filter(x=>x.code==="coverage-content").map(x=>x.path);
+ assert.deepEqual(paths.sort(),["criticalPaths[save-path]","scenarios[scenario-placeholder]"].sort());
+});
+
+test("required implementation and test gaps link from implementation entries",()=>{
+ const value=model();value.coverage={profile:{requiredCapabilities:["ownership"],requiredCollections:["gaps","implementationEntryPoints"]}};
+ value.gaps=[{id:"implementation",category:"implementation-gap",status:"confirmed",statement:"Setter absent",expectedPath:"setX",evidenceRefs:["ev-1"]},{id:"test",category:"test-gap",status:"confirmed",statement:"Regression absent",expectedPath:"tests",evidenceRefs:["ev-1"]},{id:"product",category:"product-gap",status:"confirmed",statement:"Decision needed",expectedPlace:"requirements",evidenceRefs:["ev-1"]}];
+ value.implementationEntryPoints=[{id:"entry",status:"confirmed",path:"a.js",role:"owner",evidenceRefs:["ev-1"],gapRefs:["implementation","test"]}];
+ value.integrity=normalizeReportModel(value).integrity;
+ assert.equal(validateReportModel(value).errors.some(x=>x.code==="gap-unlinked"),false);
+ value.implementationEntryPoints[0].gapRefs=["implementation"];value.integrity=normalizeReportModel(value).integrity;
+ assert.deepEqual(validateReportModel(value).errors.filter(x=>x.code==="gap-unlinked").map(x=>x.path),["gaps[test].gapRefs"]);
 });
 test("coverage diagnostics tolerate malformed rows without throwing",()=>{
  const value=model();value.coverage={profile:{requiredCollections:["criticalPaths"],requiredCriticalPaths:["save"]}};value.criticalPaths=[null];assert.doesNotThrow(()=>validateReportModel(value));

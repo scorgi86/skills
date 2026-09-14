@@ -34,7 +34,7 @@ test("BDD: pipeline shares one source snapshot between evidence collection and d
   let reads = 0;
   const sourceSnapshots = new SourceSnapshotStore({ readFileSync(target) { reads += 1; return fs.readFileSync(target); } });
   const outputRoot = path.join(root, "output");
-  let transitionArtifact = (await runStagePipeline({ outputRoot, request: { stage: 0, target: "Feature", coverageProfile: {}, repositoryScope },
+  let transitionArtifact = (await runStagePipeline({ outputRoot, request: { stage: 0, target: "Feature", coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, repositoryScope },
     runner: () => ({ stage: 0, status: "candidate" }) })).artifact;
   transitionArtifact = (await runStagePipeline({ outputRoot, request: { stage: 1, target: "Feature", transitionArtifact, repositoryScope },
     runner: () => ({ stage: 1, status: "candidate", transition: { fields: {
@@ -79,7 +79,7 @@ test("pipeline carries only referenced evidence from validated lineage", async t
   const repositoryScope = { repositories: [{ id: "source", root, role: "source" }] };
   const state = path.join(root, "state.json"), outputRoot = path.join(root, "artifacts");
   runState(["init", "--state", state]);
-  const first = await runStagePipeline({ request: { stage: 0, target: "FeatureValue", coverageProfile: {}, repositoryScope }, outputRoot, stateFile: state,
+  const first = await runStagePipeline({ request: { stage: 0, target: "FeatureValue", coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, repositoryScope }, outputRoot, stateFile: state,
     runner: () => ({ stage: 0, status: "candidate", canonicalEvidence: [
       { id: "used", status: "source-confirmed", repository: "source", file: source, sourceHash, line: 1, endLine: 1, sourceFragment: "const FeatureValue = true;", evidenceRefs: ["used"] },
       { id: "unused", status: "source-confirmed", repository: "source", file: source, sourceHash, line: 2, endLine: 2, sourceFragment: "const UnusedValue = false;", evidenceRefs: ["unused"] }
@@ -93,7 +93,7 @@ test("pipeline carries only referenced evidence from validated lineage", async t
   assert.ok(!bundle.evidence[0].aliases.includes("unused"));
 });
 
-function request(root, stage = 0) { return { stage, ...(stage === 0 ? { coverageProfile: {} } : {}), target: "FeatureValue", repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } }; }
+function request(root, stage = 0) { return { stage, ...(stage === 0 ? { coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] } } : {}), target: "FeatureValue", repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } }; }
 
 test("pipeline writes canonical-only output and keeps raw opt-in", async () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage-pipeline-"));
@@ -161,7 +161,7 @@ test("BDD: sibling inventories reuse AST analysis with the same semantics", asyn
   const repositoryScope = { repositories: [{ id: "source", root: repository, role: "source" }] };
   const execute = async (leaf, target) => {
     const outputRoot = path.join(parent, leaf);
-    const first = await runStagePipeline({ request: { stage: 0, target, coverageProfile: {}, repositoryScope }, outputRoot,
+    const first = await runStagePipeline({ request: { stage: 0, target, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, repositoryScope }, outputRoot,
       runner: () => ({ stage: 0, status: "candidate" }) });
     let ast;
     await runStagePipeline({ request: { stage: 1, target, repositoryScope, transitionArtifact: first.artifact, ast: {} }, outputRoot,
@@ -250,15 +250,15 @@ test("real stage runners hand canonical artifacts to the Stage 8 CLI and complet
   const repositoryScope = { repositories: [{ id: "fixture", root, role: "source" }] };
   const artifacts = [];
   const execute = async (request, dependencies) => { const result = await runStagePipeline({ request: { ...request, repositoryScope }, dependencies, stateFile: state, outputRoot }); artifacts.push(result.artifact); assert.equal(result.status, "closed"); return result.artifact; };
-  let transitionArtifact = await execute({ stage: 0, coverageProfile: {}, target: "FeatureValue", scope: "fixture", scanSeeds: false, repos: [{ id: "fixture", path: root }], repositoryState: [{ id: "fixture", state: "fixture" }], tooling: [{ id: "rg", status: "available" }], seeds: { direct: ["FeatureValue"], aliases: ["featureState"] }, expectedLayers: ["model", "owner", "tests"], exclusions: [] });
+  let transitionArtifact = await execute({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["definition"] }, target: "FeatureValue", scope: "fixture", scanSeeds: false, repos: [{ id: "fixture", path: root }], repositoryState: [{ id: "fixture", state: "fixture" }], tooling: [{ id: "rg", status: "available" }], seeds: { direct: ["FeatureValue"], aliases: ["featureState"] }, expectedLayers: ["model", "owner", "tests"], exclusions: [] });
   const ownership = { expectedIds: ["model", "container", "owner"], groups: [{ id: "model", order: "1", role: "model", object: "FeatureValue", relation: "defines", evidenceRefs: ["owners"] }, { id: "container", order: "2", role: "container", object: "FeatureCollection.value", relation: "contains", evidenceRefs: ["owners"] }, { id: "owner", order: "3", role: "owner", object: "FeatureContainer.featureState", relation: "owns", evidenceRefs: ["owners"] }].map((row, index) => ({ ...row, status: "candidate", evidenceRefs: [], anchor: { file: source, line: index + 1 } })) };
   transitionArtifact = await execute({ stage: 1, transitionArtifact, sourceRoot: root, ast: { queries: [{ id: "owners", command: "find", file: source, options: { terms: "FeatureValue,value,featureState" }, groupFilters: { owner: "*" }, includeDetails: true, maxDetails: 10 }] }, evidence: { checks: [{ id: "owners", file: source, pattern: { value: "FeatureValue|value|featureState", regex: true }, maxMatches: 10, maxGroups: 10 }] }, ownership, coverageContract: { categories: [{ id: "direct-model", status: "applicable", groupIds: ["model"] }, { id: "container", status: "applicable", groupIds: ["container"] }, { id: "owner-branches", status: "applicable", groupIds: ["owner"] }, { id: "serialization", status: "not-applicable", reason: "fixture" }, { id: "history-copy", status: "open", reason: "later" }, { id: "index-limitations", status: "not-applicable", reason: "fixture" }], baseline: { ownershipIds: ["model", "container", "owner"] } } }, { runGitNexusContext: () => ({ status: "candidate", requests: [], context: {} }) });
   transitionArtifact = await execute({ stage: 2, transitionArtifact, ast: {}, evidence: { checks: [] } }, { runAstBatch: () => ({ status: "candidate", stats: { parseCounts: {}, failed: 0 }, plan: { compiledBeforeParse: true, lateQueries: 0 }, results: [] }), runEvidenceChecks: () => ({ checks: [] }) });
   transitionArtifact = await execute({ stage: 3, transitionArtifact, consumerScopes: [] });
   transitionArtifact = await execute({ stage: 4, transitionArtifact, recipientFamilies: [{ id: "ui", receiver: "UI", relation: "renders", checks: [{ id: "render", file: source, pattern: "renderFeature" }] }] });
   transitionArtifact = await execute({ stage: 5, transitionArtifact, checks: [{ id: "path", file: source, pattern: "renderFeature" }], nameCoverage: { id: "renderer", scope: root, terms: ["renderFeature"] } }, { findExactNameCoverage: () => ({ id: "renderer", engine: "fixture", scope: root, terms: ["renderFeature"], filesScanned: 1, matchingFileCount: 1, matchingFiles: [source], fileDigest: "all", matchingFileDigest: "matches", query: {} }) });
-  transitionArtifact = await execute({ stage: 6, transitionArtifact, mode: "feature-reference", featureReference: { target: "FeatureValue", referenceEntity: "Fixture", capabilities: [{ id: "definition", status: "not-applicable", evidenceRefs: [], reason: "fixture closes without a production definition" }] }, sourceSurfaces: [{ path: "component.js", layer: "model", role: "definition" }] });
-  const stage7 = await execute({ stage: 7, target: "FeatureValue", scope: repositoryScope, priorArtifacts: [...artifacts], artifactBase: root, capabilities: [{ id: "definition", status: "not-applicable", evidenceRefs: [], reason: "fixture closes without a production definition" }], transition: { "next stage": "8" } });
+  transitionArtifact = await execute({ stage: 6, transitionArtifact, mode: "feature-reference", featureReference: { target: "FeatureValue", referenceEntity: "Fixture", capabilities: [{ id: "definition", status: "not-applicable", evidenceRefs: [], reasonCode: "architecture", explanation: "The fixture closes without a production definition" }] }, sourceSurfaces: [{ path: "component.js", layer: "model", role: "definition" }] });
+  const stage7 = await execute({ stage: 7, target: "FeatureValue", scope: repositoryScope, priorArtifacts: [...artifacts], artifactBase: root, capabilities: [{ id: "definition", status: "not-applicable", evidenceRefs: [], reasonCode: "architecture", explanation: "The fixture closes without a production definition" }], transition: { "next stage": "8" } });
   const output = path.join(root, "stage-8");
   const cli = spawnSync(process.execPath, [path.join(require("node:path").resolve(__dirname, "../../.."), "cli/src/commands/stage8_runner.js"), "--model", stage7, "--output-dir", output, "--state", state], { encoding: "utf8" });
   assert.equal(cli.status, 0, cli.stdout + cli.stderr);

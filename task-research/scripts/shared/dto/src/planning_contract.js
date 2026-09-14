@@ -64,6 +64,35 @@ function mergeRows(rows) {
   }
   return [...byId.values()].sort((a, b) => a.id.localeCompare(b.id));
 }
+function planningError(collection, id, field, message) {
+  throw new Error(`${collection}[${id ?? "missing"}].${field}: ${message}`);
+}
+function emptyPlanningValue(value) {
+  return value == null || typeof value === "string" && !value.trim() || Array.isArray(value) && !value.length;
+}
+function mergePlanningRows(rows, collection) {
+  const fields = ["name", "title", "statement", "entry", "steps", "result", "repository", "file", "path", "layer", ...(collection === "referencePaths" ? ["role"] : [])];
+  const terminal = new Set(["confirmed", "checked-no-usage", "not-applicable"]);
+  const byId = new Map();
+  for (const row of rows) {
+    if (!row || typeof row.id !== "string" || !row.id.length) planningError(collection, row?.id, "id", "Provide a non-empty explicit planning id");
+    const previous = byId.get(row.id);
+    if (!previous) { byId.set(row.id, row); continue; }
+    const incoming = { ...row };
+    for (const field of fields) {
+      if (emptyPlanningValue(incoming[field])) {
+        if (!emptyPlanningValue(previous[field])) delete incoming[field];
+      } else if (!emptyPlanningValue(previous[field]) && JSON.stringify(previous[field]) !== JSON.stringify(incoming[field])) {
+        planningError(collection, row.id, field, "Conflicting filled values; revise the originating stage instead of overwriting");
+      }
+    }
+    if ("status" in incoming && terminal.has(normalizeStatus(previous.status)) && normalizeStatus(incoming.status) !== normalizeStatus(previous.status)) {
+      planningError(collection, row.id, "status", "A terminal status cannot be replaced by merging; revise the originating stage");
+    }
+    byId.set(row.id, mergeRows([previous, incoming])[0]);
+  }
+  return [...byId.values()].sort((a, b) => a.id.localeCompare(b.id));
+}
 function buildPlanningProjection(stageResults = []) {
   const projection = Object.fromEntries(PLANNING_COLLECTIONS.map((name) => [name, []]));
   for (const result of stageResults) for (const [index, fact] of (result?.facts || []).entries()) {
@@ -74,4 +103,4 @@ function buildPlanningProjection(stageResults = []) {
   return projection;
 }
 
-module.exports = { DECISION_CATEGORIES, COLLECTION_BY_KIND, PLANNING_COLLECTIONS, PRIMARY_KIND_BY_COLLECTION, REFERENCE_FIELDS, buildPlanningProjection, mergeRows, normalizePlanningFact, normalizeStatus };
+module.exports = { DECISION_CATEGORIES, COLLECTION_BY_KIND, PLANNING_COLLECTIONS, PRIMARY_KIND_BY_COLLECTION, REFERENCE_FIELDS, buildPlanningProjection, mergeRows, mergePlanningRows, planningError, normalizePlanningFact, normalizeStatus };

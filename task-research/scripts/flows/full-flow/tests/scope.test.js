@@ -13,7 +13,7 @@ function fixture(t) {
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const outputRoot = path.join(root, "output"), stateFile = path.join(root, "state.json");
   state(["init", "--state", stateFile]);
-  const request = { stage: 0, coverageProfile: {}, target: "ScopeFeature", scanSeeds: false,
+  const request = { stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "ScopeFeature", scanSeeds: false,
     repositoryScope: { repositories: [{ id: "source", root, role: "source", exclusions: ["excluded/**"] }] } };
   const descriptor = { version: 1, scanSeeds: false, repositories: [{ id: "source", root, exclusions: ["excluded/**"] }] };
   return { root, outputRoot, stateFile, request, descriptor, target: path.join(outputRoot, "stage-0"),
@@ -22,7 +22,7 @@ function fixture(t) {
 function write(f, directory, status, descriptor) {
   return writeStageArtifact({ outputDir: directory, input: f.request, facts: {
     stage: 0, status, repositoryScope: f.request.repositoryScope,
-    summary: { coverageProfile: { requiredCollections: [], notApplicable: {}, requiredCriticalPaths: [], notApplicableCriticalPaths: {} }, ...(descriptor ? { executionScope: descriptor } : {}) }
+    summary: { coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"], requiredCollections: [], notApplicable: {}, requiredCriticalPaths: [], notApplicableCriticalPaths: {} }, ...(descriptor ? { executionScope: descriptor } : {}) }
   } });
 }
 function pending(f, phase, descriptor) {

@@ -51,9 +51,26 @@ test("stage 7 uses authoritative repositoryScope and rejects conflicting dual sc
 });
 
 test("stage 7 inherits the Stage 0 coverage profile and prohibits a weaker override",()=>{
- const coverageProfile={requiredCollections:["criticalPaths"],notApplicable:{},requiredCriticalPaths:["save"],notApplicableCriticalPaths:{}};const {request}=fixture(coverageProfile);
+ const coverageProfile={requiredCapabilities:["ownership"],requiredCollections:["criticalPaths"],notApplicable:{},requiredCriticalPaths:["save"],notApplicableCriticalPaths:{}};const {request}=fixture(coverageProfile);
  assert.throws(()=>buildStage7(request),/Required collection criticalPaths.*Mandatory lifecycle path save/);
  assert.throws(()=>buildStage7({...request,coverageProfile:{requiredCollections:[]}}),/coverageProfile conflicts with Stage 0/);
+});
+
+test("stage 7 derives required capability flags from Stage 0",()=>{
+ const {request}=fixture({requiredCapabilities:["ownership"]});
+ const model=buildStage7({...request,capabilities:[{id:"ownership",status:"confirmed",requiredForFinalReport:false,evidenceRefs:["ev-1"]},{id:"reference",status:"reference-only",requiredForFinalReport:true}]});
+ assert.equal(model.capabilities.find(x=>x.id==="ownership").requiredForFinalReport,true);
+ assert.equal(model.capabilities.find(x=>x.id==="reference").requiredForFinalReport,false);
+});
+
+test("BDD: source evidence volume cannot close semantically empty required results",()=>{
+ const profile={requiredCapabilities:["ownership"],requiredCollections:["scenarios","gaps","implementationEntryPoints"]};
+ const {request}=fixture(profile);
+ assert.throws(()=>buildStage7({...request,
+   scenarios:[{id:"scenario-empty",status:"confirmed",evidenceRefs:["ev-1"]}],
+   gaps:[{id:"test-gap",category:"test-gap",status:"confirmed",statement:"Regression is missing",expectedPath:"tests",evidenceRefs:["ev-1"]}],
+   implementationEntryPoints:[{id:"entry",status:"confirmed",path:"a.js",evidenceRefs:["ev-1"],capabilityRefs:["ownership"]}]
+ }),error=>/scenarios\[scenario-empty\].*meaningful content/.test(error.message)&&/gaps\[test-gap\]\.gapRefs.*linked/.test(error.message));
 });
 
 test("direct Stage 7 cannot introduce a coverage profile into legacy lineage",()=>{

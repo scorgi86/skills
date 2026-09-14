@@ -72,6 +72,7 @@ function runSourceCheck(check, index, request, sourceSnapshots, traversalCache, 
                 if (!validation.ok) throw new Error(`Check ${check.id || index + 1}: ${validation.code}: ${validation.message}`);
             }
             const anchor = check.mode === "file-name" ? {} : { endLine: lineIndex + 1, sourceFragment: line, sourceHash: cached.sourceHash, repository: check.repository, ...(explicit ? { endLine: explicit.endLine, sourceFragment: explicit.sourceFragment, confirmation: { ...explicit, evidenceRefs: explicit.evidenceRefs?.length ? explicit.evidenceRefs : [check.id || `check-${index + 1}`] } } : {}) };
+            if (check.mode !== "file-name" && explicit?.status === "source-confirmed" && typeof explicit.id === "string" && explicit.id.trim()) anchor.id = explicit.id;
             const snippet = line.replace(/\s+/g, " ").trim();
             for (const pattern of matchedPatterns){
                 const descriptor = evidenceGroupIdentity(check, file, pattern.id);

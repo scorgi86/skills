@@ -18,7 +18,7 @@ function setup(t) {
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const stateFile = path.join(root, "state.json");
   state(["init", "--state", stateFile]);
-  return { root, stateFile, request: { stage: 0, coverageProfile: {}, target: "Feature", repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } } };
+  return { root, stateFile, request: { stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "Feature", repositoryScope: { repositories: [{ id: "source", root, role: "source" }] } } };
 }
 
 test("a partial stage can be retried and a closed stage remains immutable", async t => {

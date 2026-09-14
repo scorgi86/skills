@@ -19,7 +19,7 @@ function semantic(value) {
     return String(value);
 }
 function meaning(row) {
-    return [...new Set(["title", "name", "receiver", "object", "term", "terms", "statement", "description", "detail", "steps", "result", "summary", "expectedPath", "expectedName", "expectedPlace", "reason"].map(key => semantic(row[key])).filter(Boolean))].concat(notes(row) || []).join("; ") || "Описание не предоставлено";
+    return [...new Set(["title", "name", "receiver", "object", "term", "terms", "statement", "description", "detail", "entry", "steps", "result", "summary", "expectedPath", "expectedName", "expectedPlace", "reason", "explanation"].map(key => semantic(row[key])).filter(Boolean))].concat(notes(row) || []).join("; ") || "Описание не предоставлено";
 }
 function sourceLabel(row) { return [row.repository, row.file && row.file + (row.line ? ":" + row.line + (row.endLine && row.endLine !== row.line ? "–" + row.endLine : "") : ""), row.symbol || row.anchor].filter(Boolean).join(" / ") || meaning(row); }
 function refs(row, model) {
@@ -29,7 +29,8 @@ function notes(row) { return [semantic(row.roles), row.category, row.originalSta
 function coverageSummary(model) {
     const profile = model.coverage?.profile;
     if (!profile) return "";
-    const rows = [...(profile.requiredCollections || []).map(name => [name, profile.notApplicable?.[name] ? "Неприменимо: " + profile.notApplicable[name] : "Обязательно; строк: " + (model[name] || []).length]), ...(profile.requiredCriticalPaths || []).map(key => ["criticalPaths / " + key, profile.notApplicableCriticalPaths?.[key] ? "Неприменимо: " + profile.notApplicableCriticalPaths[key] : "Обязательный путь"])];
+    const reason = value => typeof value === "string" ? value : value ? `${value.explanation} (${value.reasonCode})` : "";
+    const rows = [...(profile.requiredCollections || []).map(name => [name, profile.notApplicable?.[name] ? "Неприменимо: " + reason(profile.notApplicable[name]) : "Обязательно; строк: " + (model[name] || []).length]), ...(profile.requiredCriticalPaths || []).map(key => ["criticalPaths / " + key, profile.notApplicableCriticalPaths?.[key] ? "Неприменимо: " + reason(profile.notApplicableCriticalPaths[key]) : "Обязательный путь"])];
     return rows.length ? section("Заявленная полнота исследования", "обязательства задачи и причины неприменимости", "отличает пропущенный обязательный материал от обоснованного N/A", ["Область", "Применимость"], rows) + "\n" : "";
 }
 function section(title, shows, purpose, headers, rows) {

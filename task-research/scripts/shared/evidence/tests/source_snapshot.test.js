@@ -14,19 +14,35 @@ test("source snapshot reads and derives one value per physical file", t => {
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const file = path.join(root, "source.js");
   fs.writeFileSync(file, "first\r\nsecond\n");
-  let reads = 0;
+  const calls = { realpath: 0, stat: 0, read: 0, hash: 0 };
+  const originalCreateHash = crypto.createHash;
+  t.mock.method(crypto, "createHash", (...args) => { calls.hash += 1; return originalCreateHash(...args); });
   const store = new SourceSnapshotStore({
-    readFileSync(target) { reads += 1; return fs.readFileSync(target); }
+    realpathSync(target) { calls.realpath += 1; return fs.realpathSync(target); },
+    statSync(target) { calls.stat += 1; return fs.statSync(target); },
+    readFileSync(target) { calls.read += 1; return fs.readFileSync(target); }
   });
 
   const first = store.get(file);
   const second = store.get(path.join(root, ".", "source.js"));
 
   assert.strictEqual(second, first);
-  assert.equal(reads, 1);
+  assert.deepEqual(calls, { realpath: 1, stat: 1, read: 1, hash: 1 });
   assert.equal(first.text, "first\r\nsecond\n");
   assert.deepEqual(first.lines, ["first", "second", ""]);
   assert.equal(first.sourceHash, crypto.createHash("sha256").update(first.bytes).digest("hex"));
+});
+
+test("a new source snapshot store observes a later file version", t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "source-snapshot-refresh-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const file = path.join(root, "source.js");
+  fs.writeFileSync(file, "before\n");
+  const first = new SourceSnapshotStore().get(file);
+  fs.writeFileSync(file, "after\n");
+  const second = new SourceSnapshotStore().get(file);
+  assert.notEqual(second.sourceHash, first.sourceHash);
+  assert.equal(second.text, "after\n");
 });
 
 test("source snapshot memoizes misses only for its own lifetime", t => {

@@ -41,7 +41,7 @@ function runStage3(request, dependencies = {}, context = null) {
     if (check) Object.assign(coverage, { status: check.status, filesScanned: check.filesScanned, totalMatches: check.totalMatches, truncated: check.truncated, searchedScope: check.spec, resultComplete: check.resultComplete, errors: check.errors || [], skipped: check.skipped || [], absenceClaim: false });
   }
   const limitations = consumerCoverage.filter((item) => ["unverified", "partial"].includes(item.status)).map((item) => `${item.boundaryId}@${item.consumerRepo}: ${item.reason || "Consumer search is incomplete"}`);
-  return { schemaVersion: "1.1.0", stage: 3, status: limitations.length ? "partial" : "candidate", transition, boundaries, consumerCoverage, sourceEvidence, capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []), limitations };
+  return { schemaVersion: "1.1.0", stage: 3, status: limitations.length ? "partial" : "candidate", transition, boundaries, consumerCoverage, summary: { consumerCoverage }, sourceEvidence, capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []), limitations };
 }
 
 module.exports = { escapeRegex, runStage3 };

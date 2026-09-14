@@ -17,3 +17,22 @@ test("stage 6 worktree-diff uses the declared base", () => {
   const result = runStage6({ stage: 6, mode: "worktree-diff", transitionArtifact: transition, reference: { repo: root, base: "main" }, sourceSurfaces: [{ path: "src/ui.js", layer: "ui", role: "entry" }] }, { spawnSync: (_git, passed) => { args = passed; return { status: 0, stdout: "" }; } });
   assert.equal(result.mode, "worktree-diff"); assert.equal(args.at(-1), "main");
 });
+
+test("reference surface identity includes repository, layer and role, not anchors", () => {
+  const { canonicalFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
+  const root = path.resolve(os.tmpdir(), "surface-identity");
+  const repositoryScope = { repositories: [{ id: "a", root: path.join(root, "a") }, { id: "b", root: path.join(root, "b") }] };
+  const surfaces = [
+    { repository: "a", path: "src/./file.js", layer: "model", role: "read" },
+    { repository: "a", path: "src/file.js", layer: "model", role: "write" },
+    { repository: "b", path: "src/file.js", layer: "model", role: "read" },
+    { repository: "a", path: "src/file.js", layer: "ui", role: "read" }
+  ];
+  const facts = canonicalFacts({ stage: 6, repositoryScope, sourceSurfaces: surfaces });
+  assert.equal(new Set(facts.map(row => row.id)).size, 4);
+  const repeat = canonicalFacts({ stage: 6, repositoryScope, sourceSurfaces: [{ ...surfaces[0], path: "src/file.js", line: 90, status: "confirmed" }] })[0];
+  assert.equal(repeat.id, facts[0].id);
+  assert.equal(facts[0].path, "src/file.js");
+  assert.throws(() => canonicalFacts({ stage: 6, repositoryScope, sourceSurfaces: [{ ...surfaces[0], repository: undefined }] }), /repository/);
+  assert.throws(() => canonicalFacts({ stage: 6, repositoryScope, sourceSurfaces: [{ ...surfaces[0], path: "../outside.js" }] }), /path/);
+});

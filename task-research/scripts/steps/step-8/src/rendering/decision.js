@@ -54,6 +54,7 @@ function renderDecision(model) {
     const capabilities = model.capabilities.map((x)=>[
             x.id,
             x.status,
+            x.explanation ? `${x.explanation}${x.reasonCode ? ` (${x.reasonCode})` : ""}` : x.reason || "",
             refs(x, model),
             x.requiredForFinalReport ? "да" : "нет"
         ]);
@@ -80,6 +81,7 @@ function renderDecision(model) {
     ], limitations)}\n${section("Покрытие возможностей", "обязательные аспекты инвентаризации", "показывает, какими доказательствами закрыта каждая capability", [
         "Capability",
         "Статус",
+        "Основание",
         "Доказательства",
         "Обязательна"
     ], capabilities)}\n## Переход к деталям\n\n- [Карта реализации](implementation-map.md) — ownership, словарь, сценарии, получатели, пути и точки изменения.\n- [Доказательная база](evidence.md) — полный индекс source evidence, отсутствие использования, эталоны и шум.\n`;

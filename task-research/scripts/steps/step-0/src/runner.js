@@ -5,6 +5,7 @@ const path = require("node:path");
 const { resolveExecutionScope } = require("./execution_scope");
 const { normalizeLimitations, limitationText } = require("../../../shared/artifacts/src/limitations.js");
 const { runBounded } = require("../../../shared/execution/src/bounded_pool.js");
+const { normalizeNewCoverageProfile } = require("../../../shared/report/src/model/coverage.js");
 
 const RG_TIMEOUT_MS = 30000;
 
@@ -105,6 +106,9 @@ function render(facts) {
 
 async function runStage0(request, dependencies = {}) {
   if (Number(request && request.stage) !== 0) throw new Error("stage0_runner accepts only stage: 0");
+  if (!request.coverageProfile) throw new Error("Stage 0 requires an explicit coverageProfile");
+  const coverageProfile = normalizeNewCoverageProfile(request.coverageProfile);
+  if (!Array.isArray(request.seeds?.direct) || !request.seeds.direct.length || request.seeds.direct.some(seed => typeof seed !== "string" || !seed.trim())) throw new Error("Stage 0 requires non-empty string seeds.direct");
   const executionScope = resolveExecutionScope(request);
   const { repos, exclusions } = executionScope;
   const seeds = request.seeds || {};
@@ -119,7 +123,7 @@ async function runStage0(request, dependencies = {}) {
   facts.transition = { schemaVersion: "1.0.0", valid: true, missing: [], fields: { target: facts.target, scope: facts.scope, stage: "0", status: "closed", "confirmed evidence": scanSeeds ? "scope and exact file candidates" : "scope and search plan", "candidate evidence": scans.some((scan) => scan.totalFiles) ? "file-level candidates" : "none", "dictionary/graph/path state": "seed dictionary ready", "skipped/forbidden": repositoryRules(facts), "open checks": "stages 1-8", "next stage": "1" } };
   facts.repositoryScope = request.repositoryScope;
   facts.output = { factsBytes: Buffer.byteLength(JSON.stringify(facts)), summaryBudget: Number(request.summaryBytes || 8192) };
-  facts.summary = { stage: 0, status: facts.status, repos: facts.scans.map((scan) => ({ id: scan.id, status: scan.status, files: scan.totalFiles })), seeds: direct, output: { bytes: 0, budget: facts.output.summaryBudget } };
+  facts.summary = { stage: 0, status: facts.status, coverageProfile, repos: facts.scans.map((scan) => ({ id: scan.id, status: scan.status, files: scan.totalFiles })), seeds: direct, output: { bytes: 0, budget: facts.output.summaryBudget } };
   facts.summary.executionScope = executionScope.descriptor;
   facts.summary.output.bytes = Buffer.byteLength(JSON.stringify(facts.summary));
   if (facts.summary.output.bytes > facts.summary.output.budget) throw new Error("Stage 0 summary budget overflow");

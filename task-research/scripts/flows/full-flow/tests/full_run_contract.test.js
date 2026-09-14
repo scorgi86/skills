@@ -8,13 +8,143 @@ const test = require("node:test");
 
 const { loadResearchPackage, materializeStageRequest, planNextAction, runFullResearch } = require("../src/full_run.js");
 const { runStagePipeline } = require("../src/stage_pipeline.js");
+const { main: runState } = require("../../../state/src/stage_state.js");
+const crypto = require("node:crypto");
+
+function continuationFixture(t) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "scope-continuation-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const pkg = packageValue(root);
+  pkg.repositoryScope.repositories[0].root = root.replaceAll("\\", "/") + "/.";
+  const consumer = path.join(root, "consumer");
+  fs.mkdirSync(consumer);
+  pkg.repositoryScope.repositories.push({ id: "consumer", root: consumer, role: "consumer" });
+  const stateFile = path.join(root, "state.json"), outputRoot = path.join(root, "output");
+  runState(["init", "--state", stateFile]);
+  const request = { ...pkg.stages[0], stage: 0, target: pkg.target, repositoryScope: pkg.repositoryScope };
+  return { root, pkg, request, stateFile, outputRoot };
+}
+function savedFiles(...files) { return new Map(files.map(file => [file, fs.readFileSync(file)])); }
+function assertSaved(saved) { for (const [file, bytes] of saved) assert.deepEqual(fs.readFileSync(file), bytes, file); }
+
+for (const [field, mutate] of [
+  ["root", (scope, value) => { scope.repositories[0].root = value.pkg.repositoryScope.repositories[1].root; }],
+  ["id", scope => { scope.repositories[0].id = "other"; }],
+  ["role", scope => { scope.repositories[0].role = "consumer"; }],
+  ["indexAlias", scope => { scope.repositories[0].indexAlias = "other-index"; }],
+  ["exclusions", scope => { scope.repositories[0].exclusions = ["skip/**"]; }],
+  ["symbolAliases", scope => { scope.repositories[0].symbolAliases = { Feature: ["Other"] }; }],
+  ["layerRules", scope => { scope.repositories[0].layerRules = [{ pattern: "**", layer: "other" }]; }],
+  ["repository order", scope => { scope.repositories.reverse(); }]
+]) test(`BDD: continuation rejects changed ${field} before runner or mutation`, async t => {
+  const value = continuationFixture(t);
+  const first = await runStagePipeline({ ...value, runner: request => ({ stage: 0, target: request.target, status: "candidate" }) });
+  const saved = savedFiles(first.artifact, first.evidence, first.manifest, value.stateFile);
+  const pkg = structuredClone(value.pkg);
+  mutate(pkg.repositoryScope, value);
+  let calls = 0;
+  await assert.rejects(runFullResearch({ ...value, package: pkg, runStagePipeline: () => { calls++; throw new Error("unexpected runner"); } }), /repositoryScope conflicts/);
+  assert.equal(calls, 0);
+  assertSaved(saved);
+  assert.equal(fs.existsSync(path.join(value.outputRoot, "full-run-metrics.json")), false);
+});
+
+for (const damage of ["JSON", "digest", "missing scope"]) test(`BDD: selected Stage 0 with damaged ${damage} cannot fall back to package scope`, async t => {
+  const value = continuationFixture(t);
+  const first = await runStagePipeline({ ...value, runner: request => ({ stage: 0, target: request.target, status: "candidate" }) });
+  if (damage === "JSON") fs.writeFileSync(first.artifact, "{");
+  else {
+    const canonical = JSON.parse(fs.readFileSync(first.artifact));
+    if (damage === "digest") canonical.outputDigest = "0".repeat(64);
+    else {
+      delete canonical.summary.repositoryScope;
+      canonical.outputDigest = require("../../../shared/artifacts/src/canonical/validation.js").digest({ ...canonical, outputDigest: undefined });
+    }
+    fs.writeFileSync(first.artifact, JSON.stringify(canonical));
+  }
+  const saved = savedFiles(first.artifact, first.evidence, first.manifest, value.stateFile);
+  let calls = 0;
+  await assert.rejects(runFullResearch({ ...value, package: value.pkg, runStagePipeline: () => { calls++; throw new Error("unexpected runner"); } }));
+  assert.equal(calls, 0);
+  assertSaved(saved);
+});
+
+test("BDD: active Stage 0 wins over an unrelated Stage 0 in the supplied output root", async t => {
+  const value = continuationFixture(t);
+  const first = await runStagePipeline({ ...value, runner: request => ({ stage: 0, target: request.target, status: "candidate" }) });
+  const otherOutput = path.join(value.root, "other-output");
+  const unrelated = require("../../../shared/artifacts/src/stage_artifact_v4.js").writeStageArtifact({ outputDir: path.join(otherOutput, "stage-0"),
+    facts: { stage: 0, target: "Unrelated", status: "partial", repositoryScope: value.pkg.repositoryScope } });
+  const saved = savedFiles(first.artifact, first.evidence, first.manifest, unrelated.resultFile);
+  let calls = 0;
+  const result = await runFullResearch({ ...value, outputRoot: otherOutput, package: value.pkg, runStagePipeline: options => {
+    calls++;
+    assert.deepEqual(options.request.repositoryScope, value.pkg.repositoryScope);
+    return runStagePipeline({ ...options, runner: request => ({ stage: request.stage, target: request.target, status: "candidate", openChecks: ["later"] }) });
+  } });
+  assert.equal(result.stage, 1);
+  assert.equal(calls, 1);
+  assertSaved(saved);
+});
+
+test("BDD: full_run continues raw Stage 0 scope without changing closed lineage", async t => {
+  const value = continuationFixture(t);
+  const first = await runStagePipeline({ ...value, runner: request => ({ stage: 0, target: request.target, status: "candidate" }) });
+  const saved = savedFiles(first.artifact, first.evidence, first.manifest);
+  const input = structuredClone(value.pkg), stages = [];
+  const result = await runFullResearch({ ...value, package: value.pkg, runStagePipeline: options => {
+    stages.push(options.request.stage);
+    assert.deepEqual(options.request.repositoryScope, value.pkg.repositoryScope);
+    return runStagePipeline({ ...options, runner: request => ({ stage: request.stage, target: request.target, status: "candidate", ...(request.stage === 2 ? { openChecks: ["later"] } : {}) }) });
+  } });
+  assert.equal(result.stage, 2);
+  assert.deepEqual(stages, [1, 2]);
+  assert.equal(JSON.parse(fs.readFileSync(value.stateFile)).currentStage, 2);
+  assert.deepEqual(value.pkg, input);
+  assertSaved(saved);
+});
+
+for (const partialStage of [0, 1]) test(`BDD: raw ordinary partial Stage ${partialStage} closes with exact history and requirements`, async t => {
+  const value = continuationFixture(t);
+  let closed;
+  if (partialStage === 1) closed = await runStagePipeline({ ...value, runner: request => ({ stage: 0, target: request.target, status: "candidate" }) });
+  const file = path.join(value.root, "proof.js");
+  fs.writeFileSync(file, "owner();\n");
+  const requirement = { check: "confirm owner", type: "source-confirmation", repository: "source", file: "proof.js" };
+  const partial = await runStagePipeline({ ...value, request: { ...value.request, stage: partialStage,
+    openChecks: [requirement.check], checkRequirements: [requirement] }, runner: request => ({ stage: partialStage, target: request.target, status: "candidate" }) });
+  assert.equal(partial.status, "partial");
+  const prior = JSON.parse(fs.readFileSync(partial.artifact)), priorBytes = fs.readFileSync(partial.artifact);
+  const proof = { id: "proof", repository: "source", file, line: 1, endLine: 1, sourceFragment: "owner();", status: "source-confirmed",
+    sourceHash: crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex") };
+  value.pkg.stages[partialStage].checkResolutions = [{ kind: "check-resolution", check: requirement.check, originDigest: prior.outputDigest,
+    disposition: "checked", reason: "Exact source inspected", evidenceRefs: [proof.id] }];
+  const saved = closed ? savedFiles(closed.artifact, closed.evidence, closed.manifest) : new Map();
+  const stages = [];
+  await runFullResearch({ ...value, package: value.pkg, runStagePipeline: options => {
+    stages.push(options.request.stage);
+    assert.deepEqual(options.request.repositoryScope, value.pkg.repositoryScope);
+    return runStagePipeline({ ...options, runner: request => ({ stage: request.stage, target: request.target, status: "candidate",
+      ...(request.stage === partialStage ? { canonicalEvidence: [proof] } : { openChecks: ["later"] }) }) });
+  } });
+  assert.deepEqual(stages, [partialStage, partialStage + 1]);
+  const canonical = JSON.parse(fs.readFileSync(partial.artifact));
+  assert.equal(canonical.status, "closed");
+  assert.deepEqual(canonical.openChecks, []);
+  assert.deepEqual(canonical.summary.checkRequirements, prior.summary.checkRequirements);
+  const history = canonical.summary.checkHistory;
+  assert.equal(history.at(-1).outputDigest, prior.outputDigest);
+  assert.deepEqual(fs.readFileSync(history.at(-1).artifact), priorBytes);
+  assert.ok(canonical.facts.some(row => row.kind === "check-resolution" && row.originDigest === prior.outputDigest));
+  assertSaved(saved);
+});
 
 function packageValue(root) {
   return {
     schemaVersion: "research-package/1.0.0",
     target: "Feature",
     repositoryScope: { repositories: [{ id: "source", root, role: "source" }] },
-    stages: Object.fromEntries(Array.from({ length: 8 }, (_, stage) => [String(stage), stage === 0 ? { coverageProfile: {} } : {}]))
+    stages: Object.fromEntries(Array.from({ length: 8 }, (_, stage) => [String(stage), stage === 0 ? { coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, seeds: { direct: ["Feature"] } } : {}]))
   };
 }
 
@@ -26,7 +156,9 @@ test("package loader normalizes roots, freezes templates, and rejects runtime fi
   assert.equal(value.repositoryScope.repositories[0].root, path.resolve(root));
   assert.equal(Object.isFrozen(value.stages["0"]), true);
   assert.throws(() => loadResearchPackage({ ...packageValue(root), stages: { ...packageValue(root).stages, "2": { transitionArtifact: "manual" } } }), /transitionArtifact/);
-  assert.throws(() => loadResearchPackage({ ...packageValue(root), stages: { "0": { coverageProfile: {} } } }), /stages 0 through 7/);
+  assert.throws(() => loadResearchPackage({ ...packageValue(root), stages: { "0": { coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] } } } }), /stages 0 through 7/);
+  assert.throws(() => loadResearchPackage({ ...packageValue(root), stages: { ...packageValue(root).stages, "0": { coverageProfile: { kind: "bounded", requiredCapabilities: ["unknown"] }, seeds: { direct: ["Feature"] } } } }), /Unknown capability/);
+  assert.throws(() => loadResearchPackage({ ...packageValue(root), stages: { ...packageValue(root).stages, "0": { coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] } } } }), /seeds\.direct/);
 });
 
 test("action planner follows persisted state without rerunning closed stages", () => {
@@ -84,7 +216,7 @@ test("continuation rejects target drift and Stage 0 partial coverage drift", asy
   await runFullResearch({ packageFile, stateFile, outputRoot, runStagePipeline: partialPipeline });
   fs.writeFileSync(packageFile, JSON.stringify({ ...original, target: "Other" }));
   await assert.rejects(runFullResearch({ packageFile, stateFile, outputRoot, runStagePipeline: partialPipeline }), /target conflicts/);
-  fs.writeFileSync(packageFile, JSON.stringify({ ...original, stages: { ...original.stages, "0": { coverageProfile: { requiredCollections: ["ownership"] } } } }));
+  fs.writeFileSync(packageFile, JSON.stringify({ ...original, stages: { ...original.stages, "0": { ...original.stages["0"], coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"], requiredCollections: ["ownership"] } } } }));
   await assert.rejects(runFullResearch({ packageFile, stateFile, outputRoot, runStagePipeline: partialPipeline }), /coverageProfile conflicts/);
   assert.equal(calls, 1);
 });

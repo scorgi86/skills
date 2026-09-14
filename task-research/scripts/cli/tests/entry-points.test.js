@@ -83,7 +83,7 @@ test("pipeline validates, runs and advances through InventorySession without the
   const stateFile = path.join(directory, "state.json"), outputRoot = path.join(directory, "artifacts");
   state.main(["init", "--state", stateFile]);
   const events = [];
-  const result = await pipeline.runStagePipeline({ request: { stage: 0, target: "X", coverageProfile: {}, repositoryScope: { repositories: [{ id: "source", root: directory, role: "source" }] } }, stateFile, outputRoot, runner() { events.push("runner"); return { stage: 0, status: "candidate", canonicalFacts: [] }; } });
+  const result = await pipeline.runStagePipeline({ request: { stage: 0, target: "X", coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, repositoryScope: { repositories: [{ id: "source", root: directory, role: "source" }] } }, stateFile, outputRoot, runner() { events.push("runner"); return { stage: 0, status: "candidate", canonicalFacts: [] }; } });
   assert.equal(result.status, "closed");
   assert.deepEqual(events, ["runner"]);
   assert.equal(require(path.join(scripts, "shared/artifacts/src/stage_artifact_v4")).validateStageArtifact(path.join(outputRoot, "stage-0")).ok, true);

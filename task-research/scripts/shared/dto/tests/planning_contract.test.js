@@ -29,3 +29,28 @@ test("intermediate states preserve proof and never promote process completion", 
  const merged=mergeRows([{id:"x",role:"owner",status:"candidate",sourceStage:1},{id:"x",role:"consumer",status:"confirmed",sourceStage:6}])[0];
  assert.deepEqual(merged.roles,["consumer","owner"]);assert.ok(merged.conflicts.some(x=>x.field==="role")); assert.deepEqual(merged.sourceStages,[1,6]);
 });
+
+test("planning merge rejects missing identity and filled conflicts before merging", () => {
+  const { mergePlanningRows } = require("../src/planning_contract");
+  assert.throws(() => mergePlanningRows([{ entry: "A" }, { entry: "B" }], "scenarios"), /scenarios.*id/);
+  assert.throws(() => mergePlanningRows([{ id: "s", entry: "A" }, { id: "s", entry: "B" }], "scenarios"), /scenarios.*s.*entry/);
+  assert.throws(() => mergePlanningRows([{ id: "s", steps: ["A", "B"] }, { id: "s", steps: ["B", "A"] }], "scenarios"), /steps/);
+  assert.throws(() => mergePlanningRows([{ id: "s", status: "confirmed" }, { id: "s", status: "candidate" }], "scenarios"), /status/);
+});
+
+test("planning merge is idempotent and enriches empty fields without clearing filled ones", () => {
+  const { mergePlanningRows } = require("../src/planning_contract");
+  const rows = [
+    { id: "s", status: "candidate", entry: " ", steps: [], result: null, evidenceRefs: ["ev-a"], sourceStage: 1 },
+    { id: "s", status: "source-confirmed", entry: "Open", steps: ["Read"], result: "Loaded", evidenceRefs: ["ev-b"], sourceStage: 3 },
+    { id: "s", entry: "", steps: [], result: undefined, evidenceRefs: ["ev-a"] }
+  ];
+  const merged = mergePlanningRows(rows, "scenarios");
+  assert.equal(merged.length, 1);
+  assert.equal(merged[0].status, "source-confirmed");
+  assert.equal(merged[0].entry, "Open");
+  assert.deepEqual(merged[0].steps, ["Read"]);
+  assert.equal(merged[0].result, "Loaded");
+  assert.deepEqual(merged[0].evidenceRefs, ["ev-a", "ev-b"]);
+  assert.deepEqual(mergePlanningRows([...merged, ...merged], "scenarios"), merged);
+});

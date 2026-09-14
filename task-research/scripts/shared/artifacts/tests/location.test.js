@@ -8,12 +8,12 @@ test("structured limitations survive Stage0 and canonicalization without stringi
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "limitations-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const limitation = { id: "sandbox", statement: "Index unavailable", detail: "EPERM", status: "partial" };
-  const facts = await runStage0({ stage: 0, target: "x", scanSeeds: false, seeds: { direct: ["x"] }, repositoryScope: { repositories: [{ id: "r", root, role: "source" }] }, limitations: [limitation] });
+  const facts = await runStage0({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "x", scanSeeds: false, seeds: { direct: ["x"] }, repositoryScope: { repositories: [{ id: "r", root, role: "source" }] }, limitations: [limitation] });
   assert.deepEqual(facts.limitations, [limitation]);
   const { canonical } = writeStageArtifact({ outputDir: root, facts, input: {} });
   assert.equal(canonical.facts.find(row => row.id === "sandbox").detail, "EPERM");
   assert.doesNotMatch(render(facts), /\[object Object\]/);
-  await assert.rejects(runStage0({ stage: 0, target: "x", scanSeeds: false, seeds: { direct: ["x"] }, repositoryScope: facts.repositoryScope, limitations: [42] }), /limitation/);
+  await assert.rejects(runStage0({ stage: 0, coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] }, target: "x", scanSeeds: false, seeds: { direct: ["x"] }, repositoryScope: facts.repositoryScope, limitations: [42] }), /limitation/);
 });
 test("artifact query accepts root, canonical directory and canonical files equally", t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "artifact-location-"));

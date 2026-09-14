@@ -23,7 +23,7 @@ Stage 0 requires `repositoryScope`, including when called directly through `stag
 {
   "stage": 0,
   "target": "ExampleFeature",
-  "coverageProfile": { "requiredCollections": ["dictionary", "criticalPaths"], "requiredCriticalPaths": ["save"] },
+  "coverageProfile": { "kind": "bounded", "requiredCapabilities": ["ownership", "storage", "serialization"], "requiredCollections": ["dictionary", "criticalPaths"], "requiredCriticalPaths": ["save"] },
   "scanSeeds": true,
   "repositoryScope": {
     "repositories": [

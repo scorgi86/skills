@@ -3,3 +3,20 @@ const {runStage3}=require('../src/runner'); const {writeCanonicalTransition}=req
 test('native consumer language profile searches C++ and records performed scope',()=>{const root=fs.mkdtempSync(path.join(os.tmpdir(),'native-consumer-'));try{fs.writeFileSync(path.join(root,'consumer.cpp'),'NativeBridge();');const transition=writeCanonicalTransition(root,2);const artifact=JSON.parse(fs.readFileSync(transition));artifact.facts.push({id:'boundary-native',kind:'boundary',boundaryKind:'native',consumerRepos:['native'],searchTerms:['NativeBridge']});fs.writeFileSync(transition,JSON.stringify(artifact));const result=runStage3({stage:3,transitionArtifact:transition,consumerScopes:[{id:'native',scope:root,languages:['cpp'],excludeFilePatterns:['\\.json$']}]});assert.equal(result.sourceEvidence.checks[0].totalMatches,1);assert.ok(result.consumerCoverage[0].searchProfile.extensions.includes('.cpp'));assert.equal(result.consumerCoverage[0].filesScanned,1);}finally{fs.rmSync(root,{recursive:true,force:true});}});
 
 test('consumer failures stay partial with recorded scope instead of negative evidence',()=>{const root=fs.mkdtempSync(path.join(os.tmpdir(),'missing-consumer-'));try{const transition=writeCanonicalTransition(root,2);const artifact=JSON.parse(fs.readFileSync(transition));artifact.facts.push({id:'boundary-native',kind:'boundary',boundaryKind:'native',consumerRepos:['native'],searchTerms:['NativeBridge']});fs.writeFileSync(transition,JSON.stringify(artifact));const result=runStage3({stage:3,transitionArtifact:transition,consumerScopes:[{id:'native',scope:path.join(root,'unavailable'),extensions:['.cpp']}]});assert.equal(result.status,'partial');assert.equal(result.consumerCoverage[0].resultComplete,false);assert.equal(result.consumerCoverage[0].absenceClaim,false);assert.ok(result.consumerCoverage[0].errors.length);}finally{fs.rmSync(root,{recursive:true,force:true});}});
+
+test("BDD: consumer search coverage survives canonical-only output without becoming a scenario", t => {
+  const { writeStageArtifact } = require("../../../shared/artifacts/src/stage_artifact_v4.js");
+  const { canonicalFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "consumer-coverage-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.writeFileSync(path.join(root, "consumer.cpp"), "NativeBridge();");
+  const transition = writeCanonicalTransition(root, 2, { facts: { boundaries: [{ id: "native", kind: "native", consumerRepos: ["native"], searchTerms: ["NativeBridge"] }] } });
+  const result = runStage3({ stage: 3, transitionArtifact: transition, consumerScopes: [{ id: "native", scope: root, languages: ["cpp"] }] });
+  assert.equal(result.consumerCoverage.length, 1);
+  assert.equal(canonicalFacts(result).some(row => row.kind === "scenario"), false);
+  const written = writeStageArtifact({ outputDir: path.join(root, "output"), facts: result, input: {} });
+  assert.equal(written.manifest.retainRaw, false);
+  assert.deepEqual(written.canonical.summary.consumerCoverage, result.consumerCoverage);
+  assert.equal(written.canonical.summary.consumerCoverage[0].totalMatches, 1);
+  assert.equal(written.canonical.facts.some(row => row.kind === "scenario"), false);
+});

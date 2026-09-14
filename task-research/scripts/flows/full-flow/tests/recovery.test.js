@@ -9,7 +9,7 @@ function fixture(t) {
  t.after(() => fs.rmSync(root, {recursive:true,force:true}));
  const outputRoot=path.join(root,"artifacts"), stateFile=path.join(root,"state.json"), target=path.join(outputRoot,"stage-0"), journal=path.join(outputRoot,".transactions","stage-0.json");
  stateCommand(["init","--state",stateFile]);
- const request={stage:0,coverageProfile:{},target:"FeatureValue",repositoryScope:{repositories:[{id:"source",root,role:"source",exclusions:["out"]}]}};
+ const request={stage:0,coverageProfile: { kind: "bounded",requiredCapabilities:["ownership"]},target:"FeatureValue",repositoryScope:{repositories:[{id:"source",root,role:"source",exclusions:["out"]}]}};
  return {root,outputRoot,stateFile,target,journal,request};
 }
 async function execute(f,runner) {return await runStagePipeline({...f,runner});}

@@ -6,16 +6,18 @@ const { normalizeRepositoryScope } = require("../../../shared/dto/src/repository
 
 const path = require("node:path");
 
-const { PLANNING_COLLECTIONS: PLANNING_INPUT_COLLECTIONS, mergeRows } = require("../../../shared/dto/src/planning_contract.js");
+const { mergePlanningRows, mergeRows } = require("../../../shared/dto/src/planning_contract.js");
+const { carryPlanningFacts, assertPlanningOutput } = require("./planning_output.js");
 
 const fs = require("node:fs");
 
 const { writeStageArtifact } = require("../../../shared/artifacts/src/stage_artifact_v4.js");
 const { closureErrors, resolveChecks } = require("../../../shared/artifacts/src/canonical/checks.js");
 const { validateCheckHistory } = require("../../../shared/artifacts/src/canonical/lineage.js");
-const { prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
+const { canonicalFacts, prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");
 const { InventorySession } = require("../../../state/src/session/inventory_session.js");
 const { SourceSnapshotStore } = require("../../../shared/evidence/src/source_snapshot.js");
+const { keyOf } = require("../../../shared/evidence/src/canonicalization/candidate_identity.js");
 
 function slug(value) {
   return String(value || "inventory").normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").toLowerCase() || "inventory";
@@ -59,21 +61,12 @@ function transactionStatus(facts) {
   return closureErrors(facts).length ? "partial" : "closed";
 }
 
-function carryPlanningFacts(request, produced) {
-  const result = { ...produced };
-  for (const name of PLANNING_INPUT_COLLECTIONS) {
-    const raw = [...(Array.isArray(request[name]) ? request[name] : []), ...(Array.isArray(produced[name]) ? produced[name] : [])];
-    const rows = name === "limitations" ? require("../../../shared/artifacts/src/limitations.js").normalizeLimitations(raw) : raw;
-    if (rows.length) result[name] = mergeRows(rows);
-  }
-  return result;
-}
-
 async function runStagePipeline(options = {}) {
   const request = options.request;
   if (!request || !Number.isInteger(Number(request.stage))) throw new Error("Pipeline request requires stage 0..7");
   const stage = Number(request.stage);
   if (stage < 0 || stage > 7) throw new Error("Pipeline request requires stage 0..7");
+  if (stage === 0 && !options.runner && (!Array.isArray(request.seeds?.direct) || !request.seeds.direct.length || request.seeds.direct.some(seed => typeof seed !== "string" || !seed.trim()))) throw new Error("Stage 0 requires non-empty string seeds.direct");
   const execution = stage === 0 ? require("../../../steps/step-0/src/execution_scope.js").resolveExecutionScope(request) : null;
   if (!execution) normalizeRepositoryScope(request.repositoryScope, { requireExisting: request.requireExistingRoots !== false });
   const initialProfile = stage === 0 ? require("./coverage_profile.js").coverageProfile(request) : undefined;
@@ -108,21 +101,37 @@ async function runStagePipeline(options = {}) {
       const runnerResult = await (options.runner || runnerFor(stage))(runnerRequest, runnerDependencies, stageContext);
       let facts = runnerResult;
       if (stage !== 7) {
-        const produced = prepareFacts({ ...carryPlanningFacts(request, runnerResult), repositoryScope: request.repositoryScope }, { sourceSnapshots });
+        const priorResults = lineage.map(descriptor => JSON.parse(fs.readFileSync(descriptor.artifact, "utf8")));
+        const produced = prepareFacts({ ...carryPlanningFacts(request, runnerResult, priorResults), repositoryScope: request.repositoryScope }, { sourceSnapshots });
+        const suppliedFacts = canonicalFacts(produced);
         const { checkContext, aliasMap } = require("./check_context.js");
         const context = checkContext(previous, lineage);
         for (const [kind, collection] of [["gap", "gaps"], ["limitation", "limitations"]]) {
           const inherited = context.corrections.filter(row => row.kind === kind);
-          if (inherited.length) produced[collection] = mergeRows([...inherited, ...(produced[collection] || [])]);
+          if (inherited.length) {
+            const merge = Array.isArray(produced.canonicalFacts) || produced.modelType === "inventory-report-model" ? mergeRows : mergePlanningRows;
+            produced[collection] = merge([...inherited, ...(produced[collection] || [])], collection);
+          }
         }
         const referenced = require("./referenced_evidence.js").referencedEvidence(produced, lineage, request.repositoryScope);
         const evidence = new Map([...context.evidence, ...referenced].map(row => [row.id, row]));
-        for (const row of produced.canonicalEvidence || []) evidence.set(row.id, row);
+        for (const row of produced.canonicalEvidence || []) {
+          const prior = evidence.get(row.id);
+          if (!prior) { evidence.set(row.id, row); continue; }
+          const priorFile = prior.file || prior.path, file = row.file || row.path;
+          if (Boolean(priorFile) !== Boolean(file) || (file && keyOf(prior, { repositoryScope: request.repositoryScope }) !== keyOf(row, { repositoryScope: request.repositoryScope }))) {
+            throw new Error(`Conflicting evidence identity: ${row.id}`);
+          }
+          const confirmed = (value) => (value.status || value.confirmation?.status) === "source-confirmed";
+          const winner = confirmed(prior) && !confirmed(row) ? prior : row;
+          evidence.set(row.id, { ...winner, aliases: [...new Set([prior.id, ...(prior.aliases || []), row.id, ...(row.aliases || [])])].sort() });
+        }
         const remapEvidenceReferences = require("../../../shared/evidence/src/canonicalization/canonicalize.js").remapEvidenceReferences;
         const aliases = aliasMap([...evidence.values()]);
         const remappedProduced = remapEvidenceReferences(produced, aliases);
         const receipts = remapEvidenceReferences(request.checkResolutions || remappedProduced.checkResolutions || [], aliases);
         const resolved = resolveChecks(context.canonical, { ...remappedProduced, ...(request.checkRequirements === undefined ? {} : { checkRequirements: request.checkRequirements }), openChecks: [...new Set([...(request.openChecks || []), ...(remappedProduced.openChecks || [])])] }, receipts, [...evidence.values()], request.repositoryScope);
+        assertPlanningOutput({ ...resolved, repositoryScope: request.repositoryScope }, [...evidence.values()], profile, sourceSnapshots, suppliedFacts);
         facts = { ...resolved, repositoryScope: request.repositoryScope, exclusions: execution ? execution.exclusions : request.exclusions || [],
           canonicalEvidence: [...evidence.values()], status: transactionStatus(resolved), runnerStatus: produced.status || "unknown",
           summary: { ...resolved.summary, ...(produced.evidenceDiagnostics?.length ? { evidenceDiagnostics: produced.evidenceDiagnostics } : {}), ...(profile === undefined ? {} : { coverageProfile: profile }), ...(execution ? { executionScope: execution.descriptor } : {}), runnerStatus: produced.status || "unknown", lineage, checkHistory: previous ? [...(previous.canonical.summary.checkHistory || []), { artifact: path.join(archived, "canonical/stage-result.json"), outputDigest: previous.canonical.outputDigest }] : [] } };

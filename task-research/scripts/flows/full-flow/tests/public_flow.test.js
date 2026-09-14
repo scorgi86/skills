@@ -25,7 +25,7 @@ test("public CLI 0..8 preserves JS to C++ boundaries, source proof, and declared
     };
     invoke("stage_state", ["init", "--state", state]);
     const repositoryScope = { repositories: [{ id: "js", root: jsRoot, role: "source" }, { id: "native", root: nativeRoot, role: "source" }] };
-    const coverageProfile = { requiredCollections: ["dictionary", "criticalPaths"], notApplicable: {}, requiredCriticalPaths: ["save"], notApplicableCriticalPaths: {} };
+    const coverageProfile = { kind: "bounded", requiredCapabilities: ["lifecycle"], requiredCollections: ["dictionary", "criticalPaths"], notApplicable: {}, requiredCriticalPaths: ["save"], notApplicableCriticalPaths: {} };
     const artifacts = [];
     const execute = (request) => {
         const file = path.join(root, `request-${request.stage}.json`);
@@ -56,6 +56,8 @@ test("public CLI 0..8 preserves JS to C++ boundaries, source proof, and declared
     previous = execute({ stage: 3, transitionArtifact: previous, consumerScopes: [{ id: "native", scope: nativeRoot, searchProfile: { languages: ["cpp"] } }] });
     const stage3 = JSON.parse(fs.readFileSync(previous, "utf8"));
     assert.ok(stage3.facts.some(row => row.kind === "boundary" && row.id === "native-save"));
+    assert.equal(stage3.facts.some(row => row.kind === "scenario"), false);
+    assert.equal(stage3.summary.consumerCoverage[0].consumerRepo, "native");
     const stage3Evidence = JSON.parse(fs.readFileSync(path.join(path.dirname(previous), "evidence.json"), "utf8"));
     assert.ok(stage3Evidence.files.some(file => file.endsWith("bridge.cpp")));
     assert.ok(stage3Evidence.evidence.some(row => row.repository === "native"));
@@ -64,7 +66,7 @@ test("public CLI 0..8 preserves JS to C++ boundaries, source proof, and declared
     const proof = (id, repository, file, text, line) => ({ id, repository, file, status: "source-confirmed", sourceHash: crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex"), line, endLine: line, sourceFragment: text.split("\n")[line - 1] });
     previous = execute({ stage: 6, transitionArtifact: previous, mode: "feature-reference", featureReference: { target: "FeatureValue", referenceEntity: "Native persistence", capabilities: [{ id: "lifecycle", status: "confirmed", evidenceRefs: ["proof-js", "proof-native"] }] },
         canonicalEvidence: [proof("proof-js", "js", source, jsText, 4), proof("proof-native", "native", native, nativeText, 1)],
-        sourceSurfaces: [{ path: source, layer: "javascript", role: "save entry", evidenceRefs: ["proof-js"] }, { path: native, layer: "native", role: "persistence receiver", evidenceRefs: ["proof-native"] }],
+        sourceSurfaces: [{ repository: "js", path: source, layer: "javascript", role: "save entry", evidenceRefs: ["proof-js"] }, { repository: "native", path: native, layer: "native", role: "persistence receiver", evidenceRefs: ["proof-native"] }],
         dictionary: [{ id: "name-transition", terms: ["featureState", "NativeSave", "PersistFeature"], status: "confirmed", evidenceRefs: ["proof-js", "proof-native"] }],
         criticalPaths: [{ id: "save-lifecycle", coverageKey: "save", steps: ["FeatureContainer.save", "NativeSave", "PersistFeature"], status: "confirmed", evidenceRefs: ["proof-js", "proof-native"] }]
     });

@@ -2,13 +2,19 @@
 
 ## Declared coverage and result meaning
 
-New pipeline Stage 0 requests require an explicit `coverageProfile`. Derive obligations from the task and applicable critical/paired paths before searching; do not use an empty profile to bypass a full inventory. Example:
+New Stage 0 requests require an explicit `coverageProfile.kind`, selected from the user's research goal before searching. `full-inventory` and `full-development` require every existing capability ID and the scenarios and criticalPaths collections; `full-development` additionally requires gaps and implementationEntryPoints. `bounded` preserves explicitly limited investigations with a smaller profile; missing evidence does not justify downgrading a full request to bounded. Full inventory example:
 
 ```json
-{"requiredCollections":["dictionary","criticalPaths"],"requiredCriticalPaths":["save","undo"],"notApplicable":{},"notApplicableCriticalPaths":{"undo":"The declared operation has no history contract"}}
+{"kind":"full-inventory","requiredCapabilities":["definition","ownership","storage","serialization","input","mutation","recipients","readback","render-output","lifecycle","theme-style","tests","reference"],"requiredCollections":["scenarios","criticalPaths"],"requiredCriticalPaths":["save","undo"],"notApplicable":{},"notApplicableCriticalPaths":{"undo":{"reasonCode":"architecture","explanation":"The declared operation has no history contract"}}}
 ```
 
-`requiredCriticalPaths` match `criticalPaths[].coverageKey` or exact row ID. N/A reasons must identify declared obligations. A bounded investigation can declare fewer requirements; every table is not universally mandatory. Stage 0 stores the normalized profile in `summary.coverageProfile`; Stage 7 retains it as `coverage.profile`. Changing requirements requires a new run. Legacy artifacts without a profile remain readable but cannot gain a new profile midway.
+New Stage 0 requests must declare at least one `requiredCapabilities` id. Stage 7 derives `requiredForFinalReport` from that list, so later requests cannot weaken the declared obligation. A required capability closes only as source-backed `confirmed`, complete `checked-no-usage`, or justified `not-applicable`. New profiles express N/A as `reasonCode` (`task-scope`, `repository-scope`, or `architecture`) plus a non-empty `explanation`; source absence must use `checked-no-usage`. Legacy artifacts without `requiredCapabilities` retain their existing `requiredForFinalReport` and string-reason semantics.
+
+`requiredCriticalPaths` match `criticalPaths[].coverageKey` or exact row ID. N/A reasons must identify declared obligations. Required scenarios, critical paths, gaps and implementation entry points must contain explanatory text or concrete steps/locations; IDs, statuses and references alone do not establish semantic completeness. When both gaps and implementation entry points are required, every `implementation-gap` and `test-gap` must be linked from an implementation entry point. A bounded investigation can declare fewer requirements; every table is not universally mandatory. Stage 0 stores the normalized profile in `summary.coverageProfile`; Stage 7 retains it as `coverage.profile`. Changing requirements requires a new run. Legacy artifacts without a profile remain readable but cannot gain a new profile midway.
+
+For full kinds, each confirmed scenario requires non-empty `entry`, a non-empty array of non-empty string `steps`, and non-empty `result`. A checked-no-usage scenario describes its expected entry and steps and the checked break in result, and still needs the complete absence protocol. A not-applicable scenario uses structured reasonCode and explanation. These fields are displayed in implementation-map.md; a name alone is insufficient. Bounded and saved no-kind models retain their previous content rules.
+
+Profile shape loading and new-run enforcement are separate: saved no-kind Stage 0–7 artifacts can continue and finalize through full_run without changing their profile. Only a new Stage 0 requires kind; changing an existing profile requires new state and output paths.
 
 Evidence strength, research coverage and product decisions are separate. Complete research can confirm a product gap. `coverage.status: partial` and truncated selection cannot close Stage 7; an explicit `decisionStatus: confirmed` does not bypass coverage. Known intermediate proof statuses map conservatively; product categories remain `category` with `originalStatus`, and unsupported statuses report an error. Rendered candidate rows have neutral labels; source links, semantic fields, provenance and conflicts survive projection.
 
@@ -19,6 +25,10 @@ Use this file for report creation, final acceptance, staged artifact validation,
 Use `references/inventory-report-template.md` for full inventory reports. Do not invent a shorter final report unless the user explicitly asks for a brief answer.
 
 The canonical source of every final document is the Stage 7 `inventory-report-model/2.0.0` JSON. Markdown is a deterministic projection, not a planning source of truth. Never add facts, statuses, rows, or recommendations during rendering.
+
+For full inventory, persist container operations, concrete receiver bindings and protocol results in the existing typed Stage 1–6 collections before their dependent stages close. State the actual result, not just IDs and anchors: distinguish copy/merge/clear semantics, defaults/units/null versus undefined, shared routes and concrete limitations. If evidence was missed in a closed stage, use the existing revision flow; do not repair completeness by adding report prose at Stage 7/8.
+
+Plan search scope/exclusions and relevant language surfaces before broad discovery. Preserve actual nameCoverage `query.fileArgs/matchArgs` and targeted JS `sourceEvidence.checks[].spec` with completeness, errors and skipped-file results. These mechanisms use different supported syntax. If canonical projection omits required execution metadata, retain the existing raw runner output; do not reconstruct success from request parameters. A JS-only check cannot establish non-JS absence.
 
 For implementation planning, Stage 7 must project typed facts from Stages 1–6 according to `references/planning-contract.md`. Do not rebuild planning collections from memory or free-form Markdown.
 

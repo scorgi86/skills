@@ -19,6 +19,7 @@ class SourceSnapshotStore {
 
   get(file) {
     const logicalKey = platformKey(file);
+    if (this.snapshots.has(logicalKey)) return this.snapshots.get(logicalKey);
     let physicalFile;
     try {
       physicalFile = this.realpathSync(path.resolve(file));

@@ -17,6 +17,8 @@ Use this contract only for full-inventory stage 1. Execute no later stage.
 5. Keep complete canonical facts and evidence in the stage artifact. Consume only the bounded runner summary in model context.
 6. Do not promote candidates automatically. A `confirmed` ownership group requires an explicit confirmation record and a source anchor.
 7. When a producer-consumer boundary is relevant, declare it in generic `boundaries` request data. Each candidate requires producer repo, kind, symbol, relation, evidence refs, concrete producer anchor, search terms, and consumer repos. Keep it `candidate`; it is input for Stage 2/3, not proof of a user scenario.
+8. Collect copy, merge, clear and protocol operations while discovering each container. Record their distinct source-backed results, including unsupported branches; a shared method name does not establish an operation's behavior.
+9. Resolve each confirmation to an unambiguous repository/file and exact inclusive source bounds before closure. Reuse confirmed fragments rather than repeating broad searches to recover the same proof.
 
 ## Required groups
 
@@ -34,6 +36,8 @@ Record each applicable group with id, order, role, object, relation, evidence re
 When recursive ownership coverage is needed, declare `ownershipGraph` in the request. It contains order-0 `nodes`, owner-to-child `edges`, and `maxOrder`. Only `stores`, `owns`, `contains`, and `wraps` advance the order: if `A contains B`, then `order(A) = order(B) + 1`. Every node above order 0 must have an anchored ownership edge to a child at the preceding order. Keep serializer, history, copy, API, and render relations as auxiliary edges.
 
 Declare every applicable branch in non-empty `ownership.expectedIds`; when validating against an earlier Stage 1 report, include every branch from that report. The gate must fail if one is absent. For a `confirmed` group, take the rendered ownership anchor from `confirmation.file` and `confirmation.line`; never substitute the first broad-search match. Set `sourceRoot` when confirmation paths are relative so the runner can save a SHA-256 hash of the three-line confirmed source fragment.
+
+`expectedIds` and `coverageContract` check declared stage obligations, not global semantic exhaustiveness. Expand concrete owners, inherited families and operation facts as source discovery proceeds through Stages 1–5. Do not impose a final receiver quota at Stage 1 or treat its closed gate as proof that later owner discovery is unnecessary; retain each stage's existing closure requirements.
 
 Declare a generic `coverageContract` in every request:
 

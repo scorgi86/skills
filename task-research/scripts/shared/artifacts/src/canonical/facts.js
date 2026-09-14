@@ -65,7 +65,6 @@ function canonicalFacts(facts) {
     for (const collection of PLANNING_COLLECTIONS){
         let values = collection === "limitations" ? require("../limitations.js").normalizeLimitations(facts[collection]) : facts[collection];
         if (collection === "ownership" && !Array.isArray(values)) values = values?.groups;
-        if (collection === "scenarios" && !Array.isArray(values)) values = facts.consumerCoverage;
         if (collection === "recipientFamilies" && !Array.isArray(values)) values = facts.families;
         for (const row of values || [])rows.push({
             kind: PRIMARY_KIND_BY_COLLECTION[collection],
@@ -81,9 +80,8 @@ function canonicalFacts(facts) {
         ...edge
     });
     for (const surface of facts.sourceSurfaces || [])rows.push({
-        kind: Number(facts.stage) === 6 ? "reference-path" : "source-surface",
-        id: surface.id || `source-surface:${surface.path || rows.length + 1}`,
-        ...surface
+        ...require("../../../dto/src/source_surface_identity.js").sourceSurfaceIdentity(surface, facts.repositoryScope),
+        kind: Number(facts.stage) === 6 ? "reference-path" : "source-surface"
     });
     if (facts.nameCoverage) rows.push({
         kind: "name-coverage",
