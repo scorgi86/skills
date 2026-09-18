@@ -1,56 +1,22 @@
-# State contract
+# Результаты скриптов
 
-## Run directories
+Обычная установка не использует состояние инспекции или базу approvals. Без `--state-dir` операция создаёт root-каталог `/var/tmp/r7-office.<random>` с правами 0700. Переданный каталог проверяется на владельца, симлинки и права; пользовательское состояние не использовать для root-операций.
 
-Use a user-owned directory for inspection and a root-owned directory for mutations. Set mode `0700`. Reject symlinked state directories and symlinked output files.
+`operation.json`: `run_id`, `stage`, `status`, `mode`, `backend`, `result`, `package` (name/version/architecture/format/sha256), `logs.operation`. SHA-256 заполнен только при заданном expected hash. `logs.operation` — абсолютный путь. Ошибки входа до получения метаданных могут завершиться без JSON; точный код и stderr обязательны.
 
-Each stage writes one atomic JSON result and stores raw command output under `logs/`.
+`environment.json`, `package.json` дополнительного аудита и `verification.json` сохраняют существующий schema_version 1. Audit `required_approvals` описывает действия обнаруженных скриптов и доверие; эти данные не передаются обычной установке. Отдельная ручная configure-integration принимает только конкретные `--approved-action`.
 
-## Common result
-
-```json
-{
-  "schema_version": 1,
-  "run_id": "run-20260730-a82f",
-  "stage": "inspect-package",
-  "status": "success",
-  "warnings": [],
-  "required_approvals": [],
-  "next_actions": ["install"],
-  "logs": {
-    "stderr": "logs/inspect-package.stderr"
-  }
-}
-```
-
-Allowed status values:
-
-- `success`
-- `approval-required`
-- `unsupported`
-- `prerequisite-failed`
-- `backend-failed`
-- `verification-failed`
-- `trust-failed`
-- `state-invalid`
-
-## Exit codes
-
-| Code | Meaning |
+| Код | Значение |
 |---:|---|
-| 0 | Success |
-| 10 | Approval required |
-| 20 | Unsupported environment or format |
-| 30 | Prerequisite failed |
-| 40 | Backend failure |
-| 50 | Verification failure |
-| 60 | Package trust failure |
-| 70 | Invalid state or lock |
+| 0 | Успех |
+| 10 | Требуется конкретное ручное действие/решение аудита |
+| 20 | Не поддерживается формат, backend или окружение |
+| 30 | Не выполнены предпосылки |
+| 40 | Ошибка пакетного менеджера |
+| 50 | Не пройдена проверка установки |
+| 60 | Ошибка заданного хеша или подписи при аудите |
+| 70 | Небезопасный каталог или lock |
 
-## Approval binding
+WSL adapter возвращает код native этапа; stdout содержит JSON, stderr — диагностику и путь каталога. Вызывать в дочернем процессе из-за `exit`.
 
-Record exact approved actions with the inspected `run_id` and package SHA-256. Mutating scripts receive those values as explicit arguments and must reject missing actions or hash mismatches. Do not support a wildcard approval.
-
-## JSON constraints
-
-JSON output contains normalized scalar values and small arrays only. Store multiline or arbitrary tool output as separate files and reference the relative log path. Write to a temporary file in the same directory, validate the write, then rename atomically.
+WSL coordinator возвращает 0/1 и пишет `summary.json`: итоговый Status, FailedStage/Error, цель и версия, PackageOperation, MountState, фактические Mounts, LinuxStateDirectory, Stages с Name/Status/ExitCode/Seconds/Stdout/Stderr. Skipped этапы имеют null code/time; реальное время содержит transport overhead. Mounts — read-only снимок ядра после потока; absent mount не является ошибкой снимка. ModelTokens/ModelInferenceSeconds остаются null. Логи хранят полный вывод отдельно от JSON.

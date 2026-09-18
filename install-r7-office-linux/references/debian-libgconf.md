@@ -1,59 +1,11 @@
-# Resolve `libgconf-2-4` on Debian 13
+# libgconf для Debian 13
 
-Use this workflow when a legacy R7 Office DEB fails with:
+Используй только когда пакет требует отсутствующий `libgconf-2-4`. Не подключай старый Debian release глобально к APT.
 
-```text
-r7-office : Depends: libgconf-2-4 but it is not installable
-```
-
-Debian 13 does not publish `libgconf-2-4`. Debian 12 Bookworm publishes the
-legacy library as version `3.2.6-8`; it also requires the exact-version
-`gconf2-common` package. Do not add an old release globally to APT sources and
-do not use a third-party package site.
-
-## Inspect and simulate
-
-1. Confirm that the host is Debian 13 `amd64`, APT metadata is current, and
-   `dpkg --audit` is empty.
-2. Confirm `apt-cache policy libgconf-2-4` has no candidate. Do not interpret an
-   empty result as permission to install an arbitrary DEB.
-3. Resolve both packages from official Debian Bookworm metadata:
-   - `libgconf-2-4_3.2.6-8_amd64.deb`
-   - `gconf2-common_3.2.6-8_all.deb`
-4. Download from the official `deb.debian.org` pool over HTTPS. Record the
-   package URLs, sizes, and SHA-256 values from `packages.debian.org`; compare
-   the downloaded files against those values before inspection.
-5. Run `inspect-package.sh` for each DEB with a separate `run_id`. Require
-   `known-safe` maintainer scripts and compatible architecture.
-6. Run an APT simulation with both local DEBs. Require no removals, no
-   downgrades of installed packages, and all remaining dependencies to resolve
-   from the current Debian release. Debian 13's `libglib2.0-0t64` may satisfy
-   the historical `libglib2.0-0` dependency through `Provides`.
-
-## Approve and install
-
-Directly downloaded Debian DEBs can still be reported as
-`unsigned-or-unverified`. Request `trust-unsigned-package` separately for each
-package, bound to its `run_id` and observed SHA-256. A checksum proves file
-continuity, not publisher authenticity.
-
-After approval:
-
-1. Repeat both inspections as root and recheck both SHA-256 values.
-2. Install `gconf2-common` first through `package-operation.sh --mode install`
-   using APT, then install `libgconf-2-4` the same way. Pass only the exact
-   approval and expected hash for the current package.
-3. Stop if APT proposes removals, unrelated downgrades, an ambiguous provider,
-   or dependencies from an unapproved release.
-4. Verify:
-   - `apt-get check` succeeds;
-   - `dpkg --audit` is empty;
-   - `dpkg-query -W libgconf-2-4 gconf2-common` reports `3.2.6-8`;
-   - `/usr/lib/x86_64-linux-gnu/libgconf-2.so.4` exists;
-   - `ldd` on the installed trusted library reports no `not found` entries.
-5. Reinspect the original R7 Office DEB and retry its installation with its own
-   previously required approvals and SHA-256 binding.
-
-Treat other Debian releases, architectures, versions, hashes, dependency
-changes, or package sources as a new case. Re-resolve and revalidate them
-instead of copying the Bookworm result blindly.
+1. Подтверди Debian 13 amd64, исправную пакетную базу и отсутствие кандидата через `apt-cache policy libgconf-2-4`.
+2. Найди `libgconf-2-4` и точную зависимость `gconf2-common` в официальных метаданных Debian Bookworm. Известная пара — версия `3.2.6-8`; заново подтверди версии, URL, размеры и SHA-256 через официальные источники Debian. Скачивай из `deb.debian.org` по HTTPS, проверяй хеши.
+3. Проверь формат, версии, архитектуру и зависимости. Если запрос включает подробный аудит, используй `inspect-package.sh`: возможная классификация — `review-required`, а не `known-safe`; изучи вывод, не считай хеш доказательством подписи.
+4. Выполни APT simulation с обоими локальными DEB. Требуй отсутствие удалений, посторонних понижений версий и зависимости из текущего release. `libglib2.0-0t64` может удовлетворять историческую зависимость через Provides.
+5. После разрешения установки этих библиотек установи сначала `gconf2-common`, затем `libgconf-2-4` через `package-operation.sh --mode install --backend apt --package <deb> --expected-sha256 <official-hash>`. Предварительный package.json и approvals обычной установке не нужны.
+6. Проверь `apt-get check`, пустой `dpkg --audit`, точные версии обоих пакетов через dpkg-query, наличие `/usr/lib/x86_64-linux-gnu/libgconf-2.so.4` и успешный ldd библиотеки без `not found`. Не применяй основной R7 verifier к библиотечным пакетам.
+7. Повтори установку R7 и его обычную проверку. Для других релизов, архитектур, версий или источников заново проверь совместимость и происхождение пакетов.

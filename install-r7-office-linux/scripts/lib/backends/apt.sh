@@ -14,27 +14,33 @@ backend_refresh() {
 }
 
 backend_audit() {
-    command -v dpkg >/dev/null 2>&1 && [ -z "$(dpkg --audit 2>/dev/null)" ]
+    local audit
+    audit=$(dpkg --audit 2>&1) || return 1
+    [ -z "$audit" ] || return 1
+    apt-get check >/dev/null 2>&1
 }
 
 backend_query_installed() {
-    dpkg-query -W -f='${Status}\t${Version}\n' "$1" 2>/dev/null
+    local result
+    result=$(dpkg-query -W -f='${Status}\t${Version}\n' "$1" 2>/dev/null) || return 1
+    [ "${result%%$'\t'*}" = 'install ok installed' ] || return 1
+    printf '%s\n' "$result"
 }
 
 backend_install_local() {
     local package="$1"
     if command -v apt-get >/dev/null 2>&1; then
-        DEBIAN_FRONTEND=noninteractive apt-get install -y "$package"
+        DEBIAN_FRONTEND=noninteractive apt-get --no-remove install -y "$package"
     else
-        DEBIAN_FRONTEND=noninteractive apt install -y "$package"
+        DEBIAN_FRONTEND=noninteractive apt --no-remove install -y "$package"
     fi
 }
 
 backend_install_names() {
     if command -v apt-get >/dev/null 2>&1; then
-        DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
+        DEBIAN_FRONTEND=noninteractive apt-get --no-remove install -y "$@"
     else
-        DEBIAN_FRONTEND=noninteractive apt install -y "$@"
+        DEBIAN_FRONTEND=noninteractive apt --no-remove install -y "$@"
     fi
 }
 
@@ -45,16 +51,11 @@ backend_find_provider() {
         return 0
     fi
     local results count
-    results=$(apt-file search "/$library" 2>/dev/null | cut -d: -f1 | sort -u)
+    results=$(apt-file search "/$library" 2>/dev/null | cut -d: -f1 | sort -u) || { printf 'provider-search-unavailable\n'; return 0; }
     count=$(printf '%s\n' "$results" | sed '/^$/d' | wc -l)
     case "$count" in
         0) printf 'provider-not-found\n' ;;
         1) printf 'provider-found:%s\n' "$results" ;;
         *) printf 'provider-ambiguous\n' ;;
     esac
-}
-
-backend_repair() {
-    dpkg --configure -a &&
-        DEBIAN_FRONTEND=noninteractive apt-get -f install -y
 }

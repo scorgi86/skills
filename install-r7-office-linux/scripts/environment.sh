@@ -23,6 +23,8 @@ done
 
 validate_run_id "$RUN_ID"
 ensure_state_dir "$STATE_DIR" false
+acquire_state_lock "$STATE_DIR"
+trap release_state_lock EXIT
 OUTPUT="$STATE_DIR/environment.json"
 assert_output_safe "$OUTPUT"
 
@@ -76,13 +78,17 @@ if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then DISPLAY_READY=tr
 FREE_KB=$(df -Pk / | awk 'NR == 2 {print $4}')
 READ_ELF=false
 if command -v readelf >/dev/null 2>&1 || command -v objdump >/dev/null 2>&1; then READ_ELF=true; fi
+STATUS=success
+EXIT_CODE=0
+if [ "$SELECTED_BACKEND" = none ]; then STATUS=unsupported; EXIT_CODE=20;
+elif [ "$PACKAGE_DB_STATUS" != healthy ]; then STATUS=prerequisite-failed; EXIT_CODE=30; fi
 
 CONTENT=$(cat <<EOF
 {
   "schema_version": 1,
   "run_id": $(json_string "$RUN_ID"),
   "stage": "environment",
-  "status": "success",
+  "status": $(json_string "$STATUS"),
   "os": {
     "id": $(json_string "$OS_ID"),
     "version": $(json_string "$OS_VERSION"),
@@ -100,7 +106,7 @@ CONTENT=$(cat <<EOF
   "free_space_kb": $FREE_KB,
   "warnings": [],
   "required_approvals": [],
-  "next_actions": ["inspect-package"],
+  "next_actions": ["package-operation"],
   "logs": {}
 }
 EOF
@@ -108,3 +114,4 @@ EOF
 
 json_write_atomic "$OUTPUT" "$CONTENT" || die 70 "Cannot write environment result"
 log "Environment result: $OUTPUT"
+exit "$EXIT_CODE"

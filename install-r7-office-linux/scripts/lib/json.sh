@@ -7,6 +7,13 @@ json_escape() {
     value=${value//$'\n'/\\n}
     value=${value//$'\r'/\\r}
     value=${value//$'\t'/\\t}
+    local number character escaped
+    for number in {1..31}; do
+        case "$number" in 9|10|13) continue ;; esac
+        printf -v character '%b' "$(printf '\\%03o' "$number")"
+        printf -v escaped '\\u%04x' "$number"
+        value=${value//"$character"/"$escaped"}
+    done
     printf '%s' "$value"
 }
 
@@ -40,8 +47,9 @@ json_write_atomic() {
     local content="$2"
     local directory temporary
     directory=$(dirname -- "$output")
-    temporary="$directory/.tmp.$(basename -- "$output").$$"
     umask 077
+    assert_output_safe "$output"
+    temporary=$(mktemp "$directory/.tmp.XXXXXXXXXX") || return 1
     printf '%s\n' "$content" >"$temporary" || return 1
     mv -f -- "$temporary" "$output"
 }

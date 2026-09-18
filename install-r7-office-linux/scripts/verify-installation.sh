@@ -12,6 +12,7 @@ STATE_DIR=
 BACKEND=
 PACKAGE_NAME=r7-office
 BINARY=/opt/r7-office/desktopeditors/DesktopEditors
+EXPECTED_VERSION=
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -20,12 +21,15 @@ while [ "$#" -gt 0 ]; do
         --backend) BACKEND="$2"; shift 2 ;;
         --package-name) PACKAGE_NAME="$2"; shift 2 ;;
         --binary) BINARY="$2"; shift 2 ;;
+        --expected-version) EXPECTED_VERSION="$2"; shift 2 ;;
         *) die 30 "Unknown argument: $1" ;;
     esac
 done
 
 validate_run_id "$RUN_ID"
 ensure_state_dir "$STATE_DIR" false
+acquire_state_lock "$STATE_DIR"
+trap release_state_lock EXIT
 case "$BACKEND" in apt|dnf|zypper|yum) ;; *) die 20 "Unsupported backend: $BACKEND" ;; esac
 . "$SCRIPT_DIR/lib/backends/$BACKEND.sh"
 
@@ -47,11 +51,18 @@ BINARY_STATUS=missing
 MISSING_LIBRARIES=()
 PROVIDER_RESULTS=()
 LDD_LOG="$STATE_DIR/logs/ldd.txt"
+assert_output_safe "$LDD_LOG"
+LDD_STATUS=unavailable
 : >"$LDD_LOG"
-if [ -x "$BINARY" ]; then
+if [ "$PACKAGE_STATUS" = installed ] && [ -x "$BINARY" ]; then
     BINARY_STATUS=executable
     if command -v ldd >/dev/null 2>&1; then
-        ldd "$BINARY" >"$LDD_LOG" 2>&1 || true
+        if ldd "$BINARY" >"$LDD_LOG" 2>&1; then
+            LDD_STATUS=success
+        else
+            LDD_STATUS=failed
+            WARNINGS+=("ldd-failed")
+        fi
         while IFS= read -r library; do
             [ -n "$library" ] || continue
             MISSING_LIBRARIES+=("$library")
@@ -71,7 +82,9 @@ if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then DISPLAY_READY=tr
 STATUS=success
 EXIT_CODE=0
 if [ "$PACKAGE_STATUS" != installed ] || [ "$DATABASE_STATUS" != healthy ] ||
-    [ "$BINARY_STATUS" != executable ] || [ "${#MISSING_LIBRARIES[@]}" -gt 0 ]; then
+    [ "$BINARY_STATUS" != executable ] || [ "$LDD_STATUS" != success ] ||
+    [ "${#MISSING_LIBRARIES[@]}" -gt 0 ] ||
+    { [ -n "$EXPECTED_VERSION" ] && [ "$PACKAGE_VERSION" != "$EXPECTED_VERSION" ]; }; then
     STATUS=verification-failed
     EXIT_CODE=50
 fi
@@ -92,6 +105,7 @@ CONTENT=$(cat <<EOF
   "package_database": $(json_string "$DATABASE_STATUS"),
   "binary": {"path": $(json_string "$BINARY"), "state": $(json_string "$BINARY_STATUS")},
   "missing_libraries": $(json_array "${MISSING_LIBRARIES[@]}"),
+  "ldd_status": $(json_string "$LDD_STATUS"),
   "provider_results": $(json_array "${PROVIDER_RESULTS[@]}"),
   "desktop_entries": $DESKTOP_COUNT,
   "display_ready": $(json_bool "$DISPLAY_READY"),

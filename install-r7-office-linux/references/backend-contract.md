@@ -11,7 +11,6 @@ backend_query_installed
 backend_install_local
 backend_install_names
 backend_find_provider
-backend_repair
 ```
 
 Functions return normal shell exit codes. Human-readable diagnostics go to stderr. Query functions print one normalized value to stdout.
@@ -32,7 +31,7 @@ Only `provider-found:<package>` may be routed to a later dependency-install oper
 
 ## Backend priority
 
-For DEB, prefer `apt`, then `apt-get`. Use `dpkg` only for inspection, audit, or an explicitly safe operation with already satisfied dependencies.
+For DEB, choose backend `apt`; it prefers the `apt-get` CLI and falls back to `apt` for installation. Use `dpkg` only for inspection and audit.
 
 For RPM, prefer `dnf`, then `zypper`, then `yum`. Use `rpm` for inspection and signature checks; do not use `rpm -U` when dependency resolution is required.
 
