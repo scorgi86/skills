@@ -27,6 +27,8 @@ Use this file for every full inventory, skill-test request, implementation-impac
 
 If the requested stage is not the recorded next stage, explain the discontinuity. Proceed only when the missing stages are explicitly out of scope or the user accepts the resulting coverage gap.
 
+For Stage 3 → 4, keep the full Stage 3 artifact on disk for the runner, but use a bounded selector for the model's evidence review: `node scripts/index.js query_stage_artifacts --artifact <stage-3-artifact-dir> --limit 200`. Require `status: ok`; if the selector fails, do not advance. If `truncated: true`, query narrower file/repository slices before deciding. Treat returned evidence as candidates, not confirmed recipients or proof of absence. Build the Stage 4 recipient families using these candidates, prior ownership facts, and targeted source checks for receivers not represented in the Stage 3 selection; do not infer that the selection alone covers every receiver.
+
 ## Execution Status Block
 
 Use this for incomplete staged answers:
