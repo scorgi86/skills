@@ -36,3 +36,16 @@ test("Stage 2 request is derived from canonical frontier and Stage 0 files", t =
   assert.throws(() => materializeStageRequest({ ...pkg, stages: { "2": { ...pkg.stages[2], frontierExhausted: true } } }, 2, { currentStage: 2, lastCompletedStage: 1, canonicalArtifact: stage1File }), /conflicts/);
   assert.throws(() => materializeStageRequest({ ...pkg, stages: { "2": { ...pkg.stages[2], dictionary: [] } } }, 2, { currentStage: 2, lastCompletedStage: 1, canonicalArtifact: stage1File }), /conflicts/);
 });
+
+test("full-profile Stage 2 derives value flow unless the package explicitly disables it", t => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "derive-stage2-vf-")); t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const root = path.join(directory, "repo"), file = path.join(root, "model.js"); fs.mkdirSync(root); fs.writeFileSync(file, "class Owner {}\n");
+  const scope = { repositories: [{ id: "repo", root, role: "source" }] };
+  const stage0 = createCanonicalStageResult({ facts: { stage: 0, status: "closed", target: "Thing", repositoryScope: scope, scans: [{ id: "repo", status: "candidate", files: [file], totalFiles: 1 }], summary: { target: "Thing", repositoryScope: scope, coverageProfile: { kind: "full-inventory", requiredCapabilities: ["definition"], requiredCollections: [] }, seeds: ["Seed"], executionScope: { scanSeeds: true }, repos: [{ id: "repo", status: "candidate", files: 1 }] } } });
+  const stage0File = path.join(directory, "stage0.json"); fs.writeFileSync(stage0File, JSON.stringify(stage0));
+  const stage1 = createCanonicalStageResult({ facts: { stage: 1, status: "closed", target: "Thing", repositoryScope: scope,
+    ownershipGraph: { nodes: [{ id: "seed", entity: "Seed", role: "seed", status: "confirmed", order: 0 }, { id: "frontier", entity: "Frontier", role: "owner", status: "confirmed", order: 1 }], edges: [{ id: "edge", from: "frontier", to: "seed", relation: "stores", status: "confirmed", anchors: [{ file, line: 1 }] }] },
+    summary: { target: "Thing", repositoryScope: scope, lineage: [{ stage: 0, artifact: stage0File, outputDigest: stage0.outputDigest }] } } });
+  assert.equal(deriveStage2Search(stage1, scope, 3).valueFlow.enabled, true);
+  assert.equal(deriveStage2Search(stage1, scope, 3, { valueFlowEnabled: false }).valueFlow.enabled, false);
+});

@@ -130,7 +130,9 @@ async function runAutomaticStage5(request,dependencies,transition){
     for(const boundaryId of candidate.boundaryRefs||[])if(!positiveBoundaries.has(boundaryId))reasons.push(`${candidate.familyId}/${boundaryId}: no exact Stage 5 match`);
     if(positive.length&&positiveBoundaries.size===(candidate.boundaryRefs||[]).length){const ancestry=ancestryFailure(candidate),structural=(candidate.boundaryRefs||[]).every(boundaryId=>candidateChecks.some(check=>check.boundaryId===boundaryId&&structuralResults.get(check.id)?.status==="source-confirmed")),terminal=Boolean((candidate.obligationRefs||[]).length)&&!ancestry&&structural;const failure=ancestry||(!structural?candidateChecks.map(check=>structuralResults.get(check.id)?.reason).find(Boolean)||"ast-not-found":null);if(failure)for(const ref of candidate.obligationRefs||[])failureByLeaf.set(ref,failure);const proofRefs=candidateChecks.filter(check=>structuralResults.get(check.id)?.status==="source-confirmed").map(check=>structuralProofs.get(check.id)).filter(Boolean);criticalPaths.push({id:candidate.id,coverageKey:candidate.id,name:candidate.receiver,statement:`Exact boundary usage reaches ${candidate.receiver}`,entry:positive[0].term,steps:[...positive.map(check=>`${check.boundaryId}:${check.term}`),candidate.receiver],result:`Value reaches ${candidate.receiver}`,status:terminal?"confirmed":"candidate",complete:terminal,obligationRefs:candidate.obligationRefs||[],recipientRefs:[candidate.familyId],evidenceRefs:terminal?proofRefs:positive.map(check=>check.id)});}
   }
-  const confirmedUsages=criticalPaths.filter(row=>row.status==="confirmed").map(row=>({id:`usage-${row.id}`,name:row.name,statement:row.statement,result:row.result,status:"confirmed",pathRefs:[row.id],obligationRefs:row.obligationRefs,evidenceRefs:row.evidenceRefs}));
+  const confirmedPathEvidence=new Set(criticalPaths.filter(row=>row.status==="confirmed").flatMap(row=>row.evidenceRefs||[]));
+  const structuralUsages=structuralChecks.filter(check=>structuralProofs.has(check.id)&&!confirmedPathEvidence.has(structuralProofs.get(check.id))).map(check=>{const evidenceId=structuralProofs.get(check.id),matched=structuralResults.get(check.id),participant=matched.participant,relation=matched.relation;return {id:`usage-${evidenceId}`,name:check.term,statement:`Confirmed structural ${relation.relation}/${participant.role} of ${check.term} in ${path.basename(check.file)}`,result:`Structural match confirmed at ${path.basename(check.file)}:${participant.range.start.line}`,status:"confirmed",evidenceRefs:[evidenceId]};});
+  const confirmedUsages=[...criticalPaths.filter(row=>row.status==="confirmed").map(row=>({id:`usage-${row.id}`,name:row.name,statement:row.statement,result:row.result,status:"confirmed",pathRefs:[row.id],obligationRefs:row.obligationRefs,evidenceRefs:row.evidenceRefs})),...structuralUsages];
   const parents=new Set((request.pathObligations||[]).map(row=>row.parentObligationRef).filter(Boolean)),terminalRefs=new Set(criticalPaths.filter(row=>row.status==="confirmed").flatMap(row=>row.obligationRefs||[]));
   const pathObligations=(request.pathObligations||[]).map(row=>!parents.has(row.id)&&!terminalRefs.has(row.id)&&row.status!=="unresolved"?{...row,status:"unresolved",reason:failureByLeaf.get(row.id)||"ast-not-found"}:row);
   for(const row of pathObligations)if(!parents.has(row.id)&&row.status==="unresolved")reasons.push(`${row.id}: ${row.reason||"upstream-unresolved"}`);
@@ -168,6 +170,11 @@ async function runStage5(request, dependencies = {}, context = null) {
     retainAllMatches: true,
   });
   const coverageEvidence = sourceEvidence.checks.find((check) => check.id === coverage.id) || null;
+  const absenceEvidence = (request.checks || []).filter((check) => check.absenceClaim === true).flatMap((check) => {
+    const outcome = sourceEvidence.checks.find((row) => row.id === check.id);
+    if (!outcome || outcome.totalMatches !== 0 || outcome.resultComplete !== true || outcome.truncated === true || (outcome.errors || []).length) return [];
+    return [{ id: `absence-${check.id}`, status: "checked-no-usage", evidenceKind: "absence", repository: check.repository, searchScope: check.searchScope, reason: check.reason, consequence: check.consequence, resultComplete: true, resultTruncated: false, expectedNames: check.expectedNames, performedChecks: check.performedChecks, ordersChecked: check.ordersChecked, linkingMethodsChecked: check.linkingMethodsChecked }].filter(row => [row.repository,row.searchScope,row.reason,row.consequence].every(value => typeof value === "string" && value.trim()) && [row.expectedNames,row.performedChecks,row.ordersChecked,row.linkingMethodsChecked].every(list => Array.isArray(list) && list.length));
+  });
   const evidenceFiles = sourceEvidence.checks.flatMap((check) => (check.fullMatches || []).map((match) => match.file));
   return {
     schemaVersion: "1.0.0",
@@ -178,6 +185,7 @@ async function runStage5(request, dependencies = {}, context = null) {
     priorArtifacts: request.priorArtifacts || [],
     nameCoverage: { ...coverage, totalMatches: coverageEvidence ? coverageEvidence.totalMatches : 0, fullObservationCount: coverageEvidence ? coverageEvidence.fullMatches.length : 0 },
     sourceEvidence,
+    ...(absenceEvidence.length ? { canonicalEvidence: absenceEvidence } : {}),
     sourceFreshness: { algorithm: "sha256", files: fingerprintFiles(evidenceFiles) },
     reusableForNextStage: { sourceEvidence: true, checkIds: sourceEvidence.checks.map((check) => check.id) },
   };

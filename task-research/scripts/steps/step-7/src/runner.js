@@ -19,7 +19,7 @@ function requireArray(value, name) { if (!Array.isArray(value)) throw new Error(
 
 function validateUsageProjection(criticalPaths, confirmedUsages) {
   const positivePaths=new Set((criticalPaths||[]).filter(row=>row.status==="confirmed").map(row=>row.id)),usageCounts=new Map(),invalid=[];
-  for(const usage of confirmedUsages||[]){const refs=[...new Set(usage.pathRefs||[])];if(refs.length!==1||!positivePaths.has(refs[0]))invalid.push(usage.id);for(const ref of refs)usageCounts.set(ref,(usageCounts.get(ref)||0)+1);}
+  for(const usage of confirmedUsages||[]){const refs=[...new Set(usage.pathRefs||[])],evidenced=Array.isArray(usage.evidenceRefs)&&usage.evidenceRefs.length>0;if(!evidenced&&(refs.length!==1||!positivePaths.has(refs[0])))invalid.push(usage.id);for(const ref of refs)usageCounts.set(ref,(usageCounts.get(ref)||0)+1);}
   const missing=[...positivePaths].filter(ref=>usageCounts.get(ref)!==1);
   return {ok:!missing.length&&!invalid.length,missing,invalid};
 }

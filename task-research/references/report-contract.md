@@ -32,6 +32,15 @@ Plan search scope/exclusions and relevant language surfaces before broad discove
 
 For implementation planning, Stage 7 must project typed facts from Stages 1–6 according to `references/planning-contract.md`. Do not rebuild planning collections from memory or free-form Markdown.
 
+## Interpreting Neutral Confirmed Operations
+
+Stage 0–6 scripts record neutral confirmed facts — a value written to an object, passed as an argument, returned by a factory, serialized, copied, included in another object, or participating in a paired reversible transformation — without attributing purpose. Attributing that purpose is Stage 7 model-authoring work and follows these rules:
+
+- R1 (basis): interpret an operation only from its source-confirmed anchor and from names or signatures visible in that anchor or in anchors explicitly linked through `evidenceRefs`. A symbol name inside the anchor is context; a file path, module name, or outside project knowledge alone is a hypothesis, not a basis.
+- R2 (confidence): a purpose is `confirmed` only when it follows from the anchor itself or from a chain of facts whose every link is source-confirmed. A conclusion drawn from naming or a single textual match stays a candidate and cannot close a capability. When the anchor does not determine purpose, keep the fact as an explicit unknown instead of dropping it.
+- R3 (linkage): an interpreted operation receives `capabilityRefs` for the capability it supports, and `scenarioRefs` or `pathRefs` only when that participation is itself source-confirmed; otherwise leave the row unlinked and record the missing link as an open check.
+- R4 (sweep): before Stage 7 closes, enumerate every neutral source-confirmed operation in the canonical facts — value-flow edges and `structural-ast` evidence among them — and give each an explicit outcome: confirmed interpretation, candidate, unknown, or `noise` with a reason. Silently dropping a confirmed fact from the model is a completeness violation.
+
 Produce exactly three linked detail levels from the same model: `decision-report.md`, `implementation-map.md`, and `evidence.md`. The strict bundle validator treats them as one report: a missing, extra, empty, or cross-reference-incomplete document fails Stage 8. Stage 8 writes manifest schema `2.0.0` with the trusted Stage 7 digest, `validation.strictBundle: passed`, and the exact three unique safe relative output paths with their full-file SHA-256 values.
 
 ## Tables

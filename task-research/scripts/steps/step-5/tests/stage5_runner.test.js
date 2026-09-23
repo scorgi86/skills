@@ -111,3 +111,31 @@ test("structural Stage 5 match confirms one open leaf and parses its file once",
   const realBatch=require("../../../shared/ast/src/batch/batch.js").runAstBatch,result=await runStage5({stage:5,transitionArtifact:transition,searchFromStage4:true,checks:[{id:"check-a",familyId:"family-a",boundaryId:"boundary-a",term:"apply",file:source,patterns:[{id:"apply",value:"apply",caseSensitive:true}]}],structuralChecks:[{id:"check-a",familyId:"family-a",boundaryId:"boundary-a",term:"apply",file:source,sourceHash:hash,obligationRefs:["leaf-a"]}],nameCoverages:[{id:"coverage-a",scope:root,terms:["apply"],mappedFiles:[source]}],pathCandidates:[{id:"path-a",familyId:"family-a",receiver:"view.js",boundaryRefs:["boundary-a"],obligationRefs:["leaf-a"]}],pathObligations:[{id:"leaf-a",frontier:"view.js",edgeRefs:["edge-a"],status:"open"}],valueFlowEdges:[{id:"edge-a",status:"source-confirmed"}],pathDiscovery:{status:"complete",reasons:[],families:1}},{findLiteralNameCoverage:config=>({...config,complete:true,matchingFiles:[source]}),runAstBatch:async request=>{const value=await realBatch(request);parseCounts.push(...Object.values(value.stats.parseCounts));return value;}});
   assert.equal(result.status,"confirmed");assert.equal(result.criticalPaths[0].status,"confirmed");assert.equal(result.confirmedUsages.length,1);assert.deepEqual(parseCounts,[1]);
 });
+
+test("automatic Stage 5 emits a neutral confirmed usage for a structural match outside confirmed paths",async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),"structural-usage-")),source=path.join(root,"view.js");fs.writeFileSync(source,"api.apply(model.value);\n");const transition=writeCanonicalTransition(root,4),hash=require("node:crypto").createHash("sha256").update(fs.readFileSync(source)).digest("hex");
+  const result=await runStage5({stage:5,transitionArtifact:transition,searchFromStage4:true,checks:[{id:"check-a",familyId:"family-a",boundaryId:"boundary-a",term:"apply",file:source,patterns:[{id:"apply",value:"apply",caseSensitive:true}]}],structuralChecks:[{id:"check-a",familyId:"family-a",boundaryId:"boundary-a",term:"apply",file:source,sourceHash:hash,obligationRefs:["leaf-a"]}],nameCoverages:[{id:"coverage-a",scope:root,terms:["apply"],mappedFiles:[source]}],pathCandidates:[{id:"path-a",familyId:"family-a",receiver:"view.js",boundaryRefs:["boundary-a"],obligationRefs:["leaf-a"]}],pathObligations:[{id:"leaf-a",frontier:"view.js",edgeRefs:["edge-a"],status:"unresolved",reason:"unconfirmed-edge"}],valueFlowEdges:[{id:"edge-a",status:"unresolved"}],pathDiscovery:{status:"complete",reasons:[],families:1}},{findLiteralNameCoverage:config=>({...config,complete:true,matchingFiles:[source]})});
+  const structuralUsage=result.confirmedUsages.find(usage=>!(usage.pathRefs||[]).length);
+  assert.equal(Boolean(structuralUsage),true,"structural match must surface as a neutral confirmed usage");
+  assert.equal(structuralUsage.status,"confirmed");
+  assert.equal(structuralUsage.evidenceRefs.length,1);
+  assert.equal(structuralUsage.evidenceRefs[0],result.canonicalEvidence.find(row=>row.usageKind==="structural-ast").id);
+  assert.match(structuralUsage.statement,/apply/);
+});
+
+test("manual Stage 5 records a declared complete zero-match check as absence evidence",async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),"absence-stage5-")),source=path.join(root,"model.js");fs.writeFileSync(source,"const other = 1;\n");
+  const transition=writeCanonicalTransition(root,4);
+  const absence={id:"absence-a",absenceClaim:true,file:source,pattern:"putInnerShadow",repository:"repo-a",searchScope:"src/**/*.js",reason:"No mutation API is expected for the target field",consequence:"Mutation capability stays closed as checked absence",expectedNames:["putInnerShadow","setInnerShadow"],performedChecks:["text"],ordersChecked:["first"],linkingMethodsChecked:["direct"]};
+  const result=await runStage5({stage:5,transitionArtifact:transition,checks:[absence],nameCoverage:{id:"coverage-a",scope:root,terms:["putInnerShadow"]}},{findExactNameCoverage:config=>({id:config.id,engine:"fixture",scope:root,terms:config.terms,filesScanned:3,matchingFileCount:0,matchingFiles:[],fileDigest:"x",matchingFileDigest:"y",query:{}})});
+  const row=(result.canonicalEvidence||[]).find(item=>item.id==="absence-absence-a");
+  assert.equal(Boolean(row),true,"declared complete zero-match check must produce absence evidence");
+  assert.equal(row.status,"checked-no-usage");
+  assert.equal(row.evidenceKind,"absence");
+  assert.equal(row.repository,"repo-a");
+  assert.deepEqual(row.expectedNames,["putInnerShadow","setInnerShadow"]);
+  assert.equal(row.resultComplete,true);
+  const positive={...absence,id:"absence-b",pattern:"other"};
+  const conflicted=await runStage5({stage:5,transitionArtifact:transition,checks:[positive],nameCoverage:{id:"coverage-a",scope:root,terms:["putInnerShadow"]}},{findExactNameCoverage:config=>({id:config.id,engine:"fixture",scope:root,terms:config.terms,filesScanned:3,matchingFileCount:1,matchingFiles:[source],fileDigest:"x",matchingFileDigest:"y",query:{}}),runEvidenceChecks:request=>({checks:request.checks.map(check=>({id:check.id,resultComplete:true,truncated:false,errors:[],totalMatches:1,fullMatches:[{file:source,line:1,endLine:1,sourceFragment:"const other = 1;",sourceHash:require("node:crypto").createHash("sha256").update(fs.readFileSync(source)).digest("hex")}]}))})});
+  assert.equal((conflicted.canonicalEvidence||[]).some(item=>item.id==="absence-absence-b"),false,"a check with matches must not produce absence evidence");
+});

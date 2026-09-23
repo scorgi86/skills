@@ -26,6 +26,7 @@ test("BDD: pipeline Stage 0 continues through full_run to Stage 8 with immutable
     checks: [{ id: "mutation", file: source, pattern: "setFeatureState" }] };
   const outputLimitation = { id: "receiver-output", status: "unknown", statement: "Mutation proof does not establish a complete receiver output path" };
   const scenario = { id: "construct-value", status: "confirmed", entry: "Construct FeatureValue", steps: ["Invoke FeatureValue constructor"], result: "An empty FeatureValue instance exists", evidenceRefs: ["definition-proof"] };
+  const neutralUsage = { id: "use-neutral", name: "FeatureValue", statement: "Confirmed structural construct/callee of FeatureValue in component.js", status: "confirmed", evidenceRefs: ["definition-proof"] };
   const criticalPath = { id: "construction-path", status: "confirmed", statement: "FeatureValue constructor creates an empty instance", scenarioRefs: [scenario.id], evidenceRefs: ["definition-proof"] };
   const capabilities = [...IDS].map(id => id === "definition" ? { id, status: "confirmed", evidenceRefs: ["definition-proof"] } : { id, status: "not-applicable", evidenceRefs: [], reasonCode: "architecture", explanation: `Fixture has no production ${id} layer` });
   const ownership = { expectedIds: ["model", "container", "owner"], groups: [
@@ -43,7 +44,7 @@ test("BDD: pipeline Stage 0 continues through full_run to Stage 8 with immutable
       "4": { recipientFamilies: [recipient], limitations: [outputLimitation] },
       "5": { checks: [{ id: "path", file: source, pattern: "renderFeature" }], nameCoverage: { id: "renderer", scope: root, terms: ["renderFeature"] } },
       "6": { mode: "feature-reference", featureReference: { target: "FeatureValue", referenceEntity: "Fixture", capabilities }, sourceSurfaces: ["definition", "construction"].map(role => ({ path: "component.js", layer: "model", role, status: "confirmed", evidenceRefs: ["definition-proof"] })) },
-      "7": { capabilities, evidenceSelectors: [{ stage: 6, limit: 10 }, { stage: 4, limit: 10 }], transition: { "next stage": "8" } }
+      "7": { capabilities, confirmedUsages: [neutralUsage], evidenceSelectors: [{ stage: 6, limit: 10 }, { stage: 4, limit: 10 }], transition: { "next stage": "8" } }
     }
   };
   pkg.stages[1].evidence.checks.push({ id: "definition-proof", file: source, repository: "fixture", pattern: "function FeatureValue", confirmation: proof });
@@ -98,6 +99,11 @@ test("BDD: pipeline Stage 0 continues through full_run to Stage 8 with immutable
   const implementationMap = fs.readFileSync(path.join(outputRoot, "stage-8", "implementation-map.md"), "utf8");
   assert.ok(implementationMap.includes(recipient.statement));
   assert.ok(fs.readFileSync(path.join(outputRoot, "stage-8", "decision-report.md"), "utf8").includes(outputLimitation.statement));
+  const neutralRow = model.confirmedUsages.find(row => row.id === neutralUsage.id);
+  assert.equal(Boolean(neutralRow), true);
+  assert.equal(neutralRow.status, "confirmed");
+  assert.equal((neutralRow.pathRefs || []).length, 0);
+  assert.ok(fs.readFileSync(path.join(outputRoot, "stage-8", "decision-report.md"), "utf8").includes(neutralUsage.statement));
   const metrics = JSON.parse(fs.readFileSync(result.metrics, "utf8"));
   assert.equal(metrics.stages.filter(row => row.status === "closed").length, 8);
   assert.equal(metrics.stages.some(row => row.stage === 0), false);

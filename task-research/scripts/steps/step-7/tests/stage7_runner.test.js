@@ -28,6 +28,16 @@ test("stage 7 is deterministic for shuffled input", () => { const { request } = 
 test("stage 7 rejects evidence-free confirmed usage", () => { const { request } = fixture(); assert.throws(() => buildStage7({ ...request, confirmedUsages: [{ id: "bad" }] }), /evidenceRefs/); });
 test("value-flow usages refer once to confirmed paths only",()=>{const paths=[{id:"confirmed",status:"confirmed"},{id:"candidate",status:"candidate"}];assert.equal(validateUsageProjection(paths,[{id:"ok",pathRefs:["confirmed"]}]).ok,true);for(const usages of [[{id:"candidate-use",pathRefs:["candidate"]}],[{id:"missing-use",pathRefs:[]}],[{id:"multi-use",pathRefs:["confirmed","candidate"]}]])assert.equal(validateUsageProjection(paths,usages).ok,false);});
 test("stage 7 rejects a full evidence index in its request", () => { const { request } = fixture(); assert.throws(() => buildStage7({ ...request, evidenceIndex: [{ id: "ev-direct" }] }), /bounded canonical evidence selectors/); });
+test("evidenced neutral usage passes the projection gate without a confirmed path",()=>{
+  const paths=[{id:"confirmed",status:"confirmed"}];
+  assert.equal(validateUsageProjection([],[{id:"evidenced",evidenceRefs:["ev-1"]}]).ok,true);
+  assert.equal(validateUsageProjection(paths,[{id:"both",pathRefs:["confirmed"],evidenceRefs:["ev-1"]}]).ok,true);
+  const stillMissing=validateUsageProjection(paths,[{id:"evidenced",evidenceRefs:["ev-1"]},{id:"path-use",pathRefs:["confirmed"]}]);
+  assert.equal(stillMissing.ok,true);
+  assert.equal(stillMissing.missing.length,0);
+  assert.equal(validateUsageProjection(paths,[{id:"evidenced",evidenceRefs:["ev-1"]}]).ok,false);
+  for(const usages of [[{id:"empty-evidence",pathRefs:[],evidenceRefs:[]}],[{id:"no-refs",pathRefs:["missing"],evidenceRefs:[]}]])assert.equal(validateUsageProjection(paths,usages).ok,false);
+});
 test("stage 7 rejects incomplete chains, wrong active tip, and unresolved questions",()=>{
  const {request,files}=fixture();
  assert.throws(()=>buildStage7({...request,priorArtifacts:files.slice(1)}),/reissue/);

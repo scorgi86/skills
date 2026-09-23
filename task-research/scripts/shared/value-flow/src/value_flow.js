@@ -69,9 +69,10 @@ function buildObligationTree(edges) {
   const incoming = edge => flowEdges.filter(candidate => candidate.id !== edge.id && same(candidate.to, edge.from));
   let pending=[...flowEdges];
   while(pending.length){let progressed=false;
-    for(const edge of [...pending]){const predecessors=incoming(edge),available=predecessors.map(row=>edgeToObligation.get(row.id)).filter(Boolean).sort();if(predecessors.length&&!available.length)continue;
-      const parentObligationRef=available[0]||null,parent=parentObligationRef&&obligations.find(row=>row.id===parentObligationRef),edgeRefs=unique([...(parent?.edgeRefs||[]),edge.id]),id=stableId("path-obligation",edgeRefs);
-      const unresolved=edge.status!=="source-confirmed"||predecessors.length>1||parent?.status==="unresolved",reason=edge.status!=="source-confirmed"?"unconfirmed-edge":predecessors.length>1?"merged-predecessors":parent?.status==="unresolved"?"unresolved-predecessor":undefined;
+    for(const edge of [...pending]){const predecessors=incoming(edge);
+      if(predecessors.length&&!predecessors.every(row=>edgeToObligation.has(row.id)))continue;
+      const predecessorIds=predecessors.map(row=>edgeToObligation.get(row.id)).filter(Boolean).sort(),parentObligationRef=predecessorIds[0]||null,predecessorObligations=predecessorIds.map(id=>obligations.find(row=>row.id===id)).filter(Boolean),edgeRefs=unique([...predecessorObligations.flatMap(row=>row.edgeRefs||[]),edge.id]),id=stableId("path-obligation",edgeRefs);
+      const unresolvedPredecessor=predecessorObligations.some(row=>row.status!=="open"),unresolved=edge.status!=="source-confirmed"||unresolvedPredecessor,reason=edge.status!=="source-confirmed"?"unconfirmed-edge":unresolvedPredecessor?"unresolved-predecessor":undefined;
       obligations.push({kind:"path-obligation",id,...(parentObligationRef?{parentObligationRef}:{}),edgeRefs,frontier:edge.to,status:unresolved?"unresolved":"open",...(reason?{reason}:{})});edgeToObligation.set(edge.id,id);pending=pending.filter(row=>row.id!==edge.id);progressed=true;
     }
     if(!progressed){for(const edge of pending){const id=stableId("path-obligation",[edge.id,"cycle"]);obligations.push({kind:"path-obligation",id,edgeRefs:[edge.id],frontier:edge.to,status:"unresolved",reason:"cycle"});edgeToObligation.set(edge.id,id);}break;}

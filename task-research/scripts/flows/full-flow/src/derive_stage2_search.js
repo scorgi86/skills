@@ -30,7 +30,7 @@ function candidateFiles(stage0, repo) {
   return files;
 }
 
-function deriveStage2Search(stage1, repositoryScope, maxOrder) {
+function deriveStage2Search(stage1, repositoryScope, maxOrder, options = {}) {
   if (!validateCanonicalStageResult(stage1).ok || stage1.stage !== 1 || stage1.status !== "closed") throw new Error("Stage 2 search requires a valid closed Stage 1 artifact");
   if (!Number.isInteger(maxOrder) || maxOrder < 0) throw new Error("Stage 2 automatic search requires ownershipGraphMaxOrder >= 0");
   const scope = normalizeRepositoryScope(repositoryScope, { requireExisting: false });
@@ -45,7 +45,7 @@ function deriveStage2Search(stage1, repositoryScope, maxOrder) {
   const graphValidation = validateOwnershipGraph(ownershipGraph);
   if (!graphValidation.ok) throw new Error(`Stage 1 ownership graph is invalid: ${graphValidation.errors.join("; ")}`);
   const stage0 = stage0Lineage(stage1, scope), discoveryTerms = cleanTerms(stage0.summary.seeds);
-  const valueFlowEnabled = ["full-inventory", "full-development"].includes(stage0.summary.coverageProfile?.kind);
+  const valueFlowEnabled = options.valueFlowEnabled !== false && ["full-inventory", "full-development"].includes(stage0.summary.coverageProfile?.kind);
   if (!discoveryTerms.length) throw new Error("Stage 0 canonical discovery terms are missing");
   const filesByRepo = new Map(scope.repositories.map(repo => [repo.id, candidateFiles(stage0, repo)]));
   const valueFlowRoots=cleanTerms([...discoveryTerms,...nodes.map(node=>node.entity)]);

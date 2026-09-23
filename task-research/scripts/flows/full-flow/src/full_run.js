@@ -115,13 +115,14 @@ function materializeStageRequest(pkg, stage, state = null) {
     Object.assign(request, require("./derive_stage1_search.js").deriveStage1Search(stage0, request.repositoryScope));
   }
   if (stage === 2 && template.searchFromStage1 === true) {
+    if (template.valueFlow !== undefined && template.valueFlow.enabled !== false) throw new Error("Stage 2 searchFromStage1 only accepts an explicit valueFlow disable");
     for (const field of ["ast", "evidence", "dictionary", "ownershipGraph", "ownershipGraphArtifact", "ownershipGraphNodes", "ownershipGraphCandidates", "ownershipFrontier", "frontierExhausted", "ownerDiscovery"]) {
       if (template[field] !== undefined) throw new Error(`Stage 2 searchFromStage1 conflicts with manual ${field} input`);
     }
     if (state.currentStage !== 2 || state.lastCompletedStage !== 1) throw new Error("Stage 2 automatic search requires active closed Stage 1 state");
     const stage1 = readCanonicalStageResult(request.transitionArtifact);
     if (stage1.summary?.target !== pkg.target) throw new Error("Stage 2 automatic search target differs from Stage 1");
-    Object.assign(request, require("./derive_stage2_search.js").deriveStage2Search(stage1, request.repositoryScope, template.ownershipGraphMaxOrder));
+    Object.assign(request, require("./derive_stage2_search.js").deriveStage2Search(stage1, request.repositoryScope, template.ownershipGraphMaxOrder, { valueFlowEnabled: template.valueFlow?.enabled !== false }));
   }
   if (stage === 3 && template.searchFromStage2 === true) {
     if (template.consumerScopes !== undefined) throw new Error("Stage 3 searchFromStage2 conflicts with manual consumerScopes input");

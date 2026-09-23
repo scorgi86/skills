@@ -1,0 +1,1348 @@
+{
+  "schemaVersion": "research-package/1.0.0",
+  "target": "Внутренние тени",
+  "repositoryScope": {
+    "repositories": [
+      {
+        "id": "sdkjs",
+        "root": "C:/work/r7/projects/sdkjs",
+        "role": "producer"
+      },
+      {
+        "id": "web-apps",
+        "root": "C:/work/r7/projects/web-apps",
+        "role": "consumer"
+      }
+    ]
+  },
+  "stages": {
+    "0": {
+      "stage6Decision": "skip",
+      "coverageProfile": {
+        "kind": "full-inventory",
+        "requiredCapabilities": [
+          "definition",
+          "ownership",
+          "storage",
+          "serialization",
+          "input",
+          "mutation",
+          "recipients",
+          "readback",
+          "render-output",
+          "lifecycle",
+          "theme-style",
+          "tests",
+          "reference"
+        ],
+        "requiredCollections": [
+          "scenarios",
+          "criticalPaths"
+        ]
+      },
+      "searchConcurrency": 2,
+      "seeds": {
+        "direct": [
+          "CInnerShadow",
+          "CInnerShadowProperty",
+          "CInnerShdw",
+          "innerShdw",
+          "innerShadow",
+          "getInnerShadow",
+          "putInnerShadow",
+          "isInnerShadow",
+          "InnerShadowEffectDefaults",
+          "EFFECT_TYPE_INNERSHDW",
+          "ReadInnerShdw",
+          "InnerShadowRenderer"
+        ]
+      },
+      "expectedLayers": [
+        "model",
+        "ownership",
+        "api",
+        "ui",
+        "serialization",
+        "render"
+      ]
+    },
+    "1": {
+      "searchFromStage0": true,
+      "ownership": {
+        "bootstrapSeed": "CInnerShadow"
+      }
+    },
+    "2": {
+      "searchFromStage1": true,
+      "ownershipGraphMaxOrder": 10,
+      "valueFlow": {
+        "enabled": false
+      }
+    },
+    "3": {
+      "searchFromStage2": true,
+      "consumerSearchProfiles": [
+        {
+          "id": "web-apps",
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx"
+          ],
+          "maxFiles": 25000,
+          "maxMatches": 1000
+        }
+      ]
+    },
+    "4": {
+      "searchFromStage3": true
+    },
+    "5": {
+      "checks": [
+        {
+          "id": "definition",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shadows\\InnerShadow.js",
+          "repository": "sdkjs",
+          "pattern": "export class CInnerShadow extends CBaseNoIdObject {",
+          "confirmation": {
+            "id": "definition",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shadows\\InnerShadow.js",
+            "line": 22,
+            "endLine": 22,
+            "sourceFragment": "export class CInnerShadow extends CBaseNoIdObject {",
+            "sourceHash": "b8c9acbc770b47cd77bb60a764ba91096c1fbc164d7f15c0d724d73e3ec5de54",
+            "evidenceRefs": [
+              "definition"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "storage",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "repository": "sdkjs",
+          "pattern": "this.innerShdw = null;",
+          "confirmation": {
+            "id": "storage",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+            "line": 7110,
+            "endLine": 7110,
+            "sourceFragment": "\t\t\tthis.innerShdw = null;",
+            "sourceHash": "8077391e5cd2d7e2fa2bb3ec8b444d855c47091ad977d6ca63367e84c4e2165e",
+            "evidenceRefs": [
+              "storage"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "copy-duplicate",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "repository": "sdkjs",
+          "pattern": "oCopy.innerShdw = this.innerShdw.createDuplicate();",
+          "confirmation": {
+            "id": "copy-duplicate",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+            "line": 7130,
+            "endLine": 7130,
+            "sourceFragment": "\t\t\t\toCopy.innerShdw = this.innerShdw.createDuplicate();",
+            "sourceHash": "8077391e5cd2d7e2fa2bb3ec8b444d855c47091ad977d6ca63367e84c4e2165e",
+            "evidenceRefs": [
+              "copyDuplicate"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "copy-merge",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "repository": "sdkjs",
+          "pattern": "this.innerShdw = effectLst.innerShdw.createDuplicate();",
+          "confirmation": {
+            "id": "copy-merge",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+            "line": 7157,
+            "endLine": 7157,
+            "sourceFragment": "\t\t\t\tthis.innerShdw = effectLst.innerShdw.createDuplicate();",
+            "sourceHash": "8077391e5cd2d7e2fa2bb3ec8b444d855c47091ad977d6ca63367e84c4e2165e",
+            "evidenceRefs": [
+              "copyMerge"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "copy-effect-props",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "repository": "sdkjs",
+          "pattern": "effectProps.EffectLst.innerShdw = shadow.createDuplicate();",
+          "confirmation": {
+            "id": "copy-effect-props",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+            "line": 7410,
+            "endLine": 7410,
+            "sourceFragment": "\t\t\t\teffectProps.EffectLst.innerShdw = shadow.createDuplicate();",
+            "sourceHash": "8077391e5cd2d7e2fa2bb3ec8b444d855c47091ad977d6ca63367e84c4e2165e",
+            "evidenceRefs": [
+              "copyEffectProps"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "binary-write",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\SerializeWriter.js",
+          "repository": "sdkjs",
+          "pattern": "oThis.WriteRecord2(3, oEffectLst.innerShdw, oThis.WriteEffect);",
+          "confirmation": {
+            "id": "binary-write",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\SerializeWriter.js",
+            "line": 4125,
+            "endLine": 4125,
+            "sourceFragment": "        oThis.WriteRecord2(3, oEffectLst.innerShdw, oThis.WriteEffect);",
+            "sourceHash": "457fa43cdb456c75e2580c8f7b3597f519ee8758eb2c390971dbd2a35631d9d3",
+            "evidenceRefs": [
+              "binaryWrite"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "binary-read-state",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+          "repository": "sdkjs",
+          "pattern": "this.innerShdw = new CInnerShadow();",
+          "confirmation": {
+            "id": "binary-read-state",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Format.js",
+            "line": 7242,
+            "endLine": 7242,
+            "sourceFragment": "\t\t\t\tthis.innerShdw = new CInnerShadow();",
+            "sourceHash": "8077391e5cd2d7e2fa2bb3ec8b444d855c47091ad977d6ca63367e84c4e2165e",
+            "evidenceRefs": [
+              "binaryReadState"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "binary-reader",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+          "repository": "sdkjs",
+          "pattern": "this.ReadInnerShdw = function()",
+          "confirmation": {
+            "id": "binary-reader",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+            "line": 2078,
+            "endLine": 2078,
+            "sourceFragment": "    this.ReadInnerShdw = function()",
+            "sourceHash": "5767b4f0ce21b6fd13eb6b3c61462e42dc6cd9191cc9b5a59ac1abf9d88d00d7",
+            "evidenceRefs": [
+              "binaryReader"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "binary-import",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+          "repository": "sdkjs",
+          "pattern": "oEffectLst.innerShdw = this.ReadInnerShdw();",
+          "confirmation": {
+            "id": "binary-import",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Shapes\\Serialize.js",
+            "line": 5270,
+            "endLine": 5270,
+            "sourceFragment": "                    oEffectLst.innerShdw = this.ReadInnerShdw();",
+            "sourceHash": "5767b4f0ce21b6fd13eb6b3c61462e42dc6cd9191cc9b5a59ac1abf9d88d00d7",
+            "evidenceRefs": [
+              "binaryImport"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "json-writer",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+          "repository": "sdkjs",
+          "pattern": "\"innerShdw\":   this.SerEffect(oEffectLst.innerShdw),",
+          "confirmation": {
+            "id": "json-writer",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+            "line": 2068,
+            "endLine": 2068,
+            "sourceFragment": "\t\t\t\"innerShdw\":   this.SerEffect(oEffectLst.innerShdw),",
+            "sourceHash": "ec9cfa8c309f9d551fc2863901a43ba1acea031518e076bba5265a0bc75976db",
+            "evidenceRefs": [
+              "jsonWriter"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "json-writer",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+          "repository": "sdkjs",
+          "pattern": "\"innerShdw\":   this.SerEffect(oEffectLst.innerShdw),",
+          "confirmation": {
+            "id": "json-writer",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+            "line": 2068,
+            "endLine": 2068,
+            "sourceFragment": "\t\t\t\"innerShdw\":   this.SerEffect(oEffectLst.innerShdw),",
+            "sourceHash": "ec9cfa8c309f9d551fc2863901a43ba1acea031518e076bba5265a0bc75976db",
+            "evidenceRefs": [
+              "jsonWriter"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "json-from-state",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+          "repository": "sdkjs",
+          "pattern": "oEffectLst.innerShdw = this.EffectFromJSON(oParsedLst[\"innerShdw\"]);",
+          "confirmation": {
+            "id": "json-from-state",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\word\\fromToJSON.js",
+            "line": 12135,
+            "endLine": 12135,
+            "sourceFragment": "\t\t\toEffectLst.innerShdw = this.EffectFromJSON(oParsedLst[\"innerShdw\"]);",
+            "sourceHash": "ec9cfa8c309f9d551fc2863901a43ba1acea031518e076bba5265a0bc75976db",
+            "evidenceRefs": [
+              "jsonFromState"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "mutation-api",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+          "repository": "sdkjs",
+          "pattern": "asc_CShapeProperty.prototype.putInnerShadow = function(shadow) {",
+          "confirmation": {
+            "id": "mutation-api",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+            "line": 4445,
+            "endLine": 4445,
+            "sourceFragment": "\tasc_CShapeProperty.prototype.putInnerShadow = function(shadow) {",
+            "sourceHash": "c14956702b43768a8dd69fb8cc892f79e356c5760cda7addb09b945ba2231449",
+            "evidenceRefs": [
+              "mutationApi"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "readback-api",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+          "repository": "sdkjs",
+          "pattern": "asc_CShapeProperty.prototype.getInnerShadow = function() {",
+          "confirmation": {
+            "id": "readback-api",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\apiCommon.js",
+            "line": 4436,
+            "endLine": 4436,
+            "sourceFragment": "\tasc_CShapeProperty.prototype.getInnerShadow = function() {",
+            "sourceHash": "c14956702b43768a8dd69fb8cc892f79e356c5760cda7addb09b945ba2231449",
+            "evidenceRefs": [
+              "readbackApi"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "ui-mutation",
+          "file": "C:\\work\\r7\\projects\\web-apps\\apps\\common\\main\\lib\\view\\ShapeShadowSettings.js",
+          "repository": "web-apps",
+          "pattern": "shapeProps.putInnerShadow(this.shadowProps);",
+          "confirmation": {
+            "id": "ui-mutation",
+            "repository": "web-apps",
+            "file": "C:\\work\\r7\\projects\\web-apps\\apps\\common\\main\\lib\\view\\ShapeShadowSettings.js",
+            "line": 139,
+            "endLine": 139,
+            "sourceFragment": "                shapeProps.putInnerShadow(this.shadowProps);",
+            "sourceHash": "4dfcf6af00c54e373ec22516b1989a9d6230308f27ba5f9413b948a15d8943d9",
+            "evidenceRefs": [
+              "uiMutation"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "render-pipeline",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+          "repository": "sdkjs",
+          "pattern": "return innerShadowRenderer.draw(this, graphics, geometry);",
+          "confirmation": {
+            "id": "render-pipeline",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+            "line": 1282,
+            "endLine": 1282,
+            "sourceFragment": "\t\treturn innerShadowRenderer.draw(this, graphics, geometry);",
+            "sourceHash": "bb31a6cc0483a1c3d69efe5f152160aac224fb6ace599b71ae390aad1b9f8765",
+            "evidenceRefs": [
+              "renderPipeline"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "recipients",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+          "repository": "sdkjs",
+          "pattern": "this.spPr = null;",
+          "confirmation": {
+            "id": "recipients",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+            "line": 465,
+            "endLine": 465,
+            "sourceFragment": "\t\tthis.spPr = null;",
+            "sourceHash": "bb31a6cc0483a1c3d69efe5f152160aac224fb6ace599b71ae390aad1b9f8765",
+            "evidenceRefs": [
+              "recipients"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "theme-defaults",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shadows\\InnerShadowEffectDefaults.js",
+          "repository": "sdkjs",
+          "pattern": "export const InnerShadowEffectDefaults = {",
+          "confirmation": {
+            "id": "theme-defaults",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\Shadows\\InnerShadowEffectDefaults.js",
+            "line": 8,
+            "endLine": 8,
+            "sourceFragment": "export const InnerShadowEffectDefaults = {",
+            "sourceHash": "18b01fdfe642345b81c6c2b34ac40b469309f1ea5343ac9155410590fa79bc75",
+            "evidenceRefs": [
+              "themeDefaults"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "theme-resolver",
+          "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+          "repository": "sdkjs",
+          "pattern": "innerShadow = parents.theme.getInnerShadow(compiledStyle.effectRef.idx);",
+          "confirmation": {
+            "id": "theme-resolver",
+            "repository": "sdkjs",
+            "file": "C:\\work\\r7\\projects\\sdkjs\\common\\Drawings\\Format\\GraphicObjectBase.js",
+            "line": 1049,
+            "endLine": 1049,
+            "sourceFragment": "\t\t\t\tinnerShadow = parents.theme.getInnerShadow(compiledStyle.effectRef.idx);",
+            "sourceHash": "bb31a6cc0483a1c3d69efe5f152160aac224fb6ace599b71ae390aad1b9f8765",
+            "evidenceRefs": [
+              "themeResolver"
+            ],
+            "status": "source-confirmed"
+          }
+        },
+        {
+          "id": "absence-tests-sdkjs",
+          "absenceClaim": true,
+          "files": [
+            "C:/work/r7/projects/sdkjs\\cell\\api\\Api.attachEvent.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\api\\ApiCustomProperties.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\api\\ApiRange.MetaData.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\api\\ApiRange.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\api\\AutoFilterSort.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\api\\SetSort.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\ParserFormulaDataTable.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\arithmeticalOperations.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\dataTable.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\financialFunctions.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\formulaWizardArguments.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\lookupandreferenceFunctions.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\lookupandreferenceFunctions\\match.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\lookupandreferenceFunctions\\xmatch.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\mathematicFunctions.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\parserFormula.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\parserFormulaUtils\\parseNum.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\statisticalFunctions.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\statisticalFunctions\\averageif.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\FormulaObjects\\textanddataFunctions.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\PivotTables.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\PivotTables\\ChangePivotWithRecalc.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\Serialize.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\Workbook.Cell.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\Workbook.Range.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\Workbook.SheetMemory.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\Workbook.Worksheet.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\Workbook.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\WorkbookElems.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\filtering\\CustomFilter.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\model\\helpers\\IterationRegister.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\StringBuilder.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\detectFractionString.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\findMonthIndex.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\hasInvalidLeadingZeros.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\isNumberInfinity.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\isRuLongDateLiteral.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\prepareUrlForDesktopEditorLoadLocalFileApi.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\setCellValueOnCsvTxtImportWithFormatAutoDetection\\__test__\\index.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\stringUtils.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\trim.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\tryConvertRuLongDateToShort.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\utils\\utils.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\view\\DialogSelectionRender.test.js",
+            "C:/work/r7/projects/sdkjs\\cell\\view\\WorksheetView.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\Charts\\ChartsDrawer.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser._parseDateFromArray.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser._parseStringLetters.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser._parseThouthand.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.isLeapYear.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.isLocaleNumber.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.isValidDate.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.isValidDay.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.parse.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.parseDate.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.parseLocaleNumber.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\FormatParser.strcmp.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\__tests__\\NumFormat\\testUtils.js",
+            "C:/work/r7/projects/sdkjs\\common\\apiCommon.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\array.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\editorscommon.ExternalRefParser.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\editorscommon.parserHelper.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\libfont\\test\\test.js",
+            "C:/work/r7/projects/sdkjs\\common\\lodash.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\range.test.js",
+            "C:/work/r7/projects/sdkjs\\common\\utils\\escapeRegExp.test.js",
+            "C:/work/r7/projects/sdkjs\\tests\\cell\\spreadsheet-calculation\\tests.js",
+            "C:/work/r7/projects/sdkjs\\tests\\cell\\spreadsheet-calculation\\testsForFWB.html.js",
+            "C:/work/r7/projects/sdkjs\\tests\\common\\editorscommon-test.js",
+            "C:/work/r7/projects/sdkjs\\tests\\jest\\jestGlobalTimeZone.test.js",
+            "C:/work/r7/projects/sdkjs\\tests\\jest\\test-utils.js",
+            "C:/work/r7/projects/sdkjs\\word\\Editor\\HeaderFooter.test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Editor\\Paragraph\\Hyphenator.test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Editor\\Table\\TableRecalculate.test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\LaTeXList\\accents-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\LaTeXList\\brackets-test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\LaTeXList\\degree-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\LaTeXList\\numericFunctions-test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\LaTeXList\\sqrt-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\LaTeXList\\style-test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\aboveAndBelow-test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\box-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\brackets-test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\fraction-test.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\hbrack-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\literal-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\script-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\special_scripts-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\Math\\.math-test\\UnicodeTestsList\\sqrt-tests.js",
+            "C:/work/r7/projects/sdkjs\\word\\api\\Api.attachEvent.test.js",
+            "C:/work/r7/projects/sdkjs\\word\\api\\ApiParagraph.AddText.test.js"
+          ],
+          "repository": "sdkjs",
+          "allowWideScope": true,
+          "maxFiles": 1000,
+          "pattern": {
+            "value": "innerShdw|CInnerShadow|InnerShadowEffectDefaults|putInnerShadow|getInnerShadow",
+            "regex": true,
+            "caseSensitive": false
+          },
+          "maxMatches": 20,
+          "searchScope": "sdkjs *test*.js population (91 files)",
+          "reason": "No automated inner-shadow test exists in the enumerated test files of this repository",
+          "consequence": "The tests capability stays closed as a complete checked absence; regressions have no automated protection",
+          "expectedNames": [
+            "innerShdw",
+            "CInnerShadow",
+            "InnerShadowEffectDefaults",
+            "putInnerShadow",
+            "getInnerShadow"
+          ],
+          "performedChecks": [
+            "content search of 91 enumerated *test*.js files"
+          ],
+          "ordersChecked": [
+            "direct term search over the full test-file population"
+          ],
+          "linkingMethodsChecked": [
+            "serialized name innerShdw",
+            "model class CInnerShadow",
+            "defaults InnerShadowEffectDefaults",
+            "API putInnerShadow/getInnerShadow"
+          ]
+        },
+        {
+          "id": "absence-tests-web",
+          "absenceClaim": true,
+          "files": [
+            "C:/work/r7/projects/web-apps\\build\\plugins\\grunt-inline\\test\\greedy_test.js",
+            "C:/work/r7/projects/web-apps\\build\\plugins\\grunt-inline\\test\\inline_test.js",
+            "C:/work/r7/projects/web-apps\\test\\unit-tests\\linkifyText.test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\jquery.browser\\test\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\jsrsasign\\jsrsasign-latest-all-min.js",
+            "C:/work/r7/projects/web-apps\\vendor\\megapixel\\test\\megapix-image.test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\testBaseUrl.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\anon\\anon-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\bundles\\bundles-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\circular-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\circular\\414\\414-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\circular\\circularPlugin-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\circular\\complexPlugin\\complexPlugin-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\circular\\transpiler\\transpiler-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\cjsSpace\\cjsDotRequire-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\cjsSpace\\cjsSpace-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\absolute\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\cyclic\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\determinism\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\exactExports\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\hasOwnProperty\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\method\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\missing\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\monkeys\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\nested\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\relative\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\commonjs\\tests\\modules\\1.0\\transitive\\test.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\definedSpecified\\definedSpecified-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\delayedDefine\\delayedDefine-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\domReady\\domReady-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\domReady\\domReadyExtraConfig-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\exports\\exports-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\exports\\moduleAndExports-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\hasOwnProperty\\hasOwnProperty-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\i18n\\testModule.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\isBrowser\\isBrowser-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\built\\mapConfig-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\built\\mapConfigPlugin-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\built\\mapConfigStar-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\built\\mapConfigStarAdapter-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfig-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigDelayed-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigMulti-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigPlugin-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigRelative-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigSpecificity-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigStar-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\mapConfig\\mapConfigStarAdapter-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\moduleConfig\\moduleConfig-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\nestedRequire\\nestedRequire-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\onResourceLoad\\nestedRequire-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\packagesNestedMain\\packagesNestedMain-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\packagesNodeAdapter\\packagesNodeAdapter-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\packagesNode\\packagesNode-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\packages\\packages-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\paths\\relativeModuleId-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\paths\\relativeNormalize\\relativeNormalize-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\delegated\\delegated-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\fromTextEvalError\\fromTextEvalError-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\fromTextNoDefine\\fromTextNoDefine-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\fromText\\fromText-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\fromText\\fromTextConfig-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\nameOnly-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\onerror\\onerror-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\pluginBundlesSeparateText\\pluginBundlesSeparateText-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\pluginBundles\\pluginBundles-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\pluginMapSameName\\pluginMapSameName-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\pluginMap\\pluginMap-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\pluginShim\\pluginShim-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\sync-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\plugins\\textDepend\\textDepend-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\relative\\relative-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\relative\\relativeBaseUrl-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\remoteUrls\\remoteUrls-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\requireAsync\\requireAsync-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\requirePluginLoad\\requirePluginLoad-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\shim\\basic-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\shim\\built\\basic-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\simple-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\specialDeps\\specialDeps-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\toUrl\\toUrl-tests.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\universal\\universal-tests-built-expected.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\universal\\universal-tests-built.js",
+            "C:/work/r7/projects/web-apps\\vendor\\requirejs\\tests\\universal\\universal-tests.js"
+          ],
+          "repository": "web-apps",
+          "allowWideScope": true,
+          "maxFiles": 1000,
+          "pattern": {
+            "value": "innerShdw|CInnerShadow|InnerShadowEffectDefaults|putInnerShadow|getInnerShadow",
+            "regex": true,
+            "caseSensitive": false
+          },
+          "maxMatches": 20,
+          "searchScope": "web-apps *test*.js population (85 files)",
+          "reason": "No automated inner-shadow test exists in the enumerated test files of this repository",
+          "consequence": "The tests capability stays closed as a complete checked absence; regressions have no automated protection",
+          "expectedNames": [
+            "innerShdw",
+            "CInnerShadow",
+            "InnerShadowEffectDefaults",
+            "putInnerShadow",
+            "getInnerShadow"
+          ],
+          "performedChecks": [
+            "content search of 85 enumerated *test*.js files"
+          ],
+          "ordersChecked": [
+            "direct term search over the full test-file population"
+          ],
+          "linkingMethodsChecked": [
+            "serialized name innerShdw",
+            "model class CInnerShadow",
+            "defaults InnerShadowEffectDefaults",
+            "API putInnerShadow/getInnerShadow"
+          ]
+        }
+      ],
+      "nameCoverage": {
+        "id": "inner-shadow-names",
+        "scope": "C:/work/r7/projects/sdkjs",
+        "terms": [
+          "innerShdw",
+          "CInnerShadow",
+          "InnerShadowEffectDefaults"
+        ],
+        "extensions": [
+          ".js"
+        ],
+        "maxFiles": 30000
+      },
+      "capabilities": [
+        {
+          "id": "reference",
+          "status": "not-applicable",
+          "reasonCode": "task-scope",
+          "explanation": "Stage 6 reference comparison was explicitly skipped for this run; no reference surfaces were researched"
+        }
+      ]
+    },
+    "6": {},
+    "7": {
+      "evidenceSelectors": [
+        {
+          "stage": 1,
+          "ids": [
+            "ev-0af0edf830324174",
+            "ev-1f9a26279e2b2b7b",
+            "ev-20b46517dcdee568",
+            "ev-2b8e0dbb37dcba62",
+            "ev-575c5635d3e958e9",
+            "ev-6e8287532f235b52",
+            "ev-6f9415df5dbc2d76",
+            "ev-86f0b99826437e43",
+            "ev-89768acf6aa98639",
+            "ev-a0290fe97d7c05fa",
+            "ev-b28998eecb1debe3",
+            "ev-b2d62b991c0d39fb",
+            "ev-b4016208d030b786",
+            "ev-c01900c04fb71eee",
+            "ev-d297464b79d2e23a",
+            "ev-e44922db9953139f",
+            "ev-ea6213c4acceb8ba"
+          ]
+        },
+        {
+          "stage": 2,
+          "ids": [
+            "ev-0af0edf830324174",
+            "ev-1c42c7612f6b37af",
+            "ev-1f9a26279e2b2b7b",
+            "ev-20b46517dcdee568",
+            "ev-2b8e0dbb37dcba62",
+            "ev-2bab1960cdd3d5a2",
+            "ev-2cff8364c0dccf05",
+            "ev-3c477f5c4c166e95",
+            "ev-4503b4722a3e5d30",
+            "ev-575c5635d3e958e9",
+            "ev-654afcfb5d252f46",
+            "ev-6e8287532f235b52",
+            "ev-6f9415df5dbc2d76",
+            "ev-89768acf6aa98639",
+            "ev-89c1ba62ef8c4e8d",
+            "ev-90a4d40a822fe55f",
+            "ev-9836df1b1239f298",
+            "ev-a0290fe97d7c05fa",
+            "ev-ac4c11351bec32c7",
+            "ev-b28998eecb1debe3",
+            "ev-b2d62b991c0d39fb",
+            "ev-b4016208d030b786",
+            "ev-c01900c04fb71eee",
+            "ev-d297464b79d2e23a",
+            "ev-e44922db9953139f",
+            "ev-e88efa37d3d97a94",
+            "ev-f990da19b732f270"
+          ]
+        },
+        {
+          "stage": 3,
+          "limit": 200
+        },
+        {
+          "stage": 4,
+          "limit": 200
+        },
+        {
+          "stage": 5,
+          "ids": [
+            "absence-absence-tests-sdkjs",
+            "absence-absence-tests-web",
+            "ev-0284955976c2b15a",
+            "ev-0cd69c82515fdd29",
+            "ev-288c1998359282c3",
+            "ev-446525cec3259799",
+            "ev-4503b4722a3e5d30",
+            "ev-5118014e11a3d15f",
+            "ev-654afcfb5d252f46",
+            "ev-71e62468bb914067",
+            "ev-9e8bc6ea6959663c",
+            "ev-b52d7b51335e9399",
+            "ev-c73ab434a9bea516",
+            "ev-c7f54176a412314b",
+            "ev-d00638aa77f634ee",
+            "ev-d82dae761ff69e56",
+            "ev-df466bc0f2ba2268",
+            "ev-eb6e5551c09b2224",
+            "ev-f737d51f9da92135"
+          ]
+        }
+      ],
+      "capabilities": [
+        {
+          "id": "storage",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-c7f54176a412314b"
+          ]
+        },
+        {
+          "id": "serialization",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-71e62468bb914067",
+            "ev-df466bc0f2ba2268",
+            "ev-eb6e5551c09b2224",
+            "ev-5118014e11a3d15f"
+          ]
+        },
+        {
+          "id": "input",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-0cd69c82515fdd29",
+            "ev-5118014e11a3d15f"
+          ]
+        },
+        {
+          "id": "mutation",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-4503b4722a3e5d30",
+            "ev-9e8bc6ea6959663c"
+          ]
+        },
+        {
+          "id": "recipients",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-0284955976c2b15a",
+            "ev-b52d7b51335e9399",
+            "ev-9e8bc6ea6959663c"
+          ]
+        },
+        {
+          "id": "readback",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-654afcfb5d252f46",
+            "ev-b52d7b51335e9399"
+          ]
+        },
+        {
+          "id": "render-output",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-b52d7b51335e9399",
+            "ev-9e8bc6ea6959663c"
+          ]
+        },
+        {
+          "id": "lifecycle",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-d00638aa77f634ee",
+            "ev-288c1998359282c3",
+            "ev-f737d51f9da92135"
+          ]
+        },
+        {
+          "id": "theme-style",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-d82dae761ff69e56",
+            "ev-446525cec3259799"
+          ]
+        },
+        {
+          "id": "tests",
+          "status": "checked-no-usage",
+          "repository": "sdkjs",
+          "searchScope": "sdkjs *test*.js population (91 files)",
+          "reason": "No automated inner-shadow test exists in the enumerated test files of this repository",
+          "consequence": "The tests capability stays closed as a complete checked absence; regressions have no automated protection",
+          "expectedNames": [
+            "innerShdw",
+            "CInnerShadow",
+            "InnerShadowEffectDefaults",
+            "putInnerShadow",
+            "getInnerShadow"
+          ],
+          "performedChecks": [
+            "content search of 91 enumerated *test*.js files"
+          ],
+          "ordersChecked": [
+            "direct term search over the full test-file population"
+          ],
+          "linkingMethodsChecked": [
+            "serialized name innerShdw",
+            "model class CInnerShadow",
+            "defaults InnerShadowEffectDefaults",
+            "API putInnerShadow/getInnerShadow"
+          ],
+          "resultComplete": true,
+          "resultTruncated": false,
+          "evidenceRefs": [
+            "absence-absence-tests-sdkjs"
+          ]
+        }
+      ],
+      "scenarios": [
+        {
+          "id": "sc-import",
+          "status": "confirmed",
+          "entry": "Open a document whose effects contain innerShdw",
+          "steps": [
+            "Reader parses the effect list",
+            "ReadInnerShdw builds CInnerShadow",
+            "The value is stored into CEffectLst.innerShdw"
+          ],
+          "result": "Inner shadow state exists in the document model",
+          "evidenceRefs": [
+            "ev-71e62468bb914067",
+            "ev-0cd69c82515fdd29",
+            "ev-c73ab434a9bea516"
+          ]
+        },
+        {
+          "id": "sc-export",
+          "status": "confirmed",
+          "entry": "Save or export the document",
+          "steps": [
+            "CEffectLst serializes its effects",
+            "innerShdw goes through Write_ToBinary and the JSON writer"
+          ],
+          "result": "The inner shadow survives save and export round trips",
+          "evidenceRefs": [
+            "ev-df466bc0f2ba2268",
+            "ev-eb6e5551c09b2224"
+          ]
+        },
+        {
+          "id": "sc-edit",
+          "status": "confirmed",
+          "entry": "User edits shadow settings in the shape panel",
+          "steps": [
+            "ShapeShadowSettings applies shadowProps",
+            "putInnerShadow writes the value into shape properties"
+          ],
+          "result": "The model holds the new inner shadow",
+          "evidenceRefs": [
+            "ev-9e8bc6ea6959663c",
+            "ev-4503b4722a3e5d30"
+          ]
+        },
+        {
+          "id": "sc-readback",
+          "status": "confirmed",
+          "entry": "UI or API reads current shadow properties",
+          "steps": [
+            "getInnerShadow returns the property value"
+          ],
+          "result": "Current inner shadow state is available to consumers",
+          "evidenceRefs": [
+            "ev-654afcfb5d252f46"
+          ]
+        },
+        {
+          "id": "sc-render",
+          "status": "confirmed",
+          "entry": "Draw a shape that owns an inner shadow",
+          "steps": [
+            "The draw pipeline reads getInnerShadow",
+            "InnerShadowRenderer paints the effect inside the geometry"
+          ],
+          "result": "The inner shadow is visible in the rendered output",
+          "evidenceRefs": [
+            "ev-b52d7b51335e9399"
+          ]
+        },
+        {
+          "id": "sc-copy",
+          "status": "confirmed",
+          "entry": "Duplicate a shape or merge effect properties",
+          "steps": [
+            "createDuplicate copies innerShdw",
+            "Effect property merge transfers the inner shadow"
+          ],
+          "result": "The inner shadow is preserved on copies and merged targets",
+          "evidenceRefs": [
+            "ev-d00638aa77f634ee",
+            "ev-288c1998359282c3",
+            "ev-f737d51f9da92135"
+          ]
+        }
+      ],
+      "criticalPaths": [
+        {
+          "id": "cp-import-state",
+          "status": "confirmed",
+          "statement": "Binary and JSON import reaches CEffectLst.innerShdw state",
+          "evidenceRefs": [
+            "ev-0cd69c82515fdd29",
+            "ev-5118014e11a3d15f",
+            "ev-c73ab434a9bea516"
+          ]
+        },
+        {
+          "id": "cp-state-export",
+          "status": "confirmed",
+          "statement": "CEffectLst.innerShdw state reaches binary and JSON export",
+          "evidenceRefs": [
+            "ev-df466bc0f2ba2268",
+            "ev-eb6e5551c09b2224"
+          ]
+        },
+        {
+          "id": "cp-ui-mutation-render",
+          "status": "confirmed",
+          "statement": "UI shadow editing reaches putInnerShadow and the render pipeline",
+          "evidenceRefs": [
+            "ev-9e8bc6ea6959663c",
+            "ev-4503b4722a3e5d30",
+            "ev-b52d7b51335e9399"
+          ]
+        },
+        {
+          "id": "cp-copy-lifecycle",
+          "status": "confirmed",
+          "statement": "Duplicate and merge preserve the inner shadow across object lifecycle",
+          "evidenceRefs": [
+            "ev-d00638aa77f634ee",
+            "ev-288c1998359282c3",
+            "ev-f737d51f9da92135"
+          ]
+        }
+      ],
+      "confirmedUsages": [
+        {
+          "id": "use-binary-roundtrip",
+          "name": "innerShdw",
+          "statement": "Confirmed serialization boundary: innerShdw is read from and written to the binary format",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-71e62468bb914067",
+            "ev-0cd69c82515fdd29",
+            "ev-df466bc0f2ba2268"
+          ]
+        },
+        {
+          "id": "use-json-roundtrip",
+          "name": "innerShdw",
+          "statement": "Confirmed serialization boundary: innerShdw round-trips through the Word JSON converter",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-eb6e5551c09b2224",
+            "ev-5118014e11a3d15f"
+          ]
+        },
+        {
+          "id": "use-copy-history",
+          "name": "innerShdw",
+          "statement": "Confirmed value copy: duplicate and merge operations transfer innerShdw between effect containers",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-d00638aa77f634ee",
+            "ev-288c1998359282c3",
+            "ev-f737d51f9da92135"
+          ]
+        },
+        {
+          "id": "use-ui-mutation",
+          "name": "putInnerShadow",
+          "statement": "Confirmed argument pass: the UI settings panel passes shadowProps into the putInnerShadow API",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-9e8bc6ea6959663c",
+            "ev-4503b4722a3e5d30"
+          ]
+        },
+        {
+          "id": "use-readback",
+          "name": "getInnerShadow",
+          "statement": "Confirmed value return: getInnerShadow returns the current inner shadow to consumers",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-654afcfb5d252f46"
+          ]
+        },
+        {
+          "id": "use-render",
+          "name": "getInnerShadow",
+          "statement": "Confirmed read for drawing: the draw pipeline reads the inner shadow and hands it to the renderer",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-b52d7b51335e9399"
+          ]
+        },
+        {
+          "id": "use-theme-defaults",
+          "name": "InnerShadowEffectDefaults",
+          "statement": "Confirmed composition: preset defaults and the theme effectRef resolver participate in inner shadow construction and readback",
+          "status": "confirmed",
+          "evidenceRefs": [
+            "ev-d82dae761ff69e56",
+            "ev-446525cec3259799"
+          ]
+        }
+      ],
+      "implementationEntryPoints": [
+        {
+          "id": "ie-model",
+          "status": "confirmed",
+          "statement": "Model storage of the inner shadow in CEffectLst.innerShdw",
+          "file": "sdkjs/common/Drawings/Format/Format.js",
+          "symbol": "CEffectLst.innerShdw",
+          "capabilityRefs": [
+            "storage"
+          ],
+          "scenarioRefs": [
+            "sc-import"
+          ],
+          "evidenceRefs": [
+            "ev-c7f54176a412314b"
+          ]
+        },
+        {
+          "id": "ie-api",
+          "status": "confirmed",
+          "statement": "Public mutation and readback API on asc_CShapeProperty",
+          "file": "sdkjs/common/apiCommon.js",
+          "symbol": "putInnerShadow/getInnerShadow",
+          "capabilityRefs": [
+            "mutation",
+            "readback"
+          ],
+          "scenarioRefs": [
+            "sc-edit",
+            "sc-readback"
+          ],
+          "evidenceRefs": [
+            "ev-4503b4722a3e5d30",
+            "ev-654afcfb5d252f46"
+          ]
+        },
+        {
+          "id": "ie-ui",
+          "status": "confirmed",
+          "statement": "Shape shadow panel applies shadowProps through the public API",
+          "file": "web-apps/apps/common/main/lib/view/ShapeShadowSettings.js",
+          "symbol": "putInnerShadow call",
+          "capabilityRefs": [
+            "mutation"
+          ],
+          "scenarioRefs": [
+            "sc-edit"
+          ],
+          "evidenceRefs": [
+            "ev-9e8bc6ea6959663c"
+          ]
+        },
+        {
+          "id": "ie-render",
+          "status": "confirmed",
+          "statement": "Inner shadow drawing through InnerShadowRenderer",
+          "file": "sdkjs/common/Drawings/Format/GraphicObjectBase.js",
+          "symbol": "drawInnerShadow",
+          "capabilityRefs": [
+            "render-output"
+          ],
+          "scenarioRefs": [
+            "sc-render"
+          ],
+          "evidenceRefs": [
+            "ev-b52d7b51335e9399"
+          ]
+        },
+        {
+          "id": "ie-serialization",
+          "status": "confirmed",
+          "statement": "Binary and JSON round-trip hooks",
+          "file": "sdkjs/common/Shapes/Serialize.js",
+          "symbol": "ReadInnerShdw",
+          "capabilityRefs": [
+            "serialization",
+            "input"
+          ],
+          "scenarioRefs": [
+            "sc-import",
+            "sc-export"
+          ],
+          "evidenceRefs": [
+            "ev-71e62468bb914067",
+            "ev-df466bc0f2ba2268",
+            "ev-eb6e5551c09b2224",
+            "ev-5118014e11a3d15f"
+          ]
+        },
+        {
+          "id": "ie-theme",
+          "status": "confirmed",
+          "statement": "Theme effectRef resolution and preset defaults",
+          "file": "sdkjs/common/Drawings/Format/GraphicObjectBase.js",
+          "symbol": "parents.theme.getInnerShadow",
+          "capabilityRefs": [
+            "theme-style"
+          ],
+          "evidenceRefs": [
+            "ev-446525cec3259799",
+            "ev-d82dae761ff69e56"
+          ]
+        },
+        {
+          "id": "ie-lifecycle",
+          "status": "confirmed",
+          "statement": "Duplicate and merge transfer the inner shadow",
+          "file": "sdkjs/common/Drawings/Format/Format.js",
+          "symbol": "createDuplicate",
+          "capabilityRefs": [
+            "lifecycle"
+          ],
+          "scenarioRefs": [
+            "sc-copy"
+          ],
+          "evidenceRefs": [
+            "ev-d00638aa77f634ee",
+            "ev-288c1998359282c3",
+            "ev-f737d51f9da92135"
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "gap-tests",
+          "status": "checked-no-usage",
+          "category": "test-gap",
+          "statement": "No automated inner-shadow tests exist; the mechanism has no regression protection",
+          "repository": "sdkjs",
+          "searchScope": "sdkjs *test*.js population (91 files)",
+          "reason": "No automated inner-shadow test exists in the enumerated test files of this repository",
+          "consequence": "The tests capability stays closed as a complete checked absence; regressions have no automated protection",
+          "expectedName": "inner shadow tests in sdkjs test directories",
+          "expectedPlace": "sdkjs test directories",
+          "expectedNames": [
+            "innerShdw",
+            "CInnerShadow",
+            "InnerShadowEffectDefaults",
+            "putInnerShadow",
+            "getInnerShadow"
+          ],
+          "performedChecks": [
+            "content search of 91 enumerated *test*.js files"
+          ],
+          "ordersChecked": [
+            "direct term search over the full test-file population"
+          ],
+          "linkingMethodsChecked": [
+            "serialized name innerShdw",
+            "model class CInnerShadow",
+            "defaults InnerShadowEffectDefaults",
+            "API putInnerShadow/getInnerShadow"
+          ],
+          "resultComplete": true,
+          "resultTruncated": false,
+          "evidenceRefs": [
+            "absence-absence-tests-sdkjs"
+          ],
+          "capabilityRefs": [
+            "tests"
+          ],
+          "scenarioRefs": [
+            "sc-import",
+            "sc-export",
+            "sc-edit",
+            "sc-readback",
+            "sc-render",
+            "sc-copy"
+          ]
+        }
+      ],
+      "checkedNoUsage": [
+        {
+          "id": "absence-tests-web-row",
+          "status": "checked-no-usage",
+          "repository": "web-apps",
+          "searchScope": "web-apps *test*.js population (85 files)",
+          "reason": "No automated inner-shadow test exists in the enumerated test files of this repository",
+          "consequence": "The tests capability stays closed as a complete checked absence; regressions have no automated protection",
+          "expectedNames": [
+            "innerShdw",
+            "CInnerShadow",
+            "InnerShadowEffectDefaults",
+            "putInnerShadow",
+            "getInnerShadow"
+          ],
+          "performedChecks": [
+            "content search of 85 enumerated *test*.js files"
+          ],
+          "ordersChecked": [
+            "direct term search over the full test-file population"
+          ],
+          "linkingMethodsChecked": [
+            "serialized name innerShdw",
+            "model class CInnerShadow",
+            "defaults InnerShadowEffectDefaults",
+            "API putInnerShadow/getInnerShadow"
+          ],
+          "resultComplete": true,
+          "resultTruncated": false,
+          "evidenceRefs": [
+            "absence-absence-tests-web"
+          ],
+          "capabilityRefs": [
+            "tests"
+          ]
+        }
+      ],
+      "transition": {
+        "next stage": "8"
+      }
+    }
+  }
+}

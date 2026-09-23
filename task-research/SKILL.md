@@ -37,6 +37,7 @@ Read only the references needed for the current operation.
 | Local AST queries | `references/ast-workflow.md`, `references/evidence-rules.md` |
 | Recipients, paths, paired mechanisms | `references/recipient-fanout.md`, `references/critical-paths.md`, `references/paired-mechanisms.md` as applicable |
 | Stage 7/8 report construction | `references/report-contract.md`, `references/report-model.schema.json`, `references/inventory-report-template.md` |
+| Comprehensive architecture report (how it works, who uses it, paths) | `references/architecture-report-template.md`, `fixtures/research-package/full-inventory-inner-shadows-example.json` |
 | Planning implementation work from inventory facts | `references/planning-contract.md`, `references/report-contract.md` |
 | Discussing or planning improvements to this skill itself | [Optimization directions](references/optimization-directions.md) — proposed roadmap, not runtime requirements |
 | Navigating script modules, entry points and tests | [Script structure](references/script-structure.md) |
