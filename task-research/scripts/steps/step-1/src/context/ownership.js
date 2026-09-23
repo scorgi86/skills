@@ -64,7 +64,7 @@ function normalizeOwnership(request, sourceEvidence, freshnessFileCache = new Ma
                 repository: group.repository || confirmation?.repository,
                 sourceFragment: group.sourceFragment,
                 id: group.id || `ownership-${index + 1}`,
-                order: group.order || "уточнить",
+                order: group.order ?? "уточнить",
                 role: group.role || "владелец/контейнер",
                 object: group.object || "",
                 relation: group.relation || "",

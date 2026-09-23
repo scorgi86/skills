@@ -39,7 +39,10 @@ function rawSummary(facts, artifact = null) {
                 groups: item.groupsTotal,
                 digest: item.groupDigest
             })),
-        ownership: (facts.ownership && facts.ownership.groups || []).map((item)=>({
+        ownership: facts.ownerDiscovery ? {
+            count: (facts.ownership?.groups || []).length,
+            digest: summaryDigest((facts.ownership?.groups || []).map(item => item.id))
+        } : (facts.ownership && facts.ownership.groups || []).map((item)=>({
                 id: item.id,
                 order: item.order,
                 role: item.role,
@@ -62,7 +65,13 @@ function rawSummary(facts, artifact = null) {
                 consumerRepos: item.consumerRepos,
                 status: item.status
             })),
-        coverage: facts.quality && facts.quality.coverageGate || null,
+        coverage: facts.ownerDiscovery && facts.quality?.coverageGate ? {
+            ...facts.quality.coverageGate,
+            errors: (facts.quality.coverageGate.errors || []).slice(0, 3),
+            errorCount: (facts.quality.coverageGate.errors || []).length,
+            warnings: (facts.quality.coverageGate.warnings || []).slice(0, 3),
+            warningCount: (facts.quality.coverageGate.warnings || []).length
+        } : facts.quality && facts.quality.coverageGate || null,
         measurements: {
             facts: facts.measurements && facts.measurements.facts || measureValue(facts)
         }

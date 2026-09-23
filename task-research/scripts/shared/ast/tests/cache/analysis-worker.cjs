@@ -135,7 +135,7 @@ try {
       assert.equal(analyzed.result.errors.length, 0);
       if (scenario === "disabled") {
         assert.equal(analyzed.cache, "disabled");
-        assert.equal(count.hash + count.cacheRead + count.cacheWrite, 0);
+        assert.equal(count.cacheRead + count.cacheWrite, 0);
       } else if (["corrupt", "cache-read-error", "write-error", "rename-error"].includes(scenario)) {
         assert.equal(analyzed.cache, "failed");
         assert.equal(analyzed.result.warnings.length, 1);

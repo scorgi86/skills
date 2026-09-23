@@ -161,6 +161,29 @@ test("package loader normalizes roots, freezes templates, and rejects runtime fi
   assert.throws(() => loadResearchPackage({ ...packageValue(root), stages: { ...packageValue(root).stages, "0": { coverageProfile: { kind: "bounded", requiredCapabilities: ["ownership"] } } } }), /seeds\.direct/);
 });
 
+test("BDD: Stage 6 is skipped only for a recorded skip decision", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "research-skip-package-"));
+  const legacy = loadResearchPackage(packageValue(root));
+  assert.equal(materializeStageRequest(legacy, 6, { canonicalArtifact: path.join(root, "stage5.json") }).mode, undefined);
+  const pkg = packageValue(root);
+  pkg.stages[0].stage6Decision = "skip";
+  const selected = loadResearchPackage(pkg);
+  assert.equal(materializeStageRequest(selected, 6, { canonicalArtifact: path.join(root, "stage5.json") }).mode, "skip");
+});
+
+test("BDD: continuation rejects a changed Stage 6 decision before another runner call", async t => {
+  const value = continuationFixture(t);
+  value.pkg.stages[0].stage6Decision = "skip";
+  const first = await runStagePipeline({ ...value, request: { ...value.request, stage6Decision: "skip" }, runner: request => ({ stage: 0, target: request.target, status: "candidate", summary: { stage6Decision: request.stage6Decision } }) });
+  const saved = savedFiles(first.artifact, first.evidence, first.manifest, value.stateFile);
+  const changed = structuredClone(value.pkg);
+  changed.stages[0].stage6Decision = "run";
+  let calls = 0;
+  await assert.rejects(runFullResearch({ ...value, package: changed, runStagePipeline: () => { calls++; throw new Error("unexpected runner"); } }), /Stage 6 decision conflicts/);
+  assert.equal(calls, 0);
+  assertSaved(saved);
+});
+
 test("action planner follows persisted state without rerunning closed stages", () => {
   assert.deepEqual(planNextAction(null), { kind: "run-stage", stage: 0 });
   assert.deepEqual(planNextAction({ currentStage: 3, lastCompletedStage: 2, execution: { runStatus: "running" } }), { kind: "run-stage", stage: 3 });
@@ -183,6 +206,8 @@ test("materializer derives lineage and selector artifacts from active state", ()
   assert.deepEqual(request.evidenceSelectors, [{ artifact: artifacts[2].artifact, limit: 12 }]);
   assert.equal(pkg.stages["7"].evidenceSelectors[0].artifact, undefined);
 });
+
+test("Stage 7 automatic handoff rejects manual report input",()=>{const root=fs.mkdtempSync(path.join(os.tmpdir(),"research-stage7-auto-")),base=packageValue(root);for(const field of ["evidenceSelectors","capabilities","criticalPaths"]){const stages=structuredClone(base.stages);stages["7"]={buildFromStage6:true,[field]:[]};assert.throws(()=>loadResearchPackage({...base,stages}),new RegExp(field));}});
 
 test("coordinator retries a partial stage and rejects scope drift before another runner call", async t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "research-retry-"));

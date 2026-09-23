@@ -8,11 +8,11 @@ Use this file for every full inventory, skill-test request, implementation-impac
 - Default a new full inventory to `continuous` plus `goal`. If no active goal/telemetry driver is available, record the fallback to `interactive` without asking merely for mode selection.
 - Execute consecutive stages only as allowed by `references/execution-levels.md`. Never begin a later stage before the previous stage has persisted, passed its gate, and advanced successfully.
 - Start at stage 0 unless the user supplies a valid artifact for a later stage.
-- End every stage with the gate template in this file, a `Stage Execution Report`, and an `Execution Status` block.
+- Persist each stage's gate, `Stage Execution Report`, and `Execution Status` internally. For the public full-run workflow, give the user the final result after Stage 8 rather than separate stage reports.
 - Persist and validate `canonical/stage-result.json` schema `4.0.0`. Markdown is an optional projection and never a transition input.
 - If context, tool limits, unresolved gates, or validation issues prevent reliable completion, keep the current stage partial and record exact open checks.
 - For `interactive`, resume on `продолжай`, `следующий этап`, or `этап N`. For `goal`, resume automatically after verifying the objective digest. In both cases consume the current artifact and previous stage results instead of restarting discovery.
-- Do not skip a stage silently. Mark a stage `неприменимо` inside its output, show evidence for that decision, close its DoD, and stop normally.
+- Do not skip a stage silently. Stage 6 comparison is optional: close a canonical `skip` artifact when `stage6Decision` is `skip`; do not search for analogs or claim their absence. Other non-applicable stages retain their existing evidence and DoD rules.
 - Final report generation is stage 8 work and is forbidden before that stage.
 - In `adaptive` mode, a stop at a closed stage boundary is invalid unless `Execution Status` contains a concrete stop condition from `execution-levels.md`. `Safe boundary`, `context reserve`, `complex next stage`, and `conservative estimate` are not valid stop reasons.
 
@@ -28,6 +28,8 @@ Use this file for every full inventory, skill-test request, implementation-impac
 If the requested stage is not the recorded next stage, explain the discontinuity. Proceed only when the missing stages are explicitly out of scope or the user accepts the resulting coverage gap.
 
 For Stage 3 → 4, keep the full Stage 3 artifact on disk for the runner, but use a bounded selector for the model's evidence review: `node scripts/index.js query_stage_artifacts --artifact <stage-3-artifact-dir> --limit 200`. Require `status: ok`; if the selector fails, do not advance. If `truncated: true`, query narrower file/repository slices before deciding. Treat returned evidence as candidates, not confirmed recipients or proof of absence. Build the Stage 4 recipient families using these candidates, prior ownership facts, and targeted source checks for receivers not represented in the Stage 3 selection; do not infer that the selection alone covers every receiver.
+
+For Stage 6 source-confirmed evidence, first select the repository, file, and inclusive line range on semantic grounds. When rows lack both `sourceHash` and `sourceFragment`, run `node scripts/index.js batch_source_anchors --request <stage-6-draft.json> --output <stage-6-ready.json>` before Stage 6; use the separate ready request only after `status: ok` and review of the filled rows. Stop on an error or unexpected count; the command does not select evidence or prove a claim. A standalone draft already has `stage: 6`, `repositoryScope`, and `canonicalEvidence`. For a `full_run` package, make the draft from `stages["6"]` plus `stage: 6` and the package-level `repositoryScope`, then copy only the ready `canonicalEvidence` back to `stages["6"]`; do not add runtime fields to the package template. Skip this preparation when no rows need filling.
 
 ## Execution Status Block
 
@@ -73,7 +75,7 @@ next step: <next stage, validation, or no-op if complete>
 | 3. Сценарии и старты | Find user and technical starts | Scenarios, starts, expected names | Frontend/product to core/sdk transition is shown or explicitly not applicable |
 | 4. Получатели | Find recipient families and concrete receivers | Recipient matrix and blast radius | Explicit and indirect receivers are checked for get/store/apply/return/output |
 | 5. Критические пути | Build end-to-end paths | Import/open/paste, user/API, state, save/export, lifecycle paths | Every path has source, state, readback/output or persistence; breaks are marked |
-| 6. Эталон и ожидаемая реализация | Compare with analog paths and identify expected implementation | Reference paths, gaps, expected locations | Each gap has expected path/name/place/owner/form/reason/scope/status |
+| 6. Эталон и ожидаемая реализация | When selected, compare with analog paths and identify expected implementation | Reference paths, gaps, expected locations; otherwise a closed skip artifact | Each selected gap has expected path/name/place/owner/form/reason/scope/status; skip has no analog claims |
 | 7. Каноническая модель отчёта | Assemble, normalize, validate, and repair the complete report model | Closed `inventory-report-model/2.0.0` JSON with canonical digest | Schema, references, semantics, coverage, evidence, and determinism pass; invalid models remain at Stage 7 |
 | 8. Финальная приемка и rendering | Revalidate the closed model read-only, calculate summary indicators, and render documents | Decision report, implementation map, evidence report, and manifest | Input hash is preserved, deterministic outputs are validated, and Stage 8 performs no research or repair |
 
@@ -133,3 +135,5 @@ The Stage 7 report model must be wrapped by canonical schema 4.0 with `stage: 7`
 ## Stage 8 Read-Only Contract
 
 Stage 8 accepts only a closed, hashed Stage 7 report model. Run model validation again without mutation, render deterministic documents, validate their structural correspondence, and write a manifest containing the input digest and output hashes. If input validation fails, mark Stage 8 `blocked`; do not research, repair, or reinterpret the model at Stage 8.
+
+For full profiles, Stage 2–5 also preserve structural value-flow obligations. A later source-confirmed fork splits an obligation into children; branches are not collapsed merely because they share a file or receiver. Stage 5 confirms a terminal path only when its obligation is open, every ancestry edge exists and is source-confirmed, and every mapped boundary has one exact current structural match. Unresolved leaves keep the stage partial. Stage 7 accounts for terminal leaves recursively. Positive leaves become separate usages, while checked absence and architectural N/A close their leaves without creating a positive usage.

@@ -62,6 +62,13 @@ test("direct Stage 0 requires declared capabilities before scanning", async () =
   await assert.rejects(runStage0(input, { spawn: () => assert.fail("invalid request scanned") }), /coverageProfile/);
 });
 
+test("Stage 0 retains the Stage 6 decision in its canonical summary", async () => {
+  const input = { ...request(os.tmpdir(), false), stage6Decision: "skip" };
+  const facts = await runStage0(input);
+  assert.equal(facts.summary.stage6Decision, "skip");
+  await assert.rejects(runStage0({ ...input, stage6Decision: "later" }), /stage6Decision/);
+});
+
 test("direct Stage 0 rejects blank seeds before scanning", async () => {
   const input = request(os.tmpdir(), false);
   input.seeds.direct = ["   "];
@@ -253,6 +260,10 @@ test("one repository failure stays local while other scans complete", async () =
       : childFor({ status: 0, stdout: "hit.js\n" })
   });
   assert.deepEqual(facts.scans.map(({ id, status }) => ({ id, status })), [{ id: "good", status: "candidate" }, { id: "bad", status: "partial" }]);
+  assert.equal(facts.status, "partial");
+  assert.match(facts.summary.repos[1].reason, /denied/);
+  assert.match(render(facts), /## Статус этапа\n\nчастичный/);
+  assert.match(render(facts), /- status: частичный/);
 });
 
 test("streamed rg output is not limited by a subprocess result buffer", async () => {

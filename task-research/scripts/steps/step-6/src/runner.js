@@ -47,8 +47,11 @@ function runStage6(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 6 || !request.transitionArtifact) throw new Error("Stage 6 requires stage and transitionArtifact");
   const previous = transitionForRequest(context, request) || JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
   const transition = extractTransition(previous);
-  const surfaces = normalizeSurfaces(request.sourceSurfaces);
   const mode = resolveMode(request);
+  if (mode === "skip") return { schemaVersion: "2.0.0", stage: 6, status: "candidate", mode,
+    transition: { ...transition, fields: { ...transition.fields, stage: "6", status: "closed", "next stage": "7", "open checks": "none" } },
+    sourceSurfaces: [], capabilities: [{ id: "reference", status: "not-applicable", reasonCode: "task-scope", explanation: "Reference comparison was not requested for this research", requiredForFinalReport: true }], priorArtifacts: request.priorArtifacts || [], openChecks: request.openChecks || [] };
+  const surfaces = normalizeSurfaces(request.sourceSurfaces);
   if (mode === "feature-reference") return attachEvidence(featureReference(request, transition, surfaces), request, previous);
   if (!["worktree-diff", "commit-range"].includes(mode) || !request.reference?.repo) throw new Error("Stage 6 mode must be feature-reference, worktree-diff, or commit-range");
   if (mode === "worktree-diff") {
@@ -79,6 +82,6 @@ function buildDiffResult({ request, transition, surfaces, mode, rawAndPatch, met
   return { schemaVersion: "2.0.0", stage: 6, status: "candidate", mode, transition, reference: { repo: path.resolve(request.reference.repo), ref: request.reference.ref || request.reference.to || metadata.parent, commit: metadata.commit, parent: metadata.parent, subject: metadata.subject, changedFiles: changedFiles.length, patchFormat: "unified=0", patchSha256: digest(fullPatch.trim()) }, sourceSurfaces: surfaceFacts, capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []), priorArtifacts: request.priorArtifacts || [], openChecks: request.openChecks || [] };
 }
 
-function buildSummary(result, output) { return { schemaVersion: result.schemaVersion, stage: result.stage, status: result.status, mode: result.mode, output: path.resolve(output), reference: { commit: result.reference.commit || null, changedFiles: result.reference.changedFiles ?? null, patchSha256: result.reference.patchSha256 || result.reference.sourcePathsDigest }, sourceSurfaces: { declared: result.sourceSurfaces.length, changed: result.sourceSurfaces.filter((surface) => surface.changed).length, aggregateSha256: digest(result.sourceSurfaces.map((surface) => `${surface.path}\u001f${surface.patchSha256 || surface.confirmed}`).join("\n")) }, openChecks: result.openChecks }; }
+function buildSummary(result, output) { return { schemaVersion: result.schemaVersion, stage: result.stage, status: result.status, mode: result.mode, output: path.resolve(output), reference: result.reference ? { commit: result.reference.commit || null, changedFiles: result.reference.changedFiles ?? null, patchSha256: result.reference.patchSha256 || result.reference.sourcePathsDigest } : null, sourceSurfaces: { declared: result.sourceSurfaces.length, changed: result.sourceSurfaces.filter((surface) => surface.changed).length, aggregateSha256: digest(result.sourceSurfaces.map((surface) => `${surface.path}\u001f${surface.patchSha256 || surface.confirmed}`).join("\n")) }, openChecks: result.openChecks }; }
 
 module.exports = { buildDiffResult, buildSummary, featureReference, parseNameStatus, parseRawNameStatus, resolveMode, runStage6, splitPatchSections };

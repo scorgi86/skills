@@ -6,6 +6,7 @@ const { validateStageArtifact } = require("./stage_artifact_v4.js");
 
 const fs = require("node:fs");
 const { artifactLocation } = require("./artifact_location.js");
+const { resolveExact } = require("./exact_evidence.js");
 
 function parseArgs(argv) {
   const options = { limit: 20 };
@@ -25,7 +26,8 @@ function queryStageArtifacts(options) {
   if (!validation.ok) throw new Error(`Invalid canonical stage artifact: ${validation.errors.join("; ")}`);
   const artifact = JSON.parse(fs.readFileSync(path.join(root, "canonical", "evidence.json"), "utf8"));
   const stageResult = JSON.parse(fs.readFileSync(path.join(root, "canonical", "stage-result.json"), "utf8"));
-  const expanded = (artifact.evidence || []).map((item) => ({ ...item, file: Number.isInteger(item.fileId) ? artifact.files[item.fileId] : item.file }));
+  const expanded = (artifact.evidence || []).map((item) => { const { fileId, ...row } = item; return { ...row, file: Number.isInteger(fileId) ? artifact.files[fileId] : item.file }; });
+  if(options.ids!==undefined){const evidence=resolveExact(expanded,options.ids,stageResult.summary?.repositoryScope);return {schemaVersion:"canonical-evidence-selector/4.0.0",status:"ok",stage:artifact.stage,totalMatched:evidence.length,returned:evidence.length,truncated:false,totalFactsMatched:0,factsReturned:0,facts:[],evidence};}
   const factAlias = options.capability ? { kind: "capability", value: options.capability } : options.scenario ? { kind: "scenario", value: options.scenario } : options.recipient ? { kind: "recipient-family", value: options.recipient } : options.gap ? { kind: "gap", value: options.gap } : options.path ? { kind: "critical-path", value: options.path } : options["implementation-entry"] ? { kind: "implementation-entry", value: options["implementation-entry"] } : null;
   const evidenceFor = options["evidence-for"];
   const factRequested = Boolean(options["fact-kind"] || options["fact-id"] || factAlias || evidenceFor);

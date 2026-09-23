@@ -15,7 +15,8 @@ const { initialState } = require("../../state/src/state_model.js");
 const { InventorySession } = require("../../state/src/session/inventory_session.js");
 const { runFullResearch } = require("../../flows/full-flow/src/full_run.js");
 const { buildStage7 } = require("../../steps/step-7/src/runner.js");
-function fixture(t, kind = "full-inventory") {
+const { transitionFields } = require("../../shared/dto/tests/test_helpers.js");
+function fixture(t, kind = "full-inventory", lastStage = 6, stage6Decision) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "profile-bdd-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const text = "function loadEffect() { return 1; }\n";
@@ -28,8 +29,8 @@ function fixture(t, kind = "full-inventory") {
   new StateStore(stateFile).create(initialState("continuous"));
   // Saved canonical fixtures bypass execution of new Stage 0; no-kind fixtures
   // exercise an existing research run, not the new-run enforcement seam.
-  for (let stage = 0; stage <= 6; stage++) {
-    const artifact = writeStageArtifact({ outputDir: path.join(outputRoot, `stage-${stage}`), facts: { stage, status: "closed", target: "Effect", repositoryScope, summary: { coverageProfile: profile, lineage: stage ? buildLineageFromPrevious(files.at(-1), stage, repositoryScope) : [] }, capabilities: stage === 0 ? capabilities : [], canonicalEvidence: [evidence] }, input: { stage } });
+  for (let stage = 0; stage <= lastStage; stage++) {
+    const artifact = writeStageArtifact({ outputDir: path.join(outputRoot, `stage-${stage}`), facts: { stage, status: "closed", target: "Effect", repositoryScope, ...(stage === 5 && lastStage === 5 ? { transition: { schemaVersion: "1.0.0", valid: true, missing: [], fields: transitionFields(5) } } : {}), summary: { coverageProfile: profile, ...(stage === 0 && stage6Decision ? { stage6Decision } : {}), lineage: stage ? buildLineageFromPrevious(files.at(-1), stage, repositoryScope) : [] }, capabilities: stage === 0 ? capabilities : [], canonicalEvidence: [evidence] }, input: { stage } });
     files.push(artifact.resultFile);
     InventorySession.open({ stateFile }).advanceStage(stage, artifact.resultFile);
   }
@@ -37,6 +38,22 @@ function fixture(t, kind = "full-inventory") {
   const pkg = { schemaVersion: "research-package/1.0.0", target: "Effect", repositoryScope, stages: Object.fromEntries(Array.from({ length: 8 }, (_, stage) => [stage, stage === 0 ? { coverageProfile: profile, seeds: { direct: ["Effect"] } } : stage === 7 ? { capabilities, scenarios: request.scenarios, criticalPaths: request.criticalPaths, evidenceSelectors: [{ stage: 0, limit: 10 }] } : {}])) };
   return { root, profile, files, request, pkg, stateFile, outputRoot };
 }
+test("BDD: skipped reference research closes Stage 6 through Stage 8", async t => {
+  const value = fixture(t, "full-inventory", 5, "skip");
+  value.pkg.stages[0].stage6Decision = "skip";
+  const result = await runFullResearch({ package: value.pkg, stateFile: value.stateFile, outputRoot: value.outputRoot });
+  assert.equal(result.status, "complete");
+  const state = JSON.parse(fs.readFileSync(value.stateFile));
+  assert.deepEqual(state.activeArtifacts.map(row => row.stage), [0, 1, 2, 3, 4, 5, 6, 7]);
+  const stage6 = JSON.parse(fs.readFileSync(state.activeArtifacts[6].artifact));
+  assert.equal(stage6.status, "closed");
+  assert.deepEqual(stage6.facts.filter(row => row.kind === "reference-path"), []);
+  const model = JSON.parse(fs.readFileSync(state.stage7Artifact)).facts[0].model;
+  const reference = model.capabilities.find(row => row.id === "reference");
+  assert.equal(reference.status, "not-applicable");
+  assert.equal(reference.reasonCode, "task-scope");
+  assert.deepEqual(model.referencePaths, []);
+});
 test("BDD: full inventory keeps obligations and renders a structured scenario", async t => {
   const value = fixture(t);
   const result = await runFullResearch({ package: value.pkg, stateFile: value.stateFile, outputRoot: value.outputRoot });

@@ -14,6 +14,7 @@ const { validateReportModel } = require("../../../shared/report/src/model/valida
 const { run: runStage8, unwrapModel } = require("../../../steps/step-8/src/runner.js");
 const { runAstBatch } = require("../../../shared/ast/src/batch/batch.js");
 const { SourceSnapshotStore } = require("../../../shared/evidence/src/source_snapshot.js");
+const { writeCanonicalTransition } = require("../../../shared/dto/tests/test_helpers.js");
 
 function astSemantic(value) {
   const copy = JSON.parse(JSON.stringify(value));
@@ -56,6 +57,26 @@ test("BDD: pipeline shares one source snapshot between evidence collection and d
 });
 
 test("pipeline carries declared planning facts into canonicalization input", async () => { const result = carryPlanningFacts({ gaps: [{ id: "gap", expectedPath: "export" }] }, { stage: 6, status: "candidate", gaps: [{ id: "gap", status: "partial" }] }); assert.equal(result.gaps.length, 1); assert.equal(result.gaps[0].expectedPath, "export"); assert.equal(result.gaps[0].status, "partial"); });
+
+test("BDD: Stage 1 pipeline keeps large evidence outside its facts budget", async t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "pipeline-stage1-budget-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const source = path.join(root, "component.js");
+  fs.writeFileSync(source, Array.from({ length: 300 }, (_, index) => `const FeatureValue${index} = FeatureValue; // retained evidence ${"x".repeat(48)}`).join("\n"));
+  const repositoryScope = { repositories: [{ id: "fixture", root, role: "source" }] };
+  const transitionArtifact = writeCanonicalTransition(root, 0, { facts: { repositoryScope } });
+  const result = await runStagePipeline({ outputRoot: path.join(root, "artifacts"), dependencies: { runGitNexusContext: () => ({ status: "candidate", requests: [], context: {} }) }, request: {
+    stage: 1, target: "FeatureValue", transitionArtifact, repositoryScope, sourceRoot: root,
+    budgets: { factsBytes: 8 * 1024, summaryBytes: 8 * 1024 },
+    ast: { queries: [{ id: "owners", command: "find", file: source, options: { terms: "FeatureValue" }, includeDetails: true, maxDetails: 300 }] },
+    evidence: { checks: [{ id: "owners", file: source, pattern: "FeatureValue", maxMatches: 300 }] },
+    ownership: { expectedIds: ["model"], groups: [{ id: "model", order: 1, role: "model", object: "FeatureValue", relation: "defines", anchor: { file: source, line: 1 }, evidenceRefs: [] }] },
+    coverageContract: { categories: [{ id: "direct-model", status: "applicable", groupIds: ["model"] }], baseline: { ownershipIds: ["model"] } }
+  } });
+  assert.equal(result.status, "closed");
+  const evidence = JSON.parse(fs.readFileSync(result.evidence, "utf8")).evidence;
+  assert.ok(evidence.length >= 300);
+});
 
 test("fact ids do not implicitly attach every result of a same-named query", () => {
   const { prepareFacts } = require("../../../shared/artifacts/src/canonical/facts.js");

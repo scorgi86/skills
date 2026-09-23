@@ -3,7 +3,7 @@ const path = require("node:path");
 
 const FORMAT_VERSION = "2";
 // Bump when symbol/relation/evidence extraction or its dependencies change.
-const ANALYZER_VERSION = "1";
+const ANALYZER_VERSION = "8";
 
 function createIdentity(content, filename, parser, versions = {}) {
   const identity = {
@@ -15,4 +15,4 @@ function createIdentity(content, filename, parser, versions = {}) {
   };
   return { ...identity, key: crypto.createHash("sha256").update(JSON.stringify(identity)).digest("hex") };
 }
-module.exports = { createIdentity };
+module.exports = { ANALYZER_VERSION, FORMAT_VERSION, createIdentity };

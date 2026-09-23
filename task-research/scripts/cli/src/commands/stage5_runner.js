@@ -2,11 +2,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { runStage5, buildSummary } = require("../../../steps/step-5/src/runner.js");
-function main() {
+async function main() {
     try {
         const requestIndex = process.argv.indexOf("--request");
         if (requestIndex < 0 || !process.argv[requestIndex + 1]) throw new Error("Provide --request <json-file>");
-        const result = runStage5(JSON.parse(fs.readFileSync(path.resolve(process.argv[requestIndex + 1]), "utf8")));
+        const result = await runStage5(JSON.parse(fs.readFileSync(path.resolve(process.argv[requestIndex + 1]), "utf8")));
         const outputIndex = process.argv.indexOf("--output");
         if (outputIndex >= 0) {
             if (!process.argv[outputIndex + 1]) throw new Error("Provide a file after --output");

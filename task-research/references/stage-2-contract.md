@@ -12,6 +12,10 @@ DoD: every added object must record its relation method/property, reason, reposi
 
 If Stage 1 facts contain `ownershipGraph`, pass them through `ownershipGraphArtifact`. Add only source-confirmed candidate nodes in `ownershipGraphNodes` and owner-to-child edges in `ownershipGraphCandidates`; the runner calculates the next order, deduplicates nodes, retains cycles, and rejects dangling higher-order nodes. Stop at the request-defined maximum order, scope boundary, or an empty confirmed frontier.
 
+For continuous runs, `searchFromStage1: true` with an integer `ownershipGraphMaxOrder` performs that handoff from canonical facts. The decision gate has four outcomes: confirmed delta closes as `advanced`; a reached limit or complete empty search closes the ownership frontier as `exhausted`; incomplete source/AST evidence stays `partial`; an invalid graph is blocked. Ownership exhaustion skips owner discovery only. Exact boundary occurrence queries still cover every Stage 0 JS/TS candidate in the declared producer and consumer repositories, using the Stage 0 term dictionary and the same one-pass AST analysis.
+
+The canonical summary records boundary discovery as `complete` when exact producer-consumer pairs were created, `exhausted` when the complete scan found none, or `partial` when roles, files, parsing, source freshness, or result completeness are insufficient. A boundary candidate records a search obligation; it does not claim semantic value or call flow.
+
 ## Required Input
 
 Read only the structured transition artifact from stage 1. It must contain target, scope, stage, status, confirmed evidence, candidate evidence, dictionary/graph/path state, skipped/forbidden sources, open checks, and next stage.

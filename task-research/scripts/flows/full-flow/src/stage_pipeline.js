@@ -66,11 +66,13 @@ async function runStagePipeline(options = {}) {
   if (!request || !Number.isInteger(Number(request.stage))) throw new Error("Pipeline request requires stage 0..7");
   const stage = Number(request.stage);
   if (stage < 0 || stage > 7) throw new Error("Pipeline request requires stage 0..7");
-  if (stage === 0 && !options.runner && (!Array.isArray(request.seeds?.direct) || !request.seeds.direct.length || request.seeds.direct.some(seed => typeof seed !== "string" || !seed.trim()))) throw new Error("Stage 0 requires non-empty string seeds.direct");
-  const execution = stage === 0 ? require("../../../steps/step-0/src/execution_scope.js").resolveExecutionScope(request) : null;
-  if (!execution) normalizeRepositoryScope(request.repositoryScope, { requireExisting: request.requireExistingRoots !== false });
-  const initialProfile = stage === 0 ? require("./coverage_profile.js").coverageProfile(request) : undefined;
   const outputRoot = options.outputRoot || defaultOutputRoot(request, options.cwd);
+  const preflight = require("./preflight_stage_request.js").preflightStageRequest(request, {
+    outputRoot, stateFile: options.stateFile, runnerInjected: Boolean(options.runner)
+  });
+  if (preflight.status === "error") throw new Error(preflight.errors.map(item => item.message).join("; "));
+  const execution = stage === 0 ? require("../../../steps/step-0/src/execution_scope.js").resolveExecutionScope(request) : null;
+  const initialProfile = stage === 0 ? require("./coverage_profile.js").coverageProfile(request) : undefined;
   require("./output_readiness.js").assertOutputReady(outputRoot);
   const session = InventorySession.open(options.stateFile ? { stateFile: options.stateFile } : {});
   return session.beginStage({ outputRoot, stage, request, stateFile: options.stateFile,
@@ -87,15 +89,16 @@ async function runStagePipeline(options = {}) {
           || digestLineage(previous.canonical.summary.repositoryScope) !== digestLineage(request.repositoryScope))) {
         throw new Error("Partial artifact has missing or different scope/stage; reissue the stage and dependent artifacts without modifying the original");
       }
-      const active = options.stateFile ? session.assertStage(stage).state : null;
-      const transitionArtifact = request.transitionArtifact ? require("../../../shared/artifacts/src/artifact_location.js").canonicalResultPath(path.resolve(request.artifactBase || process.cwd(), request.transitionArtifact)) : active?.canonicalArtifact;
-      if (active?.canonicalArtifact && transitionArtifact && transitionArtifact !== active.canonicalArtifact) throw new Error("Transition artifact is not the active state revision");
-      const stageContext = session.loadStageContext({ stage, previous: previous?.canonical || null,
+      const effective7 = stage === 7 ? require("./effective_stage7_request.js").effectiveStage7Request(session, request, options.stateFile, previous?.canonical || null) : null;
+      const active = options.stateFile && !effective7 ? session.assertStage(stage).state : null;
+      const transitionArtifact = effective7 ? effective7.request.transitionArtifact : request.transitionArtifact ? require("../../../shared/artifacts/src/artifact_location.js").canonicalResultPath(path.resolve(request.artifactBase || process.cwd(), request.transitionArtifact)) : active?.canonicalArtifact;
+      if (!effective7 && active?.canonicalArtifact && transitionArtifact && transitionArtifact !== active.canonicalArtifact) throw new Error("Transition artifact is not the active state revision");
+      const stageContext = effective7 ? effective7.context : session.loadStageContext({ stage, previous: previous?.canonical || null,
         repositoryScope: request.repositoryScope, transitionArtifact: active?.canonicalArtifact || request.transitionArtifact,
         artifactBase: request.artifactBase });
       const { lineage } = stageContext;
       const profile = stage === 0 ? initialProfile : require("./coverage_profile.js").coverageProfile(request, lineage);
-      const runnerRequest = withRuntimeAstCache({ ...request, ...(transitionArtifact ? { transitionArtifact } : {}), ...(stage === 7 ? { expectedArtifact: active?.canonicalArtifact } : {}) }, outputRoot);
+      const runnerRequest = withRuntimeAstCache(effective7 ? effective7.request : { ...request, ...(transitionArtifact ? { transitionArtifact } : {}) }, outputRoot);
       const sourceSnapshots = [1, 2].includes(stage) ? options.dependencies?.sourceSnapshots || new SourceSnapshotStore() : null;
       const runnerDependencies = { ...(options.dependencies || {}), ...(sourceSnapshots ? { sourceSnapshots } : {}), deferCanonicalization: stage !== 7 };
       const runnerResult = await (options.runner || runnerFor(stage))(runnerRequest, runnerDependencies, stageContext);
@@ -131,10 +134,11 @@ async function runStagePipeline(options = {}) {
         const remappedProduced = remapEvidenceReferences(produced, aliases);
         const receipts = remapEvidenceReferences(request.checkResolutions || remappedProduced.checkResolutions || [], aliases);
         const resolved = resolveChecks(context.canonical, { ...remappedProduced, ...(request.checkRequirements === undefined ? {} : { checkRequirements: request.checkRequirements }), openChecks: [...new Set([...(request.openChecks || []), ...(remappedProduced.openChecks || [])])] }, receipts, [...evidence.values()], request.repositoryScope);
-        assertPlanningOutput({ ...resolved, repositoryScope: request.repositoryScope }, [...evidence.values()], profile, sourceSnapshots, suppliedFacts);
-        facts = { ...resolved, repositoryScope: request.repositoryScope, exclusions: execution ? execution.exclusions : request.exclusions || [],
-          canonicalEvidence: [...evidence.values()], status: transactionStatus(resolved), runnerStatus: produced.status || "unknown",
-          summary: { ...resolved.summary, ...(produced.evidenceDiagnostics?.length ? { evidenceDiagnostics: produced.evidenceDiagnostics } : {}), ...(profile === undefined ? {} : { coverageProfile: profile }), ...(execution ? { executionScope: execution.descriptor } : {}), runnerStatus: produced.status || "unknown", lineage, checkHistory: previous ? [...(previous.canonical.summary.checkHistory || []), { artifact: path.join(archived, "canonical/stage-result.json"), outputDigest: previous.canonical.outputDigest }] : [] } };
+        const finalized = stage === 1 ? require("../../../steps/step-1/src/runner.js").finalizeStage1Facts(resolved, { evaluateCoverage: Boolean(resolved.quality?.coverageGate) }) : resolved;
+        assertPlanningOutput({ ...finalized, repositoryScope: request.repositoryScope }, [...evidence.values()], profile, sourceSnapshots, suppliedFacts);
+        facts = { ...finalized, repositoryScope: request.repositoryScope, exclusions: execution ? execution.exclusions : request.exclusions || [],
+          canonicalEvidence: [...evidence.values()], status: transactionStatus(finalized), runnerStatus: produced.status || "unknown",
+          summary: { ...finalized.summary, ...(produced.evidenceDiagnostics?.length ? { evidenceDiagnostics: produced.evidenceDiagnostics } : {}), ...(profile === undefined ? {} : { coverageProfile: profile }), ...(execution ? { executionScope: execution.descriptor } : {}), runnerStatus: produced.status || "unknown", lineage, checkHistory: previous ? [...(previous.canonical.summary.checkHistory || []), { artifact: path.join(archived, "canonical/stage-result.json"), outputDigest: previous.canonical.outputDigest }] : [] } };
       } else {
         // Model mutation here would invalidate the Stage7 digest.
         if (digestLineage(facts.provenance?.lineage) !== digestLineage(lineage)) throw new Error("Stage 7 model must preserve the validated active lineage");

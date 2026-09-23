@@ -48,11 +48,19 @@ function inferExpression(node, index, scope) {
   if (node.type === "ObjectExpression") return { type: "object", confidence: "exact" };
   if (node.type === "Identifier") {
     const resolved = index.resolve(node.value, scope);
-    return { type: resolved.type, confidence: resolved.type === "unknown" ? "candidate" : "resolved", resolvedVia: resolved.resolvedVia };
+    return { type: resolved.type, confidence: resolved.confidence || (resolved.type === "unknown" ? "candidate" : "resolved"), ownerProof: resolved.ownerProof, resolvedVia: resolved.resolvedVia };
   }
   if (node.type === "ConditionalExpression") {
     const left = inferExpression(node.consequent, index, scope);
     const right = inferExpression(node.alternate, index, scope);
+    const deferredClone = (callNode, newNode) => {
+      if (callNode?.type !== "CallExpression" || newNode?.type !== "NewExpression") return null;
+      const call = memberInfo(callNode.callee), type = expressionName(newNode.callee);
+      if (!call || !["clone", "createDuplicate"].includes(call.property) || expressionName(node.test) !== call.object || !type) return null;
+      return { type: "unknown", candidateTypes: [type], confidence: "ambiguous", ownerProof: { kind: "exact-method-return", ownerType: type, method: call.property, returnType: type } };
+    };
+    const deferred = deferredClone(node.consequent, node.alternate) || deferredClone(node.alternate, node.consequent);
+    if (deferred) return deferred;
     return left.type === right.type ? left : { type: "unknown", candidateTypes: [...new Set([left.type, right.type].filter((x) => x !== "unknown"))], confidence: "ambiguous" };
   }
   if (node.type === "CallExpression") {
@@ -62,7 +70,7 @@ function inferExpression(node, index, scope) {
     const receiver = callee.match(/^(.+)\.(?:clone|createDuplicate)$/);
     if (receiver) {
       const resolved = index.resolve(receiver[1], scope);
-      return { type: resolved.type, candidateType: resolved.type, confidence: "name-inferred", resolvedVia: resolved.resolvedVia };
+      return { type: resolved.type, candidateType: resolved.type, confidence: "name-inferred", ownerProof: resolved.ownerProof, resolvedVia: resolved.resolvedVia };
     }
   }
   return { type: "unknown", confidence: "candidate" };

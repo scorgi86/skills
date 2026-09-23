@@ -40,6 +40,10 @@ function stageIs(value, expected) {
   return new RegExp(`(?:^|\\D)${expected}(?:\\D|$)`).test(String(value || ""));
 }
 
+function blockingOwnerUnresolved(rows) {
+  return (rows || []).filter(row => row.reason !== "factory-return-not-narrowed");
+}
+
 function evaluateStage1Coverage(input, options = {}) {
   const value = input || {};
   const errors = [];
@@ -81,13 +85,17 @@ function evaluateStage1Coverage(input, options = {}) {
   }
 
   const ownership = value.ownership && value.ownership.groups || [];
+  const bootstrap = value.quality?.bootstrap;
+  const bootstrapBlocked = bootstrap && bootstrap.status !== "selected";
   if (value.ownershipGraph) {
     const graphValidation = validateOwnershipGraph(value.ownershipGraph);
     if (!graphValidation.ok) errors.push(...graphValidation.errors.map((error) => `ownershipGraph: ${error}`));
   }
   const expectedIds = [...new Set(value.ownership && value.ownership.expectedIds || [])];
-  if (!expectedIds.length) errors.push("Stage 1 must declare expected ownership ids");
+  if (bootstrapBlocked) errors.push(`bootstrap: ${bootstrap.status}`);
+  else if (!expectedIds.length) errors.push("Stage 1 must declare expected ownership ids");
   const actualIds = new Set(ownership.map((group) => group.id));
+  const ownershipById = new Map(ownership.map(group => [group.id, group]));
   for (const id of expectedIds) if (!actualIds.has(id)) errors.push(`${id}: expected ownership group is missing`);
 
   const boundaryIds = new Set();
@@ -106,7 +114,7 @@ function evaluateStage1Coverage(input, options = {}) {
 
   const contract = value.coverageContract || {};
   const categories = Array.isArray(contract.categories) ? contract.categories : [];
-  if (!categories.length) errors.push("Stage 1 requires a coverage contract with categories");
+  if (!bootstrapBlocked && !categories.length) errors.push("Stage 1 requires a coverage contract with categories");
   for (const category of categories) {
     const id = category.id || "<category>";
     const status = category.status;
@@ -116,6 +124,23 @@ function evaluateStage1Coverage(input, options = {}) {
     if (["not-applicable", "open"].includes(status) && !String(category.reason || "").trim()) errors.push(`${id}: ${status} coverage category lacks reason`);
     if (category.requiredBeforeClose === true && status === "open") errors.push(`${id}: required-before-close coverage category remains open`);
     for (const groupId of groupIds) if (!actualIds.has(groupId)) errors.push(`${id}: declared group ${groupId} is missing`);
+  }
+  if (value.ownerDiscovery && !bootstrapBlocked) {
+    const ownerCategory = categories.find(category => category.id === "owner-branches");
+    const discovery = value.ownerDiscovery;
+    const blockingUnresolved = blockingOwnerUnresolved(discovery.unresolved);
+    const noBranches = !(discovery.generatedIds || []).length && !blockingUnresolved.length;
+    if (noBranches) {
+      if (ownerCategory?.status !== "not-applicable") errors.push("owner-branches: no generated branches require not-applicable coverage");
+    } else {
+      if (!ownerCategory || ownerCategory.requiredBeforeClose !== true || ownerCategory.status !== "applicable") errors.push("owner-branches: generated candidates require applicable reviewed coverage");
+      if (!discovery.reviewDigest || ownerCategory?.reviewDigest !== discovery.reviewDigest) errors.push("owner-branches: review digest is missing or stale");
+      for (const id of discovery.generatedIds || []) {
+        if (!ownerCategory?.groupIds?.includes(id)) errors.push(`owner-branches: generated group ${id} was not reviewed`);
+        if (!isConfirmed(ownershipById.get(id))) errors.push(`owner-branches: generated group ${id} is not confirmed`);
+      }
+    }
+    if (blockingUnresolved.length) errors.push("owner-branches: unresolved candidate paths remain");
   }
   const baseline = contract.baseline || {};
   const baselineIds = [...new Set(baseline.ownershipIds || [])];
@@ -185,4 +210,4 @@ function evaluateStage1Coverage(input, options = {}) {
   };
 }
 
-module.exports = { anchorIdentity, evaluateStage1Coverage, hasAnchor, hasFreshness, isConfirmed, sameAnchor };
+module.exports = { anchorIdentity, blockingOwnerUnresolved, evaluateStage1Coverage, hasAnchor, hasFreshness, isConfirmed, sameAnchor };

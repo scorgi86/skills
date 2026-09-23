@@ -15,12 +15,14 @@ Use this contract only for full-inventory stage 1. Execute no later stage.
 3. Parse each candidate source file once with `stage1_runner.js` AST batch.
 4. Confirm source candidates with explicit `source_evidence.js` checks.
 5. Keep complete canonical facts and evidence in the stage artifact. Consume only the bounded runner summary in model context.
-6. Do not promote candidates automatically. A `confirmed` ownership group requires an explicit confirmation record and a source anchor.
+6. An ownership group may become `confirmed` automatically only for an exact `field-write` or `collection-*` occurrence whose AST owner has explicit `ownerConfidence: "exact"`, and whose current full source fragment, inclusive bounds, file SHA-256, anchor, and confirmation record are persisted from a file physically inside its declared repository. A `call-result-to-field` is equivalent only when one uniquely resolved factory has a source-confirmed possible-return branch for the target type; preserve both the assignment and factory-branch evidence. This confirms static possible storage, not the runtime branch. Dynamic, computed, unresolved, stale, external, or AST-only candidates remain candidates.
 7. When a producer-consumer boundary is relevant, declare it in generic `boundaries` request data. Each candidate requires producer repo, kind, symbol, relation, evidence refs, concrete producer anchor, search terms, and consumer repos. Keep it `candidate`; it is input for Stage 2/3, not proof of a user scenario.
 8. Collect copy, merge, clear and protocol operations while discovering each container. Record their distinct source-backed results, including unsupported branches; a shared method name does not establish an operation's behavior.
 9. Resolve each confirmation to an unambiguous repository/file and exact inclusive source bounds before closure. Reuse confirmed fragments rather than repeating broad searches to recover the same proof.
 
 ## Required groups
+
+With `searchFromStage0: true`, Stage 0 seeds are the discovery dictionary used by all derived AST and source searches. When ownership input is empty and `ownership.autoCandidates !== false`, Stage 1 may generate the order-0 group from an exact class/function declaration. Optional `ownership.bootstrapSeed` must be one nonempty member of the Stage 0 dictionary and limits only that declaration selection and subsequent owner discovery; omitting it preserves selection across every discovery seed. Do not combine `bootstrapSeed` with manual groups, expected ids, or coverage. The prepared legacy route below remains unchanged.
 
 Record each applicable group with id, order, role, object, relation, evidence references, anchor, and status:
 

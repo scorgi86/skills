@@ -72,6 +72,247 @@ test("stage 1 runner builds bounded facts and parses each file once", async () =
   assert.equal(facts.coverageContract.categories.length, 6);
 });
 
+test("stage 1 budgets canonical facts instead of retained source evidence", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, Array.from({ length: 300 }, (_, index) => `const FeatureValue${index} = FeatureValue; // retained evidence ${"x".repeat(48)}`).join("\n"));
+  const data = request(set);
+  data.budgets.factsBytes = 8 * 1024;
+  data.evidence.checks[0].pattern = "FeatureValue";
+  data.evidence.checks[0].maxMatches = 300;
+  for (const group of data.ownership.groups) group.evidenceRefs = [];
+  const facts = await runStage1(data, { runGitNexusContext: graph });
+  assert.ok(facts.sourceEvidence.checks[0].fullMatches.length >= 300);
+  assert.equal(facts.output.autoRaised, false);
+  assert.equal(facts.quality.coverageGate.errors.includes("Facts budget was exceeded"), false);
+  assert.ok(facts.canonicalEvidence.length >= 300);
+});
+
+test("automatic owner summary stays bounded without dropping complete facts", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  const facts = await runStage1(request(set), { runGitNexusContext: graph });
+  facts.ownerDiscovery = { generatedIds: Array.from({ length: 50 }, (_, i) => `owner-${i}`), unresolved: [], reviewDigest: "a".repeat(64) };
+  facts.ownership.groups.push(...facts.ownerDiscovery.generatedIds.map(id => ({ id, order: 1, role: "owner", object: id, relation: "stores", anchor: { file: set.source, line: 1 } })));
+  facts.quality.coverageGate.errors = facts.ownerDiscovery.generatedIds.map(id => `owner-branches: generated group ${id} was not reviewed`);
+  const before = JSON.stringify(facts);
+  const summary = buildStage1Summary(facts, "facts.json");
+  assert.equal(summary.output.overflow, false);
+  assert.ok(summary.output.bytes <= 8 * 1024);
+  assert.equal(JSON.stringify(facts), before);
+  assert.equal(facts.ownership.groups.length, 53);
+  assert.equal(facts.quality.coverageGate.errors.length, 50);
+});
+
+test("opt-in Stage 1 discovers owner candidates but keeps unreviewed branches open", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, fs.readFileSync(set.source, "utf8").replace("this.value = null", "this.value = new FeatureValue()"));
+  const value = request(set);
+  value.searchFromStage0 = true;
+  value.repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  value.budgets.factsBytes = 5 * 1024 * 1024;
+  value.ownership = { autoCandidates: true, expectedIds: ["model"], groups: [
+    { id: "model", order: 0, role: "model", object: "FeatureValue", relation: "defines", anchor: { file: set.source, line: 1 } }
+  ] };
+  value.coverageContract = { categories: [
+    { id: "direct-model", status: "applicable", groupIds: ["model"], requiredBeforeClose: true },
+    { id: "owner-branches", status: "open", reason: "review pending", requiredBeforeClose: true }
+  ] };
+  const facts = await runStage1(value, { runGitNexusContext: graph });
+  assert.ok(facts.ownershipGraph.edges.length > 0);
+  assert.ok(facts.ownership.groups.length > 1);
+  assert.match(facts.ownerDiscovery.reviewDigest, /^[a-f0-9]{64}$/);
+  assert.equal(facts.status, "partial");
+  assert.ok(facts.quality.coverageGate.errors.some(error => error.includes("owner-branches")));
+});
+
+test("exact owner discovery closes owner branches without a manual retry", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, "function FeatureValue() {}\nfunction Holder() { this.value = new FeatureValue(); }\n");
+  const value = request(set);
+  value.searchFromStage0 = true;
+  value.repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  value.ownership = { autoCandidates: true, expectedIds: ["model"], groups: [
+    { id: "model", order: 0, role: "model", object: "FeatureValue", relation: "defines", anchor: { file: set.source, line: 1 } }
+  ] };
+  value.coverageContract = { categories: [
+    { id: "direct-model", status: "applicable", groupIds: ["model"], requiredBeforeClose: true },
+    { id: "owner-branches", status: "open", reason: "review pending", requiredBeforeClose: true }
+  ] };
+  const facts = await runStage1(value, { runGitNexusContext: graph });
+  const ownerCategory = facts.coverageContract.categories.find(category => category.id === "owner-branches");
+  const generated = facts.ownership.groups.filter(group => group.id.startsWith("owner-"));
+  assert.equal(facts.ownerDiscovery.unresolved.length, 0);
+  assert.equal(facts.quality.coverageGate.ok, true, facts.quality.coverageGate.errors.join("; "));
+  assert.equal(ownerCategory.status, "applicable");
+  assert.deepEqual(ownerCategory.groupIds, facts.ownerDiscovery.generatedIds);
+  assert.equal(ownerCategory.reviewDigest, facts.ownerDiscovery.reviewDigest);
+  assert.ok(generated.every(group => group.status === "confirmed" && group.confirmation?.status === "source-confirmed" && group.evidenceRefs.length === 1));
+  assert.ok(generated.every(group => facts.canonicalEvidence.find(row => row.id === group.evidenceRefs[0])?.confirmation?.status === "source-confirmed"));
+});
+
+test("reviewed owner candidates close only against the same source snapshot", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, "function FeatureValue() {}\nfunction Holder() { this.value = new FeatureValue(); }\n");
+  const value = request(set);
+  value.searchFromStage0 = true;
+  value.repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  value.budgets.factsBytes = 5 * 1024 * 1024;
+  value.ownership = { autoCandidates: true, expectedIds: ["model"], groups: [
+    { id: "model", order: 0, role: "model", object: "FeatureValue", relation: "defines", anchor: { file: set.source, line: 1 } }
+  ] };
+  value.coverageContract = { categories: [
+    { id: "direct-model", status: "applicable", groupIds: ["model"], requiredBeforeClose: true },
+    { id: "owner-branches", status: "open", reason: "review pending", requiredBeforeClose: true }
+  ] };
+  const first = await runStage1(value, { runGitNexusContext: graph });
+  assert.equal(first.ownerDiscovery.unresolved.length, 0);
+  assert.equal(first.ownershipGraph.edges.length, 1);
+  const ownerCategory = value.coverageContract.categories[1];
+  ownerCategory.status = "applicable";
+  ownerCategory.groupIds = first.ownerDiscovery.generatedIds;
+  ownerCategory.reviewDigest = first.ownerDiscovery.reviewDigest;
+  const reviewed = await runStage1(value, { runGitNexusContext: graph });
+  assert.equal(reviewed.quality.coverageGate.ok, true, reviewed.quality.coverageGate.errors.join("; "));
+  fs.appendFileSync(set.source, "// changed source\n");
+  const stale = await runStage1(value, { runGitNexusContext: graph });
+  assert.equal(stale.quality.coverageGate.ok, false);
+  assert.match(stale.quality.coverageGate.errors.join("; "), /review digest is missing or stale/);
+});
+
+test("owner seed anchor limits candidates to its repository", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  const firstRepo = path.join(set.directory, "first");
+  fs.mkdirSync(firstRepo);
+  const firstFile = path.join(firstRepo, "component.js");
+  const other = path.join(set.directory, "other");
+  fs.mkdirSync(other);
+  const otherFile = path.join(other, "component.js");
+  fs.writeFileSync(firstFile, "function FeatureValue() {}\nfunction A() { this.value = new FeatureValue(); }\n");
+  fs.writeFileSync(otherFile, "function FeatureValue() {}\nfunction B() { this.value = new FeatureValue(); }\n");
+  const value = request(set);
+  value.searchFromStage0 = true;
+  value.repositoryScope = { repositories: [{ id: "a", root: firstRepo }, { id: "b", root: other }] };
+  value.ast.queries[0].files = [firstFile, otherFile];
+  delete value.ast.queries[0].file;
+  value.ownership = { autoCandidates: true, expectedIds: ["model"], groups: [{ id: "model", order: 0, object: "FeatureValue", relation: "defines", anchor: { file: firstFile, line: 1 } }] };
+  value.coverageContract = { categories: [{ id: "owner-branches", status: "open", reason: "review pending", requiredBeforeClose: true }] };
+  const facts = await runStage1(value, { runGitNexusContext: graph });
+  assert.ok(facts.ownership.groups.some(group => group.object === "A.value"));
+  assert.equal(facts.ownership.groups.some(group => group.object === "B.value"), false);
+});
+
+test("automatic Stage 1 search stays partial when its source check is incomplete", async () => {
+  const set = fixtureSet();
+  const data = request(set);
+  data.searchFromStage0 = true;
+  data.evidence = { checks: [{ id: "stage0-seeds-fixture", file: set.source, pattern: "FeatureValue" }] };
+  for (const group of data.ownership.groups) group.anchor = { file: set.source, line: 1 };
+  const facts = await runStage1(data, {
+    runGitNexusContext: graph,
+    runEvidenceChecks: () => ({ checks: [{ id: "stage0-seeds-fixture", status: "partial", resultComplete: false, filesScanned: 0, errors: [{ code: "source-read" }] }] }),
+    deferCanonicalization: true,
+  });
+  assert.equal(facts.quality.coverageGate.ok, true);
+  assert.equal(facts.status, "partial");
+});
+
+test("empty auto-bootstrap uses one declared bootstrap seed from the Stage 0 dictionary", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, "function CInnerShadow() {}\nfunction CInnerShadowProperty() {}\nfunction Holder() { this.innerShdw = new CInnerShadow(); }\n");
+  const repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  set.transition = writeCanonicalTransition(set.directory, 0, { facts: { repositoryScope, summary: { seeds: ["CInnerShadow", "CInnerShadowProperty", "innerShdw"] } } });
+  const data = request(set);
+  data.searchFromStage0 = true;
+  data.repositoryScope = repositoryScope;
+  data.ast.queries[0].options.terms = "CInnerShadow,CInnerShadowProperty,innerShdw";
+  data.ownership = { bootstrapSeed: "CInnerShadow" };
+  delete data.coverageContract;
+  const facts = await runStage1(data, { runGitNexusContext: graph });
+  assert.equal(facts.summary.bootstrap.status, "selected");
+  assert.equal(facts.summary.bootstrap.group.object, "CInnerShadow");
+  assert.equal(facts.ownerDiscovery.generatedIds.length, 1);
+  assert.equal(facts.ownership.groups.find(group=>group.role==="seed").status,"confirmed");
+  assert.equal(facts.capabilities.find(row=>row.id==="definition").status,"confirmed");
+  assert.equal(facts.capabilities.find(row=>row.id==="ownership").status,"confirmed");
+});
+
+test("diagnostic factory returns do not block a confirmed bootstrap ownership path", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, [
+    "function Inner() {}",
+    "function Blur() {}",
+    "function Holder() {}",
+    "Holder.prototype.make = function(item) { switch (item.type) { case 'inner': return new Inner(); case 'blur': return new Blur(); } };",
+    "Holder.prototype.load = function(payload) { this.possible = this.make(payload.slot); this.exact = this.make({ type: 'inner' }); };",
+  ].join("\n"));
+  const repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  set.transition = writeCanonicalTransition(set.directory, 0, { facts: { repositoryScope, summary: { seeds: ["Inner"] } } });
+  const data = request(set);
+  data.transitionArtifact = set.transition;
+  data.searchFromStage0 = true;
+  data.repositoryScope = repositoryScope;
+  data.ast.queries[0].options.terms = "Inner";
+  data.ownership = { bootstrapSeed: "Inner" };
+  delete data.coverageContract;
+  const facts = await runStage1(data, { runGitNexusContext: graph });
+  assert.equal(facts.status, "closed", facts.quality.coverageGate.errors.join("; "));
+  assert.equal(facts.quality.coverageGate.ok, true, facts.quality.coverageGate.errors.join("; "));
+  assert.ok(facts.ownerDiscovery.unresolved.some(row => row.reason === "factory-return-not-narrowed" && row.field === "possible"));
+  const exact = facts.ownership.groups.find(group => group.object === "Holder.exact");
+  assert.equal(exact?.status, "confirmed");
+
+  const candidate = structuredClone(facts);
+  candidate.ownership.groups.find(group => group.id === exact.id).status = "candidate";
+  const candidateGate = evaluateStage1Coverage(candidate);
+  assert.equal(candidateGate.ok, false);
+  assert.match(candidateGate.errors.join("\n"), /generated group .* is not confirmed/);
+
+  for (const reason of ["truncated", "missing-source-anchor"]) {
+    const blocked = structuredClone(facts);
+    blocked.ownerDiscovery.unresolved = [{ reason, seed: "Inner" }];
+    const gate = evaluateStage1Coverage(blocked);
+    assert.equal(gate.ok, false);
+    assert.match(gate.errors.join("\n"), /unresolved candidate paths remain/);
+  }
+});
+
+test("bootstrapSeed rejects invalid, undeclared, and non-empty ownership modes", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  const repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  set.transition = writeCanonicalTransition(set.directory, 0, { facts: { repositoryScope, summary: { seeds: ["FeatureValue"] } } });
+  const base = request(set);
+  base.searchFromStage0 = true;
+  base.repositoryScope = repositoryScope;
+  base.ownership = {};
+  delete base.coverageContract;
+  for (const bootstrapSeed of ["", 1, "Missing"]) {
+    await assert.rejects(runStage1({ ...base, ownership: { bootstrapSeed } }, { runGitNexusContext: graph }), /bootstrapSeed|Stage 0/i);
+  }
+  const manual = request(set);
+  manual.searchFromStage0 = true;
+  manual.repositoryScope = repositoryScope;
+  manual.ownership.bootstrapSeed = "FeatureValue";
+  await assert.rejects(runStage1(manual, { runGitNexusContext: graph }), /bootstrapSeed|auto-bootstrap/i);
+});
+
+test("prepared automatic ownership rejects manual producer capabilities", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  const data = request(set);
+  data.searchFromStage0 = true;
+  data.ownership.autoCandidates = true;
+  data.capabilities = [{ id: "ownership", status: "confirmed", evidenceRefs: ["manual"] }];
+  await assert.rejects(runStage1(data, { runAstBatch() { throw new Error("REACHED_AST"); }, runGitNexusContext: graph }), /capabilities|conflict/i);
+});
+
 test("stage 1 retains declared generic boundary candidates for later stages", async () => {
   const set = fixtureSet();
   const data = request(set);

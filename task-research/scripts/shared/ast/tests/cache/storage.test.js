@@ -35,6 +35,8 @@ test("storage round trips all real fixture variants and rejects incompatible ent
   const target = path.join(directory, `${identity.key}.json`);
   const good = { identity, result };
   const corruptions = [
+    value => { delete value.result.occurrences; },
+    value => { value.result.occurrences[0].confidence = "candidate"; },
     value => { value.identity.key = "wrong"; },
     value => { value.identity.analyzerVersion = "old"; },
     value => { value.result.file = "wrong"; },
@@ -50,6 +52,7 @@ test("storage round trips all real fixture variants and rejects incompatible ent
     value => { value.result.relations[0].evidence[0].range.start.line = "1"; },
     value => { value.result.relations[0].evidence[0].file = "wrong"; },
     value => { value.result.relations[0].evidence[0].status = "confirmed"; },
+    value => { delete value.result.methodSummaries; },
   ];
   for (const corrupt of corruptions) {
     const value = structuredClone(good);
@@ -60,6 +63,85 @@ test("storage round trips all real fixture variants and rejects incompatible ent
   fs.writeFileSync(target, "{");
   assert.equal(readEntry(directory, identity).status, "failed");
   fs.writeFileSync(target, JSON.stringify(result)); // legacy raw result
+  assert.equal(readEntry(directory, identity).status, "failed");
+});
+
+test("storage rejects unproven method summaries and malformed owner proofs", (t) => {
+  const directory = workspace(t);
+  const file = path.join(directory, "method.js");
+  fs.writeFileSync(file, [
+    "function Item() {}",
+    "function Props() {}",
+    "Props.prototype.createDuplicate = function () { const copy = new Props(); return copy; };",
+    "function Holder() { this.item = new Item(); }",
+  ].join("\n"));
+  const result = analyzeFile(file).result;
+  const identity = createIdentity(fs.readFileSync(file), file, result.parser);
+  assert.equal(result.methodSummaries.length, 1);
+  assert.ok(result.relations.length > 0);
+  const target = path.join(directory, `${identity.key}.json`);
+  const corruptions = [
+    value => { value.result.methodSummaries[0].evidence = []; },
+    value => { value.result.relations[0].ownerProof = { kind: "bad", ownerType: "Props", method: "createDuplicate", returnType: "Props" }; },
+  ];
+  for (const corrupt of corruptions) {
+    const value = structuredClone({ identity, result });
+    corrupt(value);
+    fs.writeFileSync(target, JSON.stringify(value));
+    assert.equal(readEntry(directory, identity).status, "failed", String(corrupt));
+  }
+});
+
+test("storage rejects malformed type aliases and versioned identities keep their own cache grammar", (t) => {
+  const directory = workspace(t);
+  const file = path.join(directory, "alias.js");
+  fs.writeFileSync(file, ["function Item() {}", "window.AscFormat.Item = Item;"].join("\n"));
+  const result = analyzeFile(file).result;
+  const identity = createIdentity(fs.readFileSync(file), file, result.parser);
+  assert.equal(result.typeAliases.length, 1);
+  const target = path.join(directory, `${identity.key}.json`);
+  const invalid = structuredClone({ identity, result });
+  delete invalid.result.typeAliases[0].proof.sourceHash;
+  fs.writeFileSync(target, JSON.stringify(invalid));
+  assert.equal(readEntry(directory, identity).status, "failed");
+  const versionDirectory = path.join(directory, "version");
+  const oldIdentity = createIdentity(fs.readFileSync(file), file, result.parser, { analyzerVersion: "4" });
+  assert.equal(writeEntry(versionDirectory, oldIdentity, result).status, "written");
+  assert.equal(readEntry(versionDirectory, identity).status, "miss");
+  assert.equal(readEntry(versionDirectory, oldIdentity).status, "hit");
+});
+
+test("storage round trips local factory domains and keeps legacy v5 keys versioned", (t) => {
+  const directory = workspace(t);
+  const file = path.join(directory, "factory.js");
+  fs.writeFileSync(file, [
+    "function Inner() {}",
+    "function Glow() {}",
+    "function Holder() {}",
+    "Holder.prototype.make = function(item) { switch (item.type) { case 'inner': return new Inner(); case 'glow': return new Glow(); } };",
+    "Holder.prototype.load = function() { const payload = { type: 'inner' }; this.slot = this.make(payload); }"
+  ].join("\n"));
+  const result = analyzeFile(file).result;
+  const identity = createIdentity(fs.readFileSync(file), file, result.parser);
+  assert.ok(result.methodSummaries[0].possibleReturnTypes.some(item => item.selector));
+  assert.deepEqual(result.relations.find(item => item.callableProof?.argumentDomains)?.callableProof.argumentDomains, [{ index: 0, discriminatorKey: "type", values: ["inner"] }]);
+  assert.equal(writeEntry(directory, identity, result).status, "written");
+  assert.deepEqual(readEntry(directory, identity), { status: "hit", result });
+  const target = path.join(directory, `${identity.key}.json`);
+  for (const corrupt of [
+    value => { value.result.methodSummaries[0].possibleReturnTypes[0].selector.caseValue = 1; },
+    value => { value.result.relations.find(item => item.callableProof?.argumentDomains).callableProof.argumentDomains[0].values = ["inner", "glow"]; }
+  ]) {
+    const value = structuredClone({ identity, result });
+    corrupt(value);
+    fs.writeFileSync(target, JSON.stringify(value));
+    assert.equal(readEntry(directory, identity).status, "failed", String(corrupt));
+  }
+  const v5 = createIdentity(fs.readFileSync(file), file, result.parser, { analyzerVersion: "5" });
+  const legacy = structuredClone(result);
+  legacy.relations.find(item => item.callableProof?.argumentDomains).callableProof = { owner: "Holder", method: "make", argumentKeys: [{ index: 0, key: "inner" }] };
+  assert.equal(writeEntry(directory, v5, legacy).status, "written");
+  assert.equal(readEntry(directory, v5).status, "hit");
   assert.equal(readEntry(directory, identity).status, "failed");
 });
 

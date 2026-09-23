@@ -17,6 +17,13 @@ const { readCanonicalStageResult: readJson } = require("../../../shared/artifact
 
 function requireArray(value, name) { if (!Array.isArray(value)) throw new Error(`${name} must be an array`); return value; }
 
+function validateUsageProjection(criticalPaths, confirmedUsages) {
+  const positivePaths=new Set((criticalPaths||[]).filter(row=>row.status==="confirmed").map(row=>row.id)),usageCounts=new Map(),invalid=[];
+  for(const usage of confirmedUsages||[]){const refs=[...new Set(usage.pathRefs||[])];if(refs.length!==1||!positivePaths.has(refs[0]))invalid.push(usage.id);for(const ref of refs)usageCounts.set(ref,(usageCounts.get(ref)||0)+1);}
+  const missing=[...positivePaths].filter(ref=>usageCounts.get(ref)!==1);
+  return {ok:!missing.length&&!invalid.length,missing,invalid};
+}
+
 function buildStage7(request, dependencies = {}, context = null) {
   if (Number(request?.stage) !== 7) throw new Error("Stage 7 requires stage: 7");
   if (request.coverage?.profile !== undefined) throw new Error("Stage 7 request.coverage.profile is output-only; use coverageProfile declared at Stage 0");
@@ -39,6 +46,8 @@ function buildStage7(request, dependencies = {}, context = null) {
   const remap = (value) => require("../../../shared/evidence/src/canonicalization/canonicalize.js").remapEvidenceReferences(value, evidenceIdMap);
   request = remap(request);
   const planning = buildPlanningProjection(prior.map((item) => remap(item.result)));
+  const pathObligations=mergeRows(prior.flatMap(item=>item.result.facts.filter(fact=>fact.kind==="path-obligation").map(({kind,...row})=>row)));
+  const valueFlowEdges=mergeRows(prior.flatMap(item=>item.result.facts.filter(fact=>fact.kind==="value-flow-edge").map(({kind,...row})=>row)));
   const retainedCoverage = { artifacts: prior.map((item) => ({ stage: item.result.stage, capabilities: item.result.facts.filter((fact) => fact.kind === "capability").map((capability) => capability.id) })), planning: Object.fromEntries(PLANNING_COLLECTIONS.map((name) => [name, planning[name].length])), evidenceSelectionTruncated: selections.some((selection) => selection.truncated) };
   const inheritedProfile = prior.find((item) => item.result.stage === 0)?.result.summary?.coverageProfile;
   if (inheritedProfile === undefined && request.coverageProfile !== undefined) throw new Error("Stage 7 coverageProfile must be declared at Stage 0; reissue the legacy run to introduce coverage requirements");
@@ -52,9 +61,15 @@ function buildStage7(request, dependencies = {}, context = null) {
   const required = profile && Object.prototype.hasOwnProperty.call(profile, "requiredCapabilities") ? new Set(profile.requiredCapabilities) : null;
   const capabilities = [...capabilityMap.values()].map((item) => required ? { ...item, requiredForFinalReport: required.has(item.id) } : item);
   const collections = Object.fromEntries(PLANNING_COLLECTIONS.map((name) => [name, mergeRows([...(planning[name] || []), ...(request[name] || [])])]));
+  if(["full-inventory","full-development"].includes(profile?.kind)&&pathObligations.length){
+    const outcomes=[...collections.criticalPaths,...collections.checkedNoUsage].filter(row=>["confirmed","checked-no-usage","not-applicable"].includes(row.status));
+    const tree=require("../../../shared/value-flow/src/value_flow.js").validateObligationTree(pathObligations,outcomes);
+    if(!tree.ok)throw new Error(`Stage 7 value-flow coverage failed: ${tree.errors.join("; ")}`);
+    const projection=validateUsageProjection(collections.criticalPaths,collections.confirmedUsages);if(!projection.ok)throw new Error(`Stage 7 value-flow usage projection failed: missing ${projection.missing.join(", ")}; invalid ${projection.invalid.join(", ")}`);
+  }
   const reconciled = resolveChecks(prior.at(-1).result, request, request.checkResolutions || [], selectedEvidence, request.repositoryScope || request.scope);
   if (reconciled.openChecks.length) throw new Error(`Stage 7 has unresolved openChecks: ${reconciled.openChecks.join("; ")}`);
-  const facts = normalizeReportModel({ ...reconciled, checkRequirements: reconciled.summary.checkRequirements, scope, coverageProfile: inheritedProfile || request.coverageProfile, ...collections, evidenceIndex: selectedEvidence, priorArtifacts, provenance: { ...(request.provenance || {}), lineage, priorArtifacts, retainedCoverage }, coverage: { ...(request.coverage || {}), retainedCoverage }, capabilities });
+  const facts = normalizeReportModel({ ...reconciled, checkRequirements: reconciled.summary.checkRequirements, scope, coverageProfile: inheritedProfile || request.coverageProfile, ...collections, evidenceIndex: selectedEvidence, priorArtifacts, provenance: { ...(request.provenance || {}), lineage, priorArtifacts, retainedCoverage, ...(pathObligations.length?{valueFlow:{edges:valueFlowEdges,obligations:pathObligations}}:{}) }, coverage: { ...(request.coverage || {}), retainedCoverage }, capabilities });
   const validation = validateReportModel(facts);
   if (!validation.ok) throw new Error(`Stage 7 report model validation failed: ${validation.errors.map((item) => `${item.path}: ${item.message}`).join("; ")}`);
   return facts;
@@ -64,4 +79,4 @@ function buildSummary(facts, output) { return { schemaVersion: facts.schemaVersi
 
 function formatFacts(facts) { return canonicalJson(facts).trimEnd(); }
 
-module.exports = { buildStage7, buildSummary, formatFacts, readJson };
+module.exports = { buildStage7, buildSummary, formatFacts, readJson, validateUsageProjection };

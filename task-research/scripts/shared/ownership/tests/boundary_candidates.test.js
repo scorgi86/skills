@@ -47,7 +47,7 @@ test("stage 3 marks each consumer without a scope as unverified", () => {
   const transition = canonicalTransition(root, 2, [{ id: "bridge", producerRepo: "engine", kind: "setter", symbol: "setEffect", relation: "sets", anchor: { file: "src/model.js", line: 8 }, evidenceRefs: ["bridge"], ownershipRefs: [], searchTerms: ["applyEffect"], consumerRepos: ["client", "desktop"], status: "candidate" }]);
   const result = runStage3({ stage: 3, transitionArtifact: transition, consumerScopes: [{ id: "client", scope: transition }] });
   assert.equal(result.status, "partial");
-  assert.deepEqual(result.consumerCoverage.find((item) => item.consumerRepo === "desktop"), { boundaryId: "bridge", consumerRepo: "desktop", status: "unverified", reason: "No consumer scope was supplied" });
+  assert.deepEqual(result.consumerCoverage.find((item) => item.consumerRepo === "desktop"), { boundaryId: "bridge", consumerRepo: "desktop", status: "unverified", reason: "No consumer scope was supplied", absenceClaim: false });
 });
 
 test("stage 4 classifies declared recipient families and retains all observations", () => {

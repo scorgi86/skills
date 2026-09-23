@@ -1,5 +1,5 @@
 "use strict";
-const { buildSourceMap } = require("./evidence.js");
+const { buildSourceMap, evidenceFor } = require("./evidence.js");
 const { createSymbolIndex } = require("./symbol_index.js");
 const { createRelations } = require("./relations.js");
 const fs = require("fs");
@@ -7,6 +7,8 @@ const { parseFile, parseSource, parserOptions, swcVersion } = require("../parsin
 const { createIdentity } = require("../cache/identity.js");
 const { readEntry, writeEntry } = require("../cache/storage.js");
 const path = require("path");
+const crypto = require("crypto");
+const { collectOccurrences } = require("./occurrences.js");
 const SCHEMA_VERSION = "1.0.0";
 function parserDescriptor(filename) {
     return { name: "@swc/core", version: swcVersion, options: parserOptions(filename) };
@@ -32,8 +34,11 @@ function analyzeParsed(parsed) {
             file: parsed.filename,
             parser: parsed.parser,
             status: "не проверено",
-            symbols: [],
-            relations: [],
+        symbols: [],
+        relations: [],
+        methodSummaries: [],
+        typeAliases: [],
+        occurrences: [],
             warnings: [],
             errors: parsed.diagnostics,
             elapsedMs: parsed.elapsedMs
@@ -42,7 +47,8 @@ function analyzeParsed(parsed) {
     const context = {
         filename: parsed.filename,
         source: parsed.source,
-        sourceMap: buildSourceMap(parsed.source)
+        sourceMap: buildSourceMap(parsed.source),
+        sourceHash: crypto.createHash("sha256").update(parsed.source).digest("hex")
     };
     const symbolIndex = createSymbolIndex(parsed, context);
     const relations = createRelations(parsed, context, symbolIndex);
@@ -52,6 +58,16 @@ function analyzeParsed(parsed) {
         status: "candidate",
         symbols: symbolIndex.symbols,
         relations,
+        typeAliases: symbolIndex.typeAliases,
+        occurrences: collectOccurrences(parsed, context),
+        analysisSourceHash: context.sourceHash,
+        methodSummaries: [...symbolIndex.methodsBySpan.values()].map(method => ({
+            owner: method.owner, method: method.method,
+            possibleReturnTypes: method.possibleReturnTypes || [],
+            ...(method.returnConfidence === "exact" ? { returnType: method.returnType } : {}),
+            evidence: [evidenceFor(method.functionNode, context, "method:return-type", "exact")],
+            analysisSourceHash: context.sourceHash
+        })),
         warnings: [],
         errors: [],
         elapsedMs: parsed.elapsedMs

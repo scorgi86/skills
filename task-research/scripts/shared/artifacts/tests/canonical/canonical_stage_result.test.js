@@ -21,6 +21,20 @@ test("canonical result retains ownership facts and later-stage source evidence",
   assert.equal(result.evidenceRefs.length, 1);
   assert.match(result.evidenceRefs[0], /^ev-/);
 });
+test("Stage 0 canonical result retains every file-level candidate without claiming source evidence", () => {
+  const root = require("node:path").resolve("fixture");
+  const a = require("node:path").join(root, "a.js"), z = require("node:path").join(root, "z.js");
+  const result = createCanonicalStageResult({ facts: { stage: 0, status: "candidate", scans: [
+    { id: "sdk", status: "candidate", files: [z, a, a], totalFiles: 3 },
+    { id: "ui", status: "candidate", files: [a], totalFiles: 1 }
+  ] } });
+  assert.deepEqual(result.facts, [
+    { kind: "candidate-file", repository: "sdk", file: a, status: "candidate" },
+    { kind: "candidate-file", repository: "sdk", file: z, status: "candidate" },
+    { kind: "candidate-file", repository: "ui", file: a, status: "candidate" }
+  ]);
+  assert.deepEqual(result.evidenceRefs, []);
+});
 test("canonical result preserves the complete checked-no-usage capability protocol", () => {
   const capability = { id: "input", status: "checked-no-usage", expectedNames: ["setX"], reason: "peer API", repository: "source", searchScope: "src", performedChecks: ["text"], ordersChecked: ["N/A"], linkingMethodsChecked: ["N/A"], resultComplete: true, resultTruncated: false, consequence: "path absent", evidenceRefs: ["ev-absence"] };
   const result = createCanonicalStageResult({ facts: { stage: 6, status: "closed", capabilities: [capability] }, input: { stage: 6 } });

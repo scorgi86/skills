@@ -12,6 +12,18 @@ test("stage 6 feature-reference does not require Git diff", () => {
   const result = runStage6({ stage: 6, mode: "feature-reference", transitionArtifact: transition, featureReference: { target: "new", referenceEntity: "known", capabilities: [{ id: "definition", status: "unchecked", evidenceRefs: [] }] }, sourceSurfaces: [{ path: "src/model.js", layer: "model", role: "storage" }] });
   assert.equal(result.mode, "feature-reference"); assert.equal(result.reference.referenceEntity, "known"); assert.equal(result.sourceSurfaces[0].confirmed, false);
 });
+
+test("stage 6 skip closes without reference inputs or fabricated paths", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage6-skip-"));
+  const transition = writeCanonicalTransition(root, 5);
+  const result = runStage6({ stage: 6, mode: "skip", transitionArtifact: transition });
+  assert.equal(result.mode, "skip");
+  assert.equal(result.transition.fields["next stage"], "7");
+  assert.deepEqual(result.sourceSurfaces, []);
+  assert.deepEqual(result.capabilities, [{ id: "reference", status: "not-applicable", reasonCode: "task-scope", explanation: "Reference comparison was not requested for this research", requiredForFinalReport: true }]);
+  assert.equal(result.openChecks.length, 0);
+  assert.equal(buildSummary(result, path.join(root, "facts.json")).sourceSurfaces.declared, 0);
+});
 test("stage 6 worktree-diff uses the declared base", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "stage6-worktree-")); const transition = writeCanonicalTransition(root, 5); let args;
   const result = runStage6({ stage: 6, mode: "worktree-diff", transitionArtifact: transition, reference: { repo: root, base: "main" }, sourceSurfaces: [{ path: "src/ui.js", layer: "ui", role: "entry" }] }, { spawnSync: (_git, passed) => { args = passed; return { status: 0, stdout: "" }; } });

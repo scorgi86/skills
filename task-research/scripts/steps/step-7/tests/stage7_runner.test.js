@@ -5,7 +5,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
-const { buildStage7, buildSummary, formatFacts } = require("../src/runner");
+const { buildStage7, buildSummary, formatFacts, validateUsageProjection } = require("../src/runner");
 const { compareStage7Facts } = require("../src/stage7_equivalence_gate");
 const { writeStageArtifact } = require("../../../shared/artifacts/src/stage_artifact_v4");
 function fixture(coverageProfile) {
@@ -26,6 +26,7 @@ function fixture(coverageProfile) {
 test("stage 7 emits a closed canonical report model", () => { const { root, request } = fixture(), model = buildStage7(request); assert.equal(model.modelType, "inventory-report-model"); assert.equal(model.status, "closed"); assert.equal(buildSummary(model, path.join(root, "model.json")).counts.retainedArtifacts, 7); assert.equal(compareStage7Facts(model, JSON.parse(JSON.stringify(model))).status, "equivalent"); });
 test("stage 7 is deterministic for shuffled input", () => { const { request } = fixture(); const first = buildStage7(request); const second = buildStage7({ ...request, confirmedUsages: [...request.confirmedUsages].reverse() }); assert.equal(formatFacts(first), formatFacts(second)); assert.equal(first.integrity.canonicalDigest, second.integrity.canonicalDigest); });
 test("stage 7 rejects evidence-free confirmed usage", () => { const { request } = fixture(); assert.throws(() => buildStage7({ ...request, confirmedUsages: [{ id: "bad" }] }), /evidenceRefs/); });
+test("value-flow usages refer once to confirmed paths only",()=>{const paths=[{id:"confirmed",status:"confirmed"},{id:"candidate",status:"candidate"}];assert.equal(validateUsageProjection(paths,[{id:"ok",pathRefs:["confirmed"]}]).ok,true);for(const usages of [[{id:"candidate-use",pathRefs:["candidate"]}],[{id:"missing-use",pathRefs:[]}],[{id:"multi-use",pathRefs:["confirmed","candidate"]}]])assert.equal(validateUsageProjection(paths,usages).ok,false);});
 test("stage 7 rejects a full evidence index in its request", () => { const { request } = fixture(); assert.throws(() => buildStage7({ ...request, evidenceIndex: [{ id: "ev-direct" }] }), /bounded canonical evidence selectors/); });
 test("stage 7 rejects incomplete chains, wrong active tip, and unresolved questions",()=>{
  const {request,files}=fixture();

@@ -32,6 +32,12 @@ function hasEdge(relations, owner, field, target) {
   return relations.some((item) => item.ownerQualifiedName === owner && item.field === field && (item.targetQualifiedName === target || (item.candidateTypes || []).includes(target)));
 }
 
+function indexSource(source) {
+  const parsed = parseSource(source, "return-types.js");
+  const context = { filename: parsed.filename, source, sourceMap: buildSourceMap(source) };
+  return createSymbolIndex(parsed, context);
+}
+
 test("SWC parses JS, JSX, TS and TSX fixtures", async () => {
   for (const name of ["constructors.js", "syntax.jsx", "syntax.ts", "syntax.tsx"]) assert.equal(parseFile(path.join(fixtures, name)).ok, true, name);
 });
@@ -58,6 +64,29 @@ test("prototype methods and qualified owners are indexed", () => {
   const names = index.symbols.map((item) => item.qualifiedName);
   assert.ok(names.includes("FeatureContainer.setValue"));
   assert.ok(names.includes("FeaturePanel.setMainContainer"));
+});
+
+test("method return summaries require one exact type and no fallthrough", () => {
+  const index = indexSource([
+    "function Exact() {}",
+    "Exact.prototype.createDuplicate = function () { const copy = new Exact(); return copy; };",
+    "function Fallthrough() {}",
+    "Fallthrough.prototype.createDuplicate = function (flag) { if (flag) return new Fallthrough(); };",
+    "function Mixed() {}",
+    "Mixed.prototype.createDuplicate = function (flag) { if (flag) return new Mixed(); return new Exact(); };",
+    "function Unknown() {}",
+    "Unknown.prototype.createDuplicate = function () { return makeUnknown(); };",
+    "function Bare() {}",
+    "Bare.prototype.createDuplicate = function () { return; };",
+    "function Nested() {}",
+    "Nested.prototype.createDuplicate = function () { function callback() { return new Exact(); } return new Nested(); };",
+  ].join("\n"));
+  assert.deepEqual({ type: index.methods.get("Exact.createDuplicate").returnType, confidence: index.methods.get("Exact.createDuplicate").returnConfidence }, { type: "Exact", confidence: "exact" });
+  assert.equal(index.methods.get("Fallthrough.createDuplicate").returnType, undefined);
+  assert.equal(index.methods.get("Mixed.createDuplicate").returnType, undefined);
+  assert.equal(index.methods.get("Unknown.createDuplicate").returnType, undefined);
+  assert.equal(index.methods.get("Bare.createDuplicate").returnType, undefined);
+  assert.equal(index.methods.get("Nested.createDuplicate").returnType, "Nested");
 });
 
 test("class methods and prototype aliases preserve qualified names", () => {

@@ -7,6 +7,9 @@ function allSymbols(analysis) {
 function allRelations(analysis) {
     return analysis.results.flatMap((result)=>result.relations);
 }
+function allOccurrences(analysis) {
+    return analysis.results.flatMap((result)=>result.occurrences || []);
+}
 function bounded(items, maxResults = 100) {
     const limit = Math.max(1, Number(maxResults) || 100);
     const result = {
@@ -25,7 +28,12 @@ function runQuery(command, analysis, options = {}) {
     const symbols = allSymbols(analysis);
     const relations = allRelations(analysis);
     let selected;
-    if (command === "symbols" || command === "index") selected = symbols.filter((item)=>!options.kind || item.kind === options.kind);
+    if (command === "occurrences") {
+        const terms = new Set((Array.isArray(options.terms) ? options.terms : String(options.terms || "").split(",")).map(value=>String(value).normalize("NFC").trim()).filter(Boolean));
+        selected = allOccurrences(analysis).filter(item=>item.confidence === "exact" && terms.has(item.value));
+    }
+    else if (command === "relations") selected = relations;
+    else if (command === "symbols" || command === "index") selected = symbols.filter((item)=>!options.kind || item.kind === options.kind);
     else if (command === "fields") selected = relations.filter((item)=>item.field && (!options.owner || sameName(item.ownerQualifiedName, options.owner)) && (!options.field || item.field === options.field));
     else if (command === "methods") selected = symbols.filter((item)=>item.kind.includes("method") && (!options.owner || sameName(item.owner, options.owner)));
     else if (command === "reads") selected = relations.filter((item)=>item.relation === "field-read" && (!options.field || item.field === options.field));
@@ -79,7 +87,7 @@ function runQuery(command, analysis, options = {}) {
     if (options.owner) selected = selected.filter((item)=>sameName(item.ownerQualifiedName || item.owner, options.owner));
     if (options.field) selected = selected.filter((item)=>item.field === options.field);
     if (options.kind && command !== "symbols" && command !== "index") selected = selected.filter((item)=>item.relation === options.kind);
-    if (options.terms && command !== "find" && command !== "summary") {
+    if (options.terms && !["find", "summary", "occurrences"].includes(command)) {
         const terms = String(options.terms).split(",").map((term)=>term.trim().toLowerCase()).filter(Boolean);
         selected = selected.filter((item)=>terms.some((term)=>JSON.stringify(item).toLowerCase().includes(term)));
     }

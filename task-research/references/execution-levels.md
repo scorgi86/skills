@@ -1,5 +1,7 @@
 # Execution Levels
 
+The public task-research workflow accepts one request and returns a final result after Stage 8. It uses `continuous`; stage reports remain internal. The `strict` and `adaptive` rules below remain available for explicit low-level staged commands and existing runs, without changing their contracts.
+
 ## Mode and Continuation Selection
 
 Default a new full inventory to:

@@ -49,6 +49,14 @@ function canonicalFacts(facts) {
         }, ...receipts
     ];
     const rows = [];
+    if (Number(facts.stage) === 0) for (const scan of facts.scans || []) {
+        for (const file of [...new Set(scan.files || [])].sort()) rows.push({
+            kind: "candidate-file",
+            repository: scan.id,
+            file,
+            status: "candidate"
+        });
+    }
     for (const capability of facts.capabilities || [])rows.push({
         kind: "capability",
         ...capability,
@@ -79,6 +87,8 @@ function canonicalFacts(facts) {
         kind: "ownership-edge",
         ...edge
     });
+    for (const edge of facts.valueFlowEdges || []) rows.push({ kind:"value-flow-edge", ...edge });
+    for (const obligation of facts.pathObligations || []) rows.push({ kind:"path-obligation", ...obligation });
     for (const surface of facts.sourceSurfaces || [])rows.push({
         ...require("../../../dto/src/source_surface_identity.js").sourceSurfaceIdentity(surface, facts.repositoryScope),
         kind: Number(facts.stage) === 6 ? "reference-path" : "source-surface"

@@ -26,6 +26,11 @@ function runStage4(request, dependencies = {}, context = null) {
   if (Number(request && request.stage) !== 4) throw new Error("stage4_runner accepts only stage: 4");
   if (!request.transitionArtifact) throw new Error("transitionArtifact is required");
   const transition = extractTransition(transitionForRequest(context, request) || fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+  if(request.searchFromStage3===true){
+    const discovery=request.recipientDiscovery||{status:"partial",reasons:["recipient discovery is missing"],families:0};
+    const recipientFamilies=request.recipientFamilyCandidates||[];
+    return {schemaVersion:"1.0.0",stage:4,capabilities:require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities||[]),status:discovery.status==="partial"?"partial":"candidate",transition,recipientFamilies,pathObligations:request.pathObligations||[],valueFlowEdges:request.valueFlowEdges||[],priorEvidence:request.priorEvidence||[],sourceEvidence:{checks:[]},summary:{recipientDiscovery:discovery},reusableForNextStage:{sourceEvidence:true,familyCheckIds:[]}};
+  }
   const families = normalizeFamilies(request);
   const checks = families.flatMap((family) => family.checks.map((check, index) => ({
     ...check,
