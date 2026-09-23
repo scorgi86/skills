@@ -1147,7 +1147,9 @@
           ],
           "evidenceRefs": [
             "ev-c7f54176a412314b"
-          ]
+          ],
+          "layer": "State mutation",
+          "path": "sdkjs/common/Drawings/Format/Format.js"
         },
         {
           "id": "ie-api",
@@ -1166,7 +1168,9 @@
           "evidenceRefs": [
             "ev-4503b4722a3e5d30",
             "ev-654afcfb5d252f46"
-          ]
+          ],
+          "layer": "API/DTO",
+          "path": "sdkjs/common/apiCommon.js"
         },
         {
           "id": "ie-ui",
@@ -1182,7 +1186,9 @@
           ],
           "evidenceRefs": [
             "ev-9e8bc6ea6959663c"
-          ]
+          ],
+          "layer": "UI/product/frontend",
+          "path": "web-apps/apps/common/main/lib/view/ShapeShadowSettings.js"
         },
         {
           "id": "ie-render",
@@ -1198,7 +1204,9 @@
           ],
           "evidenceRefs": [
             "ev-b52d7b51335e9399"
-          ]
+          ],
+          "layer": "Render/output",
+          "path": "sdkjs/common/Drawings/Format/GraphicObjectBase.js"
         },
         {
           "id": "ie-serialization",
@@ -1219,7 +1227,9 @@
             "ev-df466bc0f2ba2268",
             "ev-eb6e5551c09b2224",
             "ev-5118014e11a3d15f"
-          ]
+          ],
+          "layer": "Save/export",
+          "path": "sdkjs/common/Shapes/Serialize.js"
         },
         {
           "id": "ie-theme",
@@ -1233,7 +1243,9 @@
           "evidenceRefs": [
             "ev-446525cec3259799",
             "ev-d82dae761ff69e56"
-          ]
+          ],
+          "layer": "Theme/style",
+          "path": "sdkjs/common/Drawings/Format/GraphicObjectBase.js"
         },
         {
           "id": "ie-lifecycle",
@@ -1251,7 +1263,9 @@
             "ev-d00638aa77f634ee",
             "ev-288c1998359282c3",
             "ev-f737d51f9da92135"
-          ]
+          ],
+          "layer": "State mutation",
+          "path": "sdkjs/common/Drawings/Format/Format.js"
         }
       ],
       "gaps": [

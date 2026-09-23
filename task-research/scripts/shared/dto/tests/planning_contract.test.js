@@ -54,3 +54,10 @@ test("planning merge is idempotent and enriches empty fields without clearing fi
   assert.deepEqual(merged[0].evidenceRefs, ["ev-a", "ev-b"]);
   assert.deepEqual(mergePlanningRows([...merged, ...merged], "scenarios"), merged);
 });
+test("mergeRows unions aliases of same-id rows", () => {
+  const {mergeRows}=require("../src/planning_contract");
+  const merged = mergeRows([{ id: "ev-1", aliases: ["check-a"] }, { id: "ev-1", aliases: ["ev-1", "query-a"] }])[0];
+  assert.deepEqual(merged.aliases, ["check-a", "ev-1", "query-a"]);
+  const distinct = mergeRows([{ id: "a", aliases: ["x"] }, { id: "b", aliases: ["x"] }]);
+  assert.deepEqual(distinct.map(row => row.aliases), [["x"], ["x"]]);
+});

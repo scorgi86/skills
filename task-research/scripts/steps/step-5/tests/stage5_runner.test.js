@@ -128,8 +128,9 @@ test("manual Stage 5 records a declared complete zero-match check as absence evi
   const transition=writeCanonicalTransition(root,4);
   const absence={id:"absence-a",absenceClaim:true,file:source,pattern:"putInnerShadow",repository:"repo-a",searchScope:"src/**/*.js",reason:"No mutation API is expected for the target field",consequence:"Mutation capability stays closed as checked absence",expectedNames:["putInnerShadow","setInnerShadow"],performedChecks:["text"],ordersChecked:["first"],linkingMethodsChecked:["direct"]};
   const result=await runStage5({stage:5,transitionArtifact:transition,checks:[absence],nameCoverage:{id:"coverage-a",scope:root,terms:["putInnerShadow"]}},{findExactNameCoverage:config=>({id:config.id,engine:"fixture",scope:root,terms:config.terms,filesScanned:3,matchingFileCount:0,matchingFiles:[],fileDigest:"x",matchingFileDigest:"y",query:{}})});
-  const row=(result.canonicalEvidence||[]).find(item=>item.id==="absence-absence-a");
+  const row=(result.canonicalEvidence||[]).find(item=>item.id==="absence-a");
   assert.equal(Boolean(row),true,"declared complete zero-match check must produce absence evidence");
+  assert.equal(row.id,"absence-a");
   assert.equal(row.status,"checked-no-usage");
   assert.equal(row.evidenceKind,"absence");
   assert.equal(row.repository,"repo-a");
@@ -137,5 +138,5 @@ test("manual Stage 5 records a declared complete zero-match check as absence evi
   assert.equal(row.resultComplete,true);
   const positive={...absence,id:"absence-b",pattern:"other"};
   const conflicted=await runStage5({stage:5,transitionArtifact:transition,checks:[positive],nameCoverage:{id:"coverage-a",scope:root,terms:["putInnerShadow"]}},{findExactNameCoverage:config=>({id:config.id,engine:"fixture",scope:root,terms:config.terms,filesScanned:3,matchingFileCount:1,matchingFiles:[source],fileDigest:"x",matchingFileDigest:"y",query:{}}),runEvidenceChecks:request=>({checks:request.checks.map(check=>({id:check.id,resultComplete:true,truncated:false,errors:[],totalMatches:1,fullMatches:[{file:source,line:1,endLine:1,sourceFragment:"const other = 1;",sourceHash:require("node:crypto").createHash("sha256").update(fs.readFileSync(source)).digest("hex")}]}))})});
-  assert.equal((conflicted.canonicalEvidence||[]).some(item=>item.id==="absence-absence-b"),false,"a check with matches must not produce absence evidence");
+  assert.equal((conflicted.canonicalEvidence||[]).some(item=>item.id==="absence-b"),false,"a check with matches must not produce absence evidence");
 });

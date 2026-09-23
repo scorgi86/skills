@@ -52,6 +52,7 @@ function mergeRows(rows) {
         if (JSON.stringify(previous[field]) !== JSON.stringify(row[field])) conflicts.push({ field, values: [previous[field], row[field]], sourceStages: [previous.sourceStage, row.sourceStage].filter(x => x != null) });
       }
       if (conflicts.length) merged.conflicts = [...new Map(conflicts.map(x => [JSON.stringify(x), x])).values()];
+      if (previous.aliases || row.aliases) merged.aliases = unique([...(previous.aliases || []), ...(row.aliases || [])]);
       if (previous.role || row.role || previous.roles || row.roles) merged.roles = unique([...(previous.roles || []), previous.role, ...(row.roles || []), row.role]);
       if (previous.provenance || row.provenance) merged.provenance = [...new Map([...(Array.isArray(previous.provenance) ? previous.provenance : previous.provenance ? [previous.provenance] : []), ...(Array.isArray(row.provenance) ? row.provenance : row.provenance ? [row.provenance] : [])].map(x => [JSON.stringify(x), x])).values()];
       for (const field of REFERENCE_FIELDS) if (field in previous || field in row) merged[field] = unique([...(previous[field] || []), ...(row[field] || [])]);
