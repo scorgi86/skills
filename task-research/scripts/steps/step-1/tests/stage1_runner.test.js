@@ -445,3 +445,26 @@ test("stage 1 CLI emits only bounded summary when facts artifact is retained", (
   assert.ok(Buffer.byteLength(completed.stdout) <= 8 * 1024);
   assert.equal(JSON.parse(fs.readFileSync(factsFile, "utf8")).stage, 1);
 });
+
+test("ownerDiscovery skip closes bootstrap-only Stage 1 without discovery", async t => {
+  const set = fixtureSet();
+  t.after(() => fs.rmSync(set.directory, { recursive: true, force: true }));
+  fs.writeFileSync(set.source, "function CInnerShadow() {}\nfunction CInnerShadowProperty() {}\nfunction Holder() { this.innerShdw = new CInnerShadow(); }\n");
+  const repositoryScope = { repositories: [{ id: "fixture", root: set.directory }] };
+  set.transition = writeCanonicalTransition(set.directory, 0, { facts: { repositoryScope, summary: { seeds: ["CInnerShadow", "CInnerShadowProperty", "innerShdw"] } } });
+  const data = request(set);
+  data.searchFromStage0 = true;
+  data.repositoryScope = repositoryScope;
+  data.ast.queries[0].options.terms = "CInnerShadow,CInnerShadowProperty,innerShdw";
+  data.ownership = { bootstrapSeed: "CInnerShadow", ownerDiscovery: "skip" };
+  delete data.coverageContract;
+  const facts = await runStage1(data, { runGitNexusContext: graph });
+  assert.equal(facts.summary.bootstrap.status, "selected");
+  assert.equal(facts.status, "closed");
+  assert.equal(facts.ownerDiscovery, undefined);
+  assert.equal(facts.ownership.groups.filter(group => group.id.startsWith("owner-")).length, 0);
+  assert.equal(facts.capabilities.find(row => row.id === "definition").status, "confirmed");
+  const ownerBranches = (facts.coverageContract.categories || []).find(category => category.id === "owner-branches");
+  assert.equal(ownerBranches.status, "not-applicable");
+  assert.ok((facts.limitations || []).some(row => /skipped by package/i.test(row.statement)));
+});

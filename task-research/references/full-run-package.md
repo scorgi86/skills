@@ -154,3 +154,8 @@ For `full-inventory` and `full-development`, the automatic route also carries a 
 The command creates state when absent, executes only the active stage, stops on a partial result, and resumes that stage on the next call. It derives every transition from active state. After Stage 7 it runs the existing digest-bound Stage 8 renderer, validates and advances the manifest, then marks the run complete. A completed run is a no-op.
 
 Exit code `0` means complete, `3` means partial, and `2` means error. Timing attempts are stored in `<output-root>/full-run-metrics.json`; they are operational metrics and are not canonical research facts. Changing the target, repository scope, or Stage 0 coverage profile requires a new state and output root.
+
+
+## ownership.ownerDiscovery: "skip"
+
+Bootstrap-only режим Stage 1: бустстрап-декларация подтверждается, discovery владельцев не запускается, owner-branches закрывается как not-applicable, граф владения не строится. Требует ручных Stage 2–5 и проверяется preflight-валидатором пакета. Применяйте для целей с широким fan-in, где AST не может подтвердить все ветки владельцев.

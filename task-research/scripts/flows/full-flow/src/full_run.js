@@ -45,6 +45,11 @@ function loadResearchPackage(source) {
   }
   if (value.stages["0"].coverageProfile === undefined) throw new Error("Stage 0 template requires coverageProfile");
   if (value.stages["0"].stage6Decision !== undefined && !["run", "skip"].includes(value.stages["0"].stage6Decision)) throw new Error("stage6Decision must be run or skip");
+  const ownerDiscovery = value.stages["1"].ownership?.ownerDiscovery;
+  if (ownerDiscovery !== undefined) {
+    if (ownerDiscovery !== "skip") throw new Error(String.raw`ownership.ownerDiscovery supports only "skip"`);
+    if (value.stages["1"].ownership.expectedIds?.length || value.stages["1"].ownership.groups?.length) throw new Error('ownership.ownerDiscovery:"skip" conflicts with manual ownership groups/expectedIds');
+  }
   const coverageProfile = normalizeCoverageProfile(value.stages["0"].coverageProfile);
   if (!coverageProfile.requiredCapabilities?.length) throw new Error("Stage 0 coverageProfile requires at least one requiredCapabilities id");
   if (!Array.isArray(value.stages["0"].seeds?.direct) || !value.stages["0"].seeds.direct.length || value.stages["0"].seeds.direct.some(seed => typeof seed !== "string" || !seed.trim())) throw new Error("Stage 0 template requires non-empty string seeds.direct");
@@ -213,8 +218,11 @@ async function runFullResearch(options) {
   const outputRoot = path.resolve(options.outputRoot);
   const metricsFile = path.resolve(options.metricsFile || path.join(outputRoot, "full-run-metrics.json"));
   let state = readState(stateFile);
+  const isNewRun = !state;
   if (!state || (state.currentStage === 0 && !state.activeArtifacts?.some(row => Number(row.stage) === 0))) normalizeNewCoverageProfile(pkg.stages["0"].coverageProfile);
   if (!state) { new StateStore(stateFile).create(initialState("continuous")); state = readState(stateFile); }
+  const preflight = require("./package_preflight.js").validateResearchPackage(pkg, { skipAliasCheck: !isNewRun });
+  if (!preflight.ok) throw new Error("Package preflight failed:\n- " + preflight.errors.join("\n- "));
   const stagePackage = continuationPackage(pkg, state, outputRoot);
   const started = performance.now();
   const metrics = existingMetrics(metricsFile, pkg.target) || { schemaVersion: "full-run-metrics/1.0.0", target: pkg.target, startedAt: new Date().toISOString(), stages: [], wallMs: 0 };

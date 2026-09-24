@@ -131,7 +131,8 @@ async function runStage1(request, dependencies = {}, context = null) {
     const confirmedBootstrapGroup=bootstrapEvidence?{...bootstrap.group,status:"confirmed",sourceFragment:bootstrap.proof.sourceFragment,evidenceRefs:[bootstrapProofId],confirmation:{method:"ast-exact-declaration",status:"source-confirmed",...bootstrap.proof,evidenceRefs:[bootstrapProofId]}}:bootstrap?.group;
     if(bootstrap?.status==="selected")bootstrap.group=confirmedBootstrapGroup;
     const activeSeedGroups = bootstrap?.status === "selected" ? [confirmedBootstrapGroup] : seedGroups;
-    const discovery = autoOwners && (!bootstrapEnabled || bootstrap.status === "selected") ? require("./owner_discovery.js").discoverOwnerCandidates(ast, { ...request, repositoryScope, ownership: { ...(request.ownership || {}), groups: activeSeedGroups } }, previous, sourceSnapshots) : null;
+    const skipDiscovery = bootstrapEnabled && request.ownership?.ownerDiscovery === "skip";
+    const discovery = autoOwners && !skipDiscovery && (!bootstrapEnabled || bootstrap.status === "selected") ? require("./owner_discovery.js").discoverOwnerCandidates(ast, { ...request, repositoryScope, ownership: { ...(request.ownership || {}), groups: activeSeedGroups } }, previous, sourceSnapshots) : null;
     const ownership = normalizeOwnership(discovery || bootstrap?.status === "selected" ? { ...request, ownership: { ...(request.ownership || {}), expectedIds: bootstrap?.status === "selected" ? [bootstrap.group.id] : request.ownership?.expectedIds, groups: [...activeSeedGroups, ...(discovery?.groups || [])] } } : request, sourceEvidence, new Map());
     const coverageContract = bootstrapEnabled ? bootstrapCoverage(bootstrap, discovery) : autoReviewedCoverageContract(request.coverageContract || null, discovery, ownership);
     const incompleteAutoSearch = request.searchFromStage0 === true && (request.evidence?.checks || []).some((check)=>{
@@ -181,6 +182,7 @@ async function runStage1(request, dependencies = {}, context = null) {
         facts.quality.bootstrap = bootstrap;
         facts.summary = { ...(facts.summary || {}), bootstrap };
         if (bootstrap.status !== "selected") facts.limitations = [...(facts.limitations || []), { statement: bootstrap.status, candidates: bootstrap.candidates || [] }];
+        if (skipDiscovery) facts.limitations = [...(facts.limitations || []), { statement: "Owner discovery skipped by package (ownership.ownerDiscovery: \"skip\")" }];
     }
     facts.boundaries = normalizeBoundaryCandidates(request, ownership, sourceEvidence);
     facts.coverageContract = coverageContract;
