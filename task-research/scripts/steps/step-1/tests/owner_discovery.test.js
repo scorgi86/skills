@@ -79,9 +79,9 @@ test("a reconciled clone owner is confirmed at the assignment with a separate me
   fs.writeFileSync(file, [
     "function Item() {}",
     "function Props() {}",
-    "Props.prototype.createDuplicate = function () { return new Props(); };",
+    "Props.prototype.clone = function () { return new Props(); };",
     "function Shape() {",
-    "  const props = this.props ? this.props.createDuplicate() : new Props();",
+    "  const props = this.props ? this.props.clone() : new Props();",
     "  props.item = new Item();",
     "}",
   ].join("\n"));

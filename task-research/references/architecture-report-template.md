@@ -25,6 +25,10 @@
 3. Stage 5: целевые проверки с авторскими подтверждениями (id проверки = alias evidence) и absence-проверки (`absenceClaim: true`) для каждого аспекта, закрываемого отсутствием; строки `gaps`/`checkedNoUsage`/capability-строки обязаны повторять поля absence-evidence побайтно (repository, searchScope, reason, consequence, expectedNames, performedChecks, ordersChecked, linkingMethodsChecked).
 4. Stage 7: capabilities по IDS (13/13 терминально), scenarios с entry/steps/result, implementationEntryPoints по слоям (существующие точки; ссылка на evidence + сценарий/capability), usages по правилам R1–R4 (`references/report-contract.md`), критические пути со statement.
 5. Проверка соответствия пакету и ограничениям полей — `loadResearchPackage`/FORBIDDEN в `scripts/flows/full-flow/src/full_run.js`.
+6. Соглашения, нарушение которых ловит preflight (`scripts/flows/full-flow/src/package_preflight.js`, вызывается автоматически в full_run и командой `preflight_package`):
+   - seed с тысячами вхождений недопустим — preflight посчитает rg-совпадения и отклонит пакет; выбирайте имя класса или уникальный термин;
+   - skip-режим: после первого прогона добавьте селектор `{stage: 1, ids: [идентификаторы bootstrap-пруфов]}` (preflight предупредит);
+   - limit-селекторы могут обрезаться на больших стадиях — предпочитайте точные `{stage, ids}`.
 
 ## Структура итогового документа
 

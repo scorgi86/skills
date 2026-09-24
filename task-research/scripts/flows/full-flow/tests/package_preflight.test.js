@@ -34,6 +34,19 @@ test("P1 rejects a confirmation fragment that matches the file more than once", 
   assert.equal(result.ok, false);
   assert.ok(result.errors.some(e => /matches 2/.test(e)), result.errors.join("; "));
 });
+test("P1 accepts lines that differ only by indentation", () => {
+  const { file } = writeTemp("p1-indent-", "function f() {\n    var x = 1;\n        var x = 1;\n}");
+  const pkg = pkgFor({ checks: [confirmedCheck("anchor", file, "var x = 1;")], nameCoverage: { id: "cov", scope: "x", terms: ["x"] } });
+  const result = validateResearchPackage(pkg);
+  assert.equal(result.ok, true, result.errors.join("; "));
+});
+test("P1 still rejects byte-identical duplicates without indentation", () => {
+  const { file } = writeTemp("p1-flat-", "var x = 1;\nvar x = 1;");
+  const pkg = pkgFor({ checks: [confirmedCheck("anchor", file, "var x = 1;")], nameCoverage: { id: "cov", scope: "x", terms: ["x"] } });
+  const result = validateResearchPackage(pkg);
+  assert.equal(result.ok, false);
+  assert.ok(result.errors.some(e => /matches 2/.test(e)), result.errors.join("; "));
+});
 test("P1 accepts a unique fragment and skips unreadable files", () => {
   const { file } = writeTemp("p1-uniq-", "const a = 1;\nconst uniqueAnchor = 1;");
   assert.equal(validateResearchPackage(pkgFor({ checks: [confirmedCheck("anchor", file, "const uniqueAnchor = 1;")], nameCoverage: { id: "cov", scope: "x", terms: ["x"] } })).ok, true);
@@ -65,4 +78,28 @@ test("P3 rejects ownerDiscovery skip with derived stages and missing manual Stag
   const result = validateResearchPackage(pkg);
   assert.equal(result.ok, false);
   assert.ok(result.errors.some(e => /skip/i.test(e)), result.errors.join("; "));
+});
+test("W1 warns on limit selectors and W2 warns on skip without stage-1 ids, without blocking", () => {
+  const pkg = pkgFor({ checks: [{ id: "anchor", file: "x", pattern: "x" }], nameCoverage: { id: "cov", scope: "x", terms: ["x"] } }, { ownership: { ownerDiscovery: "skip" } });
+  pkg.stages["7"].evidenceSelectors = [{ stage: 5, limit: 200 }];
+  pkg.stages["7"].capabilities = [{ id: "definition", status: "confirmed", evidenceRefs: [] }];
+  const result = validateResearchPackage(pkg);
+  assert.equal(result.ok, true);
+  assert.ok(result.warnings.some(w => /truncate/.test(w)), result.warnings.join("; "));
+  assert.ok(result.warnings.some(w => /bootstrap proof/.test(w)), result.warnings.join("; "));
+});
+test("F8: seed match volume produces warning and error by thresholds", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "p1-seed-"));
+  const file = path.join(root, "code.js");
+  fs.writeFileSync(file, Array.from({ length: 3 }, () => "CommonTerm();").join("\n") + "\nRareTerm();");
+  const pkg = pkgFor({}, {}, {});
+  pkg.stages["0"].seeds = { direct: ["CommonTerm", "RareTerm"] };
+  pkg.repositoryScope = { repositories: [{ id: "repo", root, role: "source" }] };
+  const options = { seedScan: { warnMatches: 2, failMatches: 4 } };
+  const result = validateResearchPackage(pkg, options);
+  assert.equal(result.ok, true, result.errors.join("; "));
+  assert.ok(result.warnings.some(w => /CommonTerm/.test(w) && /3 matches|warning/.test(w)), result.warnings.join("; "));
+  const strict = validateResearchPackage(pkg, { seedScan: { warnMatches: 2, failMatches: 3 } });
+  assert.equal(strict.ok, false);
+  assert.ok(strict.errors.some(e => /CommonTerm/.test(e) && /narrow the seed/.test(e)), strict.errors.join("; "));
 });

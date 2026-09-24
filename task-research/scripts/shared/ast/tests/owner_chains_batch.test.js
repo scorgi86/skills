@@ -116,7 +116,7 @@ test("conditional local variable preserves one concrete owner candidate without 
     "function CEffectProperties() {}",
     "function Other() {}",
     "function Shape() {",
-    "  const oEffectProps = this.effectProps ? this.effectProps.createDuplicate() : new CEffectProperties();",
+    "  const oEffectProps = this.effectProps ? this.effectProps.clone() : new CEffectProperties();",
     "  oEffectProps.EffectLst = new CEffectLst();",
     "  const alias = oEffectProps;",
     "  alias.EffectLst = new CEffectLst();",
@@ -140,13 +140,13 @@ test("exact clone return resolves a guarded conditional owner", async t => {
   fs.writeFileSync(file, [
     "function Item() {}",
     "function Props() {}",
-    "Props.prototype.createDuplicate = function () { const copy = new Props(); return copy; };",
+    "Props.prototype.clone = function () { const copy = new Props(); return copy; };",
     "function Shape() {",
-    "  const props = this.props ? this.props.createDuplicate() : new Props();",
+    "  const props = this.props ? this.props.clone() : new Props();",
     "  props.item = new Item();",
-    "  const reverse = this.reverse ? new Props() : this.reverse.createDuplicate();",
+    "  const reverse = this.reverse ? new Props() : this.reverse.clone();",
     "  reverse.item = new Item();",
-    "  const mismatch = this.flag ? this.other.createDuplicate() : new Props();",
+    "  const mismatch = this.flag ? this.other.clone() : new Props();",
     "  mismatch.unmatched = new Item();",
     "}",
   ].join("\n"));
@@ -166,20 +166,20 @@ test("file analysis keeps an exact clone return as a candidate for batch reconci
   fs.writeFileSync(file, [
     "function Item() {}",
     "function Props() {}",
-    "Props.prototype.createDuplicate = function () { return new Props(); };",
-    "function Shape() { const props = this.props ? this.props.createDuplicate() : new Props(); props.item = new Item(); }",
+    "Props.prototype.clone = function () { return new Props(); };",
+    "function Shape() { const props = this.props ? this.props.clone() : new Props(); props.item = new Item(); }",
   ].join("\n"));
   const relation = analyzeFile(file).result.relations.find(item => item.ownerQualifiedName === "Props" && item.field === "item");
   assert.equal(relation.ownerCandidate, true);
-  assert.deepEqual(relation.ownerProof, { kind: "exact-method-return", ownerType: "Props", method: "createDuplicate", returnType: "Props" });
+  assert.deepEqual(relation.ownerProof, { kind: "exact-method-return", ownerType: "Props", method: "clone", returnType: "Props" });
 });
 
 test("a repository batch reconciles an exact clone return from another file", async t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "owner-cross-file-return-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const definition = path.join(root, "definition.js"), use = path.join(root, "use.js");
-  fs.writeFileSync(definition, ["function Item() {}", "function Props() {}", "Props.prototype.createDuplicate = function () { const copy = new Props(); return copy; };"] .join("\n"));
-  fs.writeFileSync(use, ["function Shape() {", "  const props = this.props ? this.props.createDuplicate() : new Props();", "  props.item = new Item();", "}"].join("\n"));
+  fs.writeFileSync(definition, ["function Item() {}", "function Props() {}", "Props.prototype.clone = function () { const copy = new Props(); return copy; };"] .join("\n"));
+  fs.writeFileSync(use, ["function Shape() {", "  const props = this.props ? this.props.clone() : new Props();", "  props.item = new Item();", "}"].join("\n"));
   const result = await runAstBatch({ queries: [{ id: "find", command: "find", files: [definition, use], options: { terms: "Item" } }], ownerSeedTypes: ["Item"], ownerRepositories: [{ id: "repo", root }], ownerSeedScopes: [{ seed: "Item", repository: "repo" }] });
   const steps = result.ownerChains[0].chains.flatMap(row => row.chain).filter(step => step.owner === "Props" && step.field === "item");
   assert.ok(steps.some(step => step.ownerCandidate === false && step.ownerConfidence === "exact"
@@ -191,9 +191,9 @@ test("conflicting cross-file clone returns remain owner candidates", async t => 
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "owner-cross-file-conflict-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const first = path.join(root, "first.js"), second = path.join(root, "second.js"), use = path.join(root, "use.js");
-  fs.writeFileSync(first, ["function Props() {}", "Props.prototype.createDuplicate = function () { return new Props(); }"].join("\n"));
-  fs.writeFileSync(second, ["function Other() {}", "Props.prototype.createDuplicate = function () { return new Other(); }"].join("\n"));
-  fs.writeFileSync(use, ["function Item() {}", "function Shape() { const props = this.props ? this.props.createDuplicate() : new Props(); props.item = new Item(); }"].join("\n"));
+  fs.writeFileSync(first, ["function Props() {}", "Props.prototype.clone = function () { return new Props(); }"].join("\n"));
+  fs.writeFileSync(second, ["function Other() {}", "Props.prototype.clone = function () { return new Other(); }"].join("\n"));
+  fs.writeFileSync(use, ["function Item() {}", "function Shape() { const props = this.props ? this.props.clone() : new Props(); props.item = new Item(); }"].join("\n"));
   const result = await runAstBatch({ queries: [{ id: "find", command: "find", files: [first, second, use], options: { terms: "Item" } }], ownerSeedTypes: ["Item"], ownerRepositories: [{ id: "repo", root }], ownerSeedScopes: [{ seed: "Item", repository: "repo" }] });
   assert.ok(result.ownerChains[0].unresolved.some(row => row.owner === "Props" && row.field === "item" && row.ownerCandidate === true));
 });

@@ -69,24 +69,24 @@ test("prototype methods and qualified owners are indexed", () => {
 test("method return summaries require one exact type and no fallthrough", () => {
   const index = indexSource([
     "function Exact() {}",
-    "Exact.prototype.createDuplicate = function () { const copy = new Exact(); return copy; };",
+    "Exact.prototype.clone = function () { const copy = new Exact(); return copy; };",
     "function Fallthrough() {}",
-    "Fallthrough.prototype.createDuplicate = function (flag) { if (flag) return new Fallthrough(); };",
+    "Fallthrough.prototype.clone = function (flag) { if (flag) return new Fallthrough(); };",
     "function Mixed() {}",
-    "Mixed.prototype.createDuplicate = function (flag) { if (flag) return new Mixed(); return new Exact(); };",
+    "Mixed.prototype.clone = function (flag) { if (flag) return new Mixed(); return new Exact(); };",
     "function Unknown() {}",
-    "Unknown.prototype.createDuplicate = function () { return makeUnknown(); };",
+    "Unknown.prototype.clone = function () { return makeUnknown(); };",
     "function Bare() {}",
-    "Bare.prototype.createDuplicate = function () { return; };",
+    "Bare.prototype.clone = function () { return; };",
     "function Nested() {}",
-    "Nested.prototype.createDuplicate = function () { function callback() { return new Exact(); } return new Nested(); };",
+    "Nested.prototype.clone = function () { function callback() { return new Exact(); } return new Nested(); };",
   ].join("\n"));
-  assert.deepEqual({ type: index.methods.get("Exact.createDuplicate").returnType, confidence: index.methods.get("Exact.createDuplicate").returnConfidence }, { type: "Exact", confidence: "exact" });
-  assert.equal(index.methods.get("Fallthrough.createDuplicate").returnType, undefined);
-  assert.equal(index.methods.get("Mixed.createDuplicate").returnType, undefined);
-  assert.equal(index.methods.get("Unknown.createDuplicate").returnType, undefined);
-  assert.equal(index.methods.get("Bare.createDuplicate").returnType, undefined);
-  assert.equal(index.methods.get("Nested.createDuplicate").returnType, "Nested");
+  assert.deepEqual({ type: index.methods.get("Exact.clone").returnType, confidence: index.methods.get("Exact.clone").returnConfidence }, { type: "Exact", confidence: "exact" });
+  assert.equal(index.methods.get("Fallthrough.clone").returnType, undefined);
+  assert.equal(index.methods.get("Mixed.clone").returnType, undefined);
+  assert.equal(index.methods.get("Unknown.clone").returnType, undefined);
+  assert.equal(index.methods.get("Bare.clone").returnType, undefined);
+  assert.equal(index.methods.get("Nested.clone").returnType, "Nested");
 });
 
 test("class methods and prototype aliases preserve qualified names", () => {

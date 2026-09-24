@@ -72,7 +72,7 @@ test("storage rejects unproven method summaries and malformed owner proofs", (t)
   fs.writeFileSync(file, [
     "function Item() {}",
     "function Props() {}",
-    "Props.prototype.createDuplicate = function () { const copy = new Props(); return copy; };",
+    "Props.prototype.clone = function () { const copy = new Props(); return copy; };",
     "function Holder() { this.item = new Item(); }",
   ].join("\n"));
   const result = analyzeFile(file).result;
@@ -82,7 +82,7 @@ test("storage rejects unproven method summaries and malformed owner proofs", (t)
   const target = path.join(directory, `${identity.key}.json`);
   const corruptions = [
     value => { value.result.methodSummaries[0].evidence = []; },
-    value => { value.result.relations[0].ownerProof = { kind: "bad", ownerType: "Props", method: "createDuplicate", returnType: "Props" }; },
+    value => { value.result.relations[0].ownerProof = { kind: "bad", ownerType: "Props", method: "clone", returnType: "Props" }; },
   ];
   for (const corrupt of corruptions) {
     const value = structuredClone({ identity, result });

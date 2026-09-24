@@ -55,7 +55,7 @@ function validItem(value, file, symbol, analyzerVersion) {
     && optional(value, ["callableProof"], item => validCallableProof(item, analyzerVersion))
     && optional(value, ["ownerProof"], item => object(item) && only(item, ["kind", "ownerType", "method", "returnType"])
       && item.kind === "exact-method-return" && string(item.ownerType) && string(item.returnType)
-      && ["clone", "createDuplicate"].includes(item.method));
+      && ["clone"].includes(item.method));
 }
 
 function validMethodSummary(value, file) {

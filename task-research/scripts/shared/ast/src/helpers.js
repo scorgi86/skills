@@ -56,7 +56,7 @@ function inferExpression(node, index, scope) {
     const deferredClone = (callNode, newNode) => {
       if (callNode?.type !== "CallExpression" || newNode?.type !== "NewExpression") return null;
       const call = memberInfo(callNode.callee), type = expressionName(newNode.callee);
-      if (!call || !["clone", "createDuplicate"].includes(call.property) || expressionName(node.test) !== call.object || !type) return null;
+      if (!call || !["clone"].includes(call.property) || expressionName(node.test) !== call.object || !type) return null;
       return { type: "unknown", candidateTypes: [type], confidence: "ambiguous", ownerProof: { kind: "exact-method-return", ownerType: type, method: call.property, returnType: type } };
     };
     const deferred = deferredClone(node.consequent, node.alternate) || deferredClone(node.alternate, node.consequent);
@@ -67,7 +67,7 @@ function inferExpression(node, index, scope) {
     const callee = expressionName(node.callee);
     const match = callee.match(/(?:^|\.)(?:Create|Read)([A-Z][A-Za-z0-9_$]*)$/);
     if (match) return { type: "unknown", candidateType: match[1], confidence: "name-inferred" };
-    const receiver = callee.match(/^(.+)\.(?:clone|createDuplicate)$/);
+    const receiver = callee.match(/^(.+).clone$/);
     if (receiver) {
       const resolved = index.resolve(receiver[1], scope);
       return { type: resolved.type, candidateType: resolved.type, confidence: "name-inferred", ownerProof: resolved.ownerProof, resolvedVia: resolved.resolvedVia };
