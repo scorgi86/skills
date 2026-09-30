@@ -106,7 +106,7 @@ Example:
 
 ```text
 Use $trace-ai-actions in live+file detailed mode together with
-$feature-usage-inventory-ast. Save the trace to context/inventory-trace.jsonl.
+$task-research. Save the trace to context/inventory-trace.jsonl.
 ```
 
 ## Final Check
