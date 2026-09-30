@@ -6,7 +6,7 @@ const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
 const { buildSummary, findLiteralNameCoverage, normalizeCoverage, runStage5 } = require("../src/runner");
-const { writeCanonicalTransition } = require("../../../shared/dto/tests/test_helpers");
+const { transitionFields, writeCanonicalTransition } = require("../../../shared/dto/tests/test_helpers");
 
 test("stage 5 retains full observations after bounded exact-name coverage", async () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "critical-stage5-"));
@@ -139,4 +139,34 @@ test("manual Stage 5 records a declared complete zero-match check as absence evi
   const positive={...absence,id:"absence-b",pattern:"other"};
   const conflicted=await runStage5({stage:5,transitionArtifact:transition,checks:[positive],nameCoverage:{id:"coverage-a",scope:root,terms:["putInnerShadow"]}},{findExactNameCoverage:config=>({id:config.id,engine:"fixture",scope:root,terms:config.terms,filesScanned:3,matchingFileCount:1,matchingFiles:[source],fileDigest:"x",matchingFileDigest:"y",query:{}}),runEvidenceChecks:request=>({checks:request.checks.map(check=>({id:check.id,resultComplete:true,truncated:false,errors:[],totalMatches:1,fullMatches:[{file:source,line:1,endLine:1,sourceFragment:"const other = 1;",sourceHash:require("node:crypto").createHash("sha256").update(fs.readFileSync(source)).digest("hex")}]}))})});
   assert.equal((conflicted.canonicalEvidence||[]).some(item=>item.id==="absence-b"),false,"a check with matches must not produce absence evidence");
+});
+
+test("manual Stage 5 emits terminal outcomes for lineage value-flow obligations", async t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "manual-vf-"));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const source = path.join(root, "model.js");
+  fs.writeFileSync(source, "const a = new Alpha();\nholder.value = a;\nuse(holder.value);\n");
+  const hash = require("node:crypto").createHash("sha256").update(fs.readFileSync(source)).digest("hex");
+  const repositoryScope = { repositories: [{ id: "fixture", root }] };
+  const loc = line => ({ repository: "fixture", file: source, line, endLine: line, sourceHash: hash, sourceFragment: ["const a = new Alpha();", "holder.value = a;", "use(holder.value);"][line - 1] });
+  const edges = [
+    { id: "e1", from: "Alpha", to: "mid", relation: "contain", status: "source-confirmed", ...loc(1) },
+    { id: "e2", from: "mid", to: "LeafA", relation: "contain", status: "source-confirmed", ...loc(2) },
+    { id: "e3", from: "mid", to: "LeafB", relation: "contain", status: "unresolved", ...loc(3) },
+  ];
+  const pathObligations = [
+    { id: "ob-root", kind: "path-obligation", frontier: "mid", status: "open", edgeRefs: ["e1"] },
+    { id: "ob-leafA", kind: "path-obligation", parentObligationRef: "ob-root", frontier: "LeafA", status: "open", edgeRefs: ["e2"] },
+    { id: "ob-leafB", kind: "path-obligation", parentObligationRef: "ob-root", frontier: "LeafB", status: "open", edgeRefs: ["e3"] },
+  ];
+  const evidenceRows = [1, 2].map(line => ({ id: "ev-edge-" + line, status: "source-confirmed", repository: "fixture", file: source, line, endLine: line, sourceHash: hash, sourceFragment: ["const a = new Alpha();", "holder.value = a;"][line - 1] }));
+  const written4 = require("../../../shared/artifacts/src/stage_artifact_v4").writeStageArtifact({ outputDir: path.join(root, "stage-4"), facts: { stage: 4, status: "closed", target: "T", repositoryScope, transition: { schemaVersion: "1.0.0", fields: transitionFields(4), missing: [], valid: true }, summary: { target: "T" }, pathObligations, valueFlowEdges: edges, canonicalEvidence: evidenceRows }, input: { stage: 4 } });
+  const transition = written4.resultFile;
+  const result = await runStage5({ stage: 5, transitionArtifact: transition, checks: [{ id: "check-a", file: source, pattern: "Alpha" }], nameCoverage: { id: "cov", scope: root, terms: ["Alpha"] } });
+  const confirmedLeafA = result.criticalPaths.find(p => (p.obligationRefs || []).includes("ob-leafA") && p.status === "confirmed");
+  assert.equal(Boolean(confirmedLeafA), true, "open leaf with fully confirmed chain must get a confirmed critical path");
+  assert.equal(confirmedLeafA.evidenceRefs.length > 0, true, "confirmed path must reference resolved evidence");
+  assert.equal(result.criticalPaths.some(p => (p.obligationRefs || []).includes("ob-leafB")), false, "unconfirmed-edge leaf must not become a confirmed critical path");
+  assert.equal(result.status, "partial", "unresolved leaf keeps the stage honestly partial");
+  assert.ok((result.pathObligations || []).some(o => o.id === "ob-leafB" && o.status === "unresolved"));
 });

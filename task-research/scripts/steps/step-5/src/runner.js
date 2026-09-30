@@ -176,15 +176,56 @@ async function runStage5(request, dependencies = {}, context = null) {
     return [{ id: String(check.id).startsWith("absence-") ? check.id : `absence-${check.id}`, status: "checked-no-usage", evidenceKind: "absence", repository: check.repository, searchScope: check.searchScope, reason: check.reason, consequence: check.consequence, resultComplete: true, resultTruncated: false, expectedNames: check.expectedNames, performedChecks: check.performedChecks, ordersChecked: check.ordersChecked, linkingMethodsChecked: check.linkingMethodsChecked }].filter(row => [row.repository,row.searchScope,row.reason,row.consequence].every(value => typeof value === "string" && value.trim()) && [row.expectedNames,row.performedChecks,row.ordersChecked,row.linkingMethodsChecked].every(list => Array.isArray(list) && list.length));
   });
   const evidenceFiles = sourceEvidence.checks.flatMap((check) => (check.fullMatches || []).map((match) => match.file));
+  const obligationCriticalPaths = [], obligationUsages = [], obligationStatusUpdates = [], obligationReasons = [];
+  let lineageEdges = [];
+  try {
+    const lineage = JSON.parse(fs.readFileSync(path.resolve(request.transitionArtifact), "utf8"));
+    const lineageFacts = Array.isArray(lineage.facts) ? lineage.facts : [];
+    const lineageObligations = lineageFacts.filter(fact => fact.kind === "path-obligation");
+    lineageEdges = lineageFacts.filter(fact => fact.kind === "value-flow-edge");
+    if (lineageObligations.length && lineageEdges.length) {
+      const artifactDir = path.dirname(path.resolve(request.transitionArtifact));
+      const bundlePath = [path.join(artifactDir, "evidence.json"), path.join(artifactDir, "canonical", "evidence.json")].find(p => fs.existsSync(p));
+      const bundle = bundlePath ? JSON.parse(fs.readFileSync(bundlePath, "utf8")) : { evidence: [] };
+      const locatorIds = new Map();
+      for (const item of bundle.evidence || []) {
+        const row = Number.isInteger(item.fileId) ? { ...item, file: bundle.files[item.fileId] } : item;
+        const rowLine = row.range?.startLine ?? row.line;
+        if (row.status !== "source-confirmed" || !row.file || rowLine === undefined) continue;
+        const key = `${path.resolve(row.file)}\n${row.sourceHash || ""}\n${rowLine}`;
+        locatorIds.set(key, [...(locatorIds.get(key) || []), row.id]);
+      }
+      const edgesById = new Map(lineageEdges.map(edge => [edge.id, edge]));
+      const parents = new Set(lineageObligations.map(row => row.parentObligationRef).filter(Boolean));
+      for (const obligation of lineageObligations) {
+        if (parents.has(obligation.id)) continue;
+        const refs = obligation.edgeRefs || [];
+        const edgeRows = refs.map(id => edgesById.get(id)).filter(Boolean);
+        const missing = refs.filter(id => !edgesById.has(id));
+        const unconfirmed = edgeRows.filter(edge => edge.status !== "source-confirmed");
+        const resolvedIds = [...new Set(edgeRows.flatMap(edge => locatorIds.get(`${path.resolve(edge.file)}\n${edge.sourceHash || ""}\n${edge.line}`) || []))];
+        if (obligation.status === "open" && !missing.length && !unconfirmed.length && resolvedIds.length) {
+          const id = `internal-${obligation.id}`;
+          obligationCriticalPaths.push({ id, coverageKey: id, name: obligation.frontier, statement: `Source-confirmed value flow reaches ${obligation.frontier}`, entry: refs[0], steps: refs, result: `Value reaches ${obligation.frontier}`, status: "confirmed", complete: true, obligationRefs: [obligation.id], evidenceRefs: resolvedIds });
+          obligationUsages.push({ id: `usage-${id}`, name: obligation.frontier, statement: `Source-confirmed value flow reaches ${obligation.frontier}`, result: `Value reaches ${obligation.frontier}`, status: "confirmed", pathRefs: [id], obligationRefs: [obligation.id], evidenceRefs: resolvedIds });
+        } else {
+          const reason = missing.length ? "missing-edge" : unconfirmed.length ? "unconfirmed-edge" : "edge-without-evidence";
+          obligationStatusUpdates.push({ ...obligation, status: "unresolved", reason });
+          obligationReasons.push(`${obligation.id}: ${reason}`);
+        }
+      }
+    }
+  } catch { /* lineage without value flow: no obligation outcomes */ }
   return {
     schemaVersion: "1.0.0",
     stage: 5,
     capabilities: require("../../../shared/dto/src/capability_contract.js").normalizeCapabilities(request.capabilities || []),
-    status: sourceEvidence.checks.some(check => check.resultComplete === false) ? "partial" : "candidate",
+    status: sourceEvidence.checks.some(check => check.resultComplete === false) || obligationReasons.length ? "partial" : "candidate",
     transition,
     priorArtifacts: request.priorArtifacts || [],
     nameCoverage: { ...coverage, totalMatches: coverageEvidence ? coverageEvidence.totalMatches : 0, fullObservationCount: coverageEvidence ? coverageEvidence.fullMatches.length : 0 },
     sourceEvidence,
+    ...(obligationCriticalPaths.length || obligationStatusUpdates.length ? { criticalPaths: obligationCriticalPaths, confirmedUsages: obligationUsages, pathObligations: obligationStatusUpdates, valueFlowEdges: lineageEdges } : {}),
     ...(absenceEvidence.length ? { canonicalEvidence: absenceEvidence } : {}),
     sourceFreshness: { algorithm: "sha256", files: fingerprintFiles(evidenceFiles) },
     reusableForNextStage: { sourceEvidence: true, checkIds: sourceEvidence.checks.map((check) => check.id) },

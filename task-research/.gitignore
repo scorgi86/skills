@@ -1,3 +1,15 @@
 node_modules/
 .ast-cache/
 *.tmp
+.codex/
+tmp/
+output/
+looper-output/
+clean-stage01-*/
+diag-*/
+fresh-inventory-*/
+inventory-artifacts/
+measure-owner-*/
+migration-output/
+skills.rar
+*.rar

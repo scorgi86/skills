@@ -163,6 +163,11 @@ function materializeStageRequest(pkg, stage, state = null) {
     } else if (Array.isArray(template.evidenceSelectors)) {
       request.evidenceSelectors = template.evidenceSelectors.map(({ stage: selectedStage, ...selector }) => ({ artifact: priorArtifacts[Number(selectedStage)], ...selector }));
     }
+    if (pkg.stages["1"].ownership?.ownerDiscovery === "skip" && !(request.evidenceSelectors || []).some(selector => String(selector.stage) === "1" && Array.isArray(selector.ids))) {
+      const stage1 = readCanonicalStageResult(priorArtifacts[1]);
+      const proofId = (stage1.facts || []).flatMap(fact => Array.isArray(fact.canonicalEvidence) ? fact.canonicalEvidence : []).find(row => String(row.id || "").endsWith(":declaration"))?.id;
+      if (proofId) request.evidenceSelectors = [...(request.evidenceSelectors || []), { stage: 1, ids: [proofId] }];
+    }
   }
   return request;
 }
