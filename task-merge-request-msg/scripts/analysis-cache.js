@@ -7,7 +7,7 @@ const os = require("os");
 const path = require("path");
 
 const CACHE_SCHEMA_VERSION = 2;
-const FACT_KINDS = new Set(["change", "flow", "rule", "contract", "feature_flag", "risk", "test_added", "check_run", "context"]);
+const FACT_KINDS = new Set(["change", "flow", "rule", "contract", "feature_flag", "risk", "test_added", "test_updated", "test_removed", "check_run", "context"]);
 
 function parseArgs(argv) {
   const args = {
