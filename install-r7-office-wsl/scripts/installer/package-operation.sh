@@ -56,10 +56,10 @@ case "$MODE" in
     install|upgrade)
         closed=0; pgrep -x DesktopEditors >/dev/null 2>&1 || closed=$?
         [ "$closed" = 1 ] || stop 30 "Close DesktopEditors before changing the package"
-        require_command mountpoint
+        require_command findmnt
         for target in /opt/r7-office/desktopeditors/editors/sdkjs /opt/r7-office/desktopeditors/editors/web-apps; do
-            mounted=0; mountpoint -q -- "$target" || mounted=$?
-            [ "$mounted" = 32 ] || stop 30 "Disable development mounts before changing the package"
+            mounted=0; findmnt -n -o SOURCE -M "$target" >/dev/null || mounted=$?
+            [ "$mounted" = 1 ] || stop 30 "Disable development mounts before changing the package"
         done
         backend_audit || stop 40 "Package database requires attention"
         backend_install_local "$PACKAGE" >"$LOG_FILE" 2>&1 || { STATUS=backend-failed RESULT=install-failed; }

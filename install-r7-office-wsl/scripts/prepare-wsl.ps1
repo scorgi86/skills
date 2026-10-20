@@ -48,7 +48,7 @@ function Invoke-Stage {
 }
 function Invoke-Preparation {
     $planned = @('preflight', 'run-directory', 'metadata', 'environment', 'disable', 'install', 'package-verify', 'alias', 'enable', 'verify')
-    $entry = Join-Path $PSScriptRoot '../../install-r7-office-linux/scripts/wsl-entry.ps1'
+    $entry = Join-Path $PSScriptRoot 'installer/wsl-entry.ps1'
     $dev = Join-Path $PSScriptRoot 'wsl-dev.ps1'
     $runId = 'install-' + [guid]::NewGuid().ToString('N')
     $devArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $dev, '-Distro', $Distro, '-LinuxUser', $LinuxUser, '-WorkspaceRoot', $WorkspaceRoot, '-EditorRoot', $EditorRoot)

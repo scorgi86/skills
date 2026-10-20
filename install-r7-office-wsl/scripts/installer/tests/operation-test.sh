@@ -26,7 +26,7 @@ for forbidden in python3 debsig-verify dpkg-sig rpmkeys; do
     printf '#!/usr/bin/env bash\nprintf "FORBIDDEN %%s\\n" "$0" >>"$CALLS"\nexit 90\n' >"$TASK/bin/$forbidden"
 done
 printf '#!/usr/bin/env bash\nexit 1\n' >"$TASK/bin/pgrep"
-printf '#!/usr/bin/env bash\nexit 32\n' >"$TASK/bin/mountpoint"
+printf '#!/usr/bin/env bash\nexit "${FINDMNT_EXIT:-1}"\n' >"$TASK/bin/findmnt"
 printf '#!/usr/bin/env bash\nexit 0\n' >"$TASK/bin/dpkg"
 chmod +x "$TASK/bin/"*
 export PATH="$TASK/bin:$PATH"
@@ -74,4 +74,9 @@ bash "$BASE/package-operation.sh" --run-id test-run --state-dir "$TASK/hash" --b
 code=0
 INSTALL_EXIT=17 bash "$BASE/package-operation.sh" --run-id test-run --state-dir "$TASK/failure" --backend apt --mode upgrade --package "$TASK/local package.deb" >/dev/null 2>&1 || code=$?
 [ "$code" = 40 ]
+for mount_status in 0 2; do
+    : >"$CALLS"; code=0
+    FINDMNT_EXIT="$mount_status" bash "$BASE/package-operation.sh" --run-id test-run --state-dir "$TASK/mount-$mount_status" --backend apt --package "$TASK/local package.deb" >/dev/null 2>&1 || code=$?
+    [ "$code" = 30 ] && ! grep -q ' install ' "$CALLS"
+done
 printf 'PASS: standalone install, metadata once, four backends, no Python/signature/audit wrappers, hash gate, native failure\n'

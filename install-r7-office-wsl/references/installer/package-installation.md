@@ -1,18 +1,14 @@
----
-name: install-r7-office-linux
-description: Установить или обновить локальный DEB/RPM R7 Office в Linux через APT, DNF, Zypper или YUM и проверить пакет и библиотеки. Подробный аудит пакета выполнять по отдельному запросу.
----
 
 # R7 Office в Linux
 
-Используй поставляемые скрипты; не создавай скрипты при выполнении навыка. Для рабочего окружения с Windows-файлами используй [WSL-навык](../install-r7-office-wsl/SKILL.md): его запрос установки включает подключение файлов.
+Используй поставляемые скрипты; не создавай скрипты при выполнении навыка. Для рабочего окружения с Windows-файлами используй [координатор WSL](../../SKILL.md): его запрос установки включает подключение файлов.
 
 ## Установка
 
 Определи целевой Linux и локальный пакет. Закрой редактор и отключи подключённые каталоги разработки перед пакетными изменениями. Сохраняй пользовательские данные.
 
 ```bash
-sudo bash scripts/package-operation.sh --package /absolute/path/r7-office.deb
+sudo bash scripts/installer/package-operation.sh --package /absolute/path/r7-office.deb
 ```
 
 Операция читает метаданные и выбирает APT для DEB, DNF → Zypper → YUM для RPM. `--backend` задаёт явный выбор; `--mode upgrade` использует ту же штатную установку локального пакета. Та же версия не означает принудительную переустановку. Предварительная инспекция и Python не нужны. Если пользователь предоставил SHA-256, передай `--expected-sha256`.
@@ -20,10 +16,10 @@ sudo bash scripts/package-operation.sh --package /absolute/path/r7-office.deb
 Скрипт создаёт приватный root-каталог и сообщает путь `operation.json`. Для проверки используй его `run_id`, backend, установленную версию и каталог:
 
 ```bash
-sudo bash scripts/verify-installation.sh --run-id "$RUN_ID" --state-dir "$STATE_DIR" --backend "$BACKEND" --expected-version "$VERSION"
+sudo bash scripts/installer/verify-installation.sh --run-id "$RUN_ID" --state-dir "$STATE_DIR" --backend "$BACKEND" --expected-version "$VERSION"
 ```
 
-Требуй установленный пакет нужной версии, исправную пакетную базу, исполняемый файл и разрешённые библиотеки. GUI запускай, когда он входит в запрос. Если Debian требует отсутствующий `libgconf-2-4`, прочитай [debian-libgconf.md](references/debian-libgconf.md).
+Требуй установленный пакет нужной версии, исправную пакетную базу, исполняемый файл и разрешённые библиотеки. GUI запускай, когда он входит в запрос. Если Debian требует отсутствующий `libgconf-2-4`, прочитай [debian-libgconf.md](debian-libgconf.md).
 
 Зависимости устанавливает пакетный менеджер. Обновление кеша — явная отдельная операция `--mode refresh-metadata --backend <backend>`; установка имён зависимостей — `--mode install-dependencies --backend <backend> --dependency <name>`. Не обходи ошибки через dpkg/rpm, автоматический repair или отключение штатных проверок подписей. APT работает с `--no-remove`.
 
@@ -33,6 +29,6 @@ sudo bash scripts/verify-installation.sh --run-id "$RUN_ID" --state-dir "$STATE_
 
 Ручная интеграция Astra выполняется отдельной операцией `--mode configure-integration --backend <backend> --approved-action remove-security-exec-id` либо `enable-r7-service`, только при разрешении соответствующего действия. Она не запускается координатором автоматически.
 
-Для Windows-пути используй `scripts/wsl-entry.ps1 -Distro <name> -Stage operation -PackagePath <path>` в дочернем PowerShell-процессе: адаптер возвращает код этапа и JSON в stdout. `-Stage metadata` проверяет вход пакета без аудита; `environment`, `inspect`, `verify` доступны отдельно. `-StateDir` позволяет разделять один приватный каталог между этапами; без него адаптер создаёт новый.
+Для Windows-пути используй `scripts/installer/wsl-entry.ps1 -Distro <name> -Stage operation -PackagePath <path>` в дочернем PowerShell-процессе: адаптер возвращает код этапа и JSON в stdout. `-Stage metadata` проверяет вход пакета без аудита; `environment`, `inspect`, `verify` доступны отдельно. `-StateDir` позволяет разделять один приватный каталог между этапами; без него адаптер создаёт новый.
 
-Остановись при несовместимости, открытом редакторе, подключённых ресурсах, повреждённой пакетной базе, ошибках менеджера или неразрешённых зависимостях. Не удаляй пакеты и не ремонтируй чужие незавершённые операции автоматически. Сообщи версию, backend, фактические пакетные изменения и результат проверки; хеш — если он проверялся. [Форматы результатов](references/state-schema.md), [контракты backend](references/backend-contract.md).
+Остановись при несовместимости, открытом редакторе, подключённых ресурсах, повреждённой пакетной базе, ошибках менеджера или неразрешённых зависимостях. Не удаляй пакеты и не ремонтируй чужие незавершённые операции автоматически. Сообщи версию, backend, фактические пакетные изменения и результат проверки; хеш — если он проверялся. [Форматы результатов](state-schema.md), [контракты backend](backend-contract.md).
